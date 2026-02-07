@@ -220,6 +220,10 @@ async function executeQuery() {
     
     if (data.success) {
       renderResults(data);
+      // Verificar si el ejercicio fue completado (si la función existe)
+      if (typeof window.checkExerciseCompletion === 'function') {
+        window.checkExerciseCompletion();
+      }
     } else {
       showError(data.error);
     }

@@ -118,11 +118,8 @@ function updateProgress() {
   progressText.textContent = `${completed}/${total}`;
 }
 
-// Al ejecutar query, verificar si es del ejercicio actual
-const originalExecuteQuery = executeQuery;
-async function executeQuery() {
-  await originalExecuteQuery();
-  
+// Verificar si ejercicio fue completado después de ejecutar query exitosa
+function checkExerciseCompletion() {
   // Si hay un ejercicio activo y la query fue exitosa, preguntar si quiere marcarlo como completado
   if (currentExercise && resultsContent.querySelector('.results-table')) {
     setTimeout(() => {
@@ -137,3 +134,5 @@ async function executeQuery() {
 window.loadExercise = loadExercise;
 window.toggleHint = toggleHint;
 window.markExerciseCompleted = markExerciseCompleted;
+window.checkExerciseCompletion = checkExerciseCompletion;
+
