@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Playground - 1º DAW</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <h1>🗄️ SQL Playground</h1>
+        <p>Practica consultas SQL en tiempo real</p>
+        <div class="header-badge">1º Desarrollo de Aplicaciones Web</div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Sidebar con esquema -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <h3>📋 Esquema de Base de Datos</h3>
+          <button id="refreshSchema" class="btn-icon" title="Actualizar esquema">
+            🔄
+          </button>
+        </div>
+        <div id="schemaContent" class="schema-content">
+          <p class="loading">Cargando esquema...</p>
+        </div>
+
+        <div class="sidebar-section">
+          <h3>📚 Ejemplos</h3>
+          <div id="examplesContent" class="examples-content">
+            <p class="loading">Cargando ejemplos...</p>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Editor y resultados -->
+      <main class="editor-section">
+        <!-- Editor SQL -->
+        <div class="editor-container">
+          <div class="editor-header">
+            <h3>✏️ Editor SQL</h3>
+            <div class="editor-actions">
+              <button id="clearBtn" class="btn-secondary">🗑️ Limpiar</button>
+              <button id="formatBtn" class="btn-secondary">📐 Formatear</button>
+              <button id="executeBtn" class="btn-primary">▶️ Ejecutar</button>
+            </div>
+          </div>
+          <textarea 
+            id="sqlEditor" 
+            placeholder="Escribe tu consulta SQL aquí...&#10;&#10;Ejemplo:&#10;SELECT * FROM pelicula LIMIT 10;"
+            spellcheck="false"
+          ></textarea>
+          <div class="editor-footer">
+            <span id="lineCount">Línea 1</span>
+            <span class="separator">|</span>
+            <span class="info-text">Solo consultas SELECT permitidas</span>
+          </div>
+        </div>
+
+        <!-- Resultados -->
+        <div class="results-container">
+          <div class="results-header">
+            <h3>📊 Resultados</h3>
+            <div class="results-info">
+              <span id="executionInfo"></span>
+            </div>
+          </div>
+          <div id="resultsContent" class="results-content">
+            <div class="empty-state">
+              <div class="empty-icon">🎯</div>
+              <h4>Ejecuta una consulta para ver resultados</h4>
+              <p>Escribe una consulta SQL arriba y presiona "Ejecutar"</p>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>
+        SQL Playground para 1º DAW · 
+        <a href="https://github.com/shirAirEC/clases_1_daw" target="_blank">Ver en GitHub</a>
+      </p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
