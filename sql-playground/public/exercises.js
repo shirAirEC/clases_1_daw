@@ -132,3 +132,8 @@ async function executeQuery() {
     }, 500);
   }
 }
+
+// Exportar funciones al objeto global window
+window.loadExercise = loadExercise;
+window.toggleHint = toggleHint;
+window.markExerciseCompleted = markExerciseCompleted;

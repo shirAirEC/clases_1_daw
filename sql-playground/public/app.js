@@ -1,6 +1,6 @@
 // API Base URL (cambiar según el entorno)
-const API_URL = window.location.hostname === 'localhost' 
-  ? 'http://localhost:3000' 
+const API_URL = window.location.pathname.startsWith('/sql-playground') 
+  ? '/sql-playground' 
   : '';
 
 // Elementos del DOM
@@ -336,6 +336,7 @@ function escapeHtml(text) {
 // Hacer funciones globales para onclick
 window.insertTableName = insertTableName;
 window.loadExample = loadExample;
-window.loadExercise = loadExercise;
-window.toggleHint = toggleHint;
-window.markExerciseCompleted = markExerciseCompleted;
+// Las funciones de ejercicios se definirán en exercises.js
+window.loadExercise = null;
+window.toggleHint = null;
+window.markExerciseCompleted = null;
