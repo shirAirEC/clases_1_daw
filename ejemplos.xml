@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  EJEMPLOS DE XML PARA PRÁCTICA
+  Archivo: ejemplos.xml
+  Uso: Material de apoyo para ejercicios de la Clase 1
+-->
+
+<!-- ========================================
+     EJEMPLO 1: Biblioteca (Usado en clase)
+     ======================================== -->
+<árbol>
+  <especie>
+    <nombre>Litchi</nombre>
+    <variedad>Kway May Pink</variedad>
+    <origen>Filipinas</origen>
+    <color_fruto>rojo</color_fruto>
+    <maduración>agosto</maduración>
+    <riego>diario</riego>
+    <precio>3.5</precio>
+  </especie>
+</árbol>
+
+<!-- ========================================
+     EJEMPLO 2: Agenda de Contactos
+     ======================================== -->
+<!--
+<?xml version="1.0" encoding="UTF-8"?>
+<agenda>
+  <contacto nombre="alumno LM">
+    <ciudad>Málaga</ciudad>
+    <teléfono n="666777888"/>
+    <email>alumno@librolm.com</email>
+  </contacto>
+  <contacto nombre="María García">
+    <ciudad>Madrid</ciudad>
+    <teléfono n="912345678"/>
+    <email>maria@example.com</email>
+  </contacto>
+</agenda>
+-->
+
+<!-- ========================================
+     EJEMPLO 3: Feed (Usado en Ejercicio 4.3)
+     ======================================== -->
+<!--
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Árboles subtropicales</title>
+  <subtitle>Cultivo del aguacate</subtitle>
+</feed>
+-->
+
+<!-- ========================================
+     EJEMPLO 4: Catálogo de Productos
+     Para práctica adicional
+     ======================================== -->
+<!--
+<?xml version="1.0" encoding="UTF-8"?>
+<catalogo>
+  <producto codigo="A001" categoria="electronica">
+    <nombre>Laptop HP</nombre>
+    <descripcion>Portátil de 15 pulgadas con procesador Intel i5</descripcion>
+    <precio moneda="EUR">799.99</precio>
+    <stock>15</stock>
+    <disponible>true</disponible>
+  </producto>
+  <producto codigo="A002" categoria="electronica">
+    <nombre>Mouse Inalámbrico</nombre>
+    <descripcion>Mouse ergonómico con conexión Bluetooth</descripcion>
+    <precio moneda="EUR">25.50</precio>
+    <stock>50</stock>
+    <disponible>true</disponible>
+  </producto>
+  <producto codigo="B001" categoria="oficina">
+    <nombre>Silla Ergonómica</nombre>
+    <descripcion>Silla de oficina con ajuste de altura y lumbar</descripcion>
+    <precio moneda="EUR">150.00</precio>
+    <stock>0</stock>
+    <disponible>false</disponible>
+  </producto>
+</catalogo>
+-->
+
+<!-- ========================================
+     EJEMPLO 5: Biblioteca de Libros
+     Muestra uso de atributos y elementos anidados
+     ======================================== -->
+<!--
+<?xml version="1.0" encoding="UTF-8"?>
+<biblioteca>
+  <libro id="L001" idioma="es">
+    <titulo>Don Quijote de la Mancha</titulo>
+    <autor>
+      <nombre>Miguel</nombre>
+      <apellidos>de Cervantes Saavedra</apellidos>
+      <nacionalidad>Española</nacionalidad>
+    </autor>
+    <año>1605</año>
+    <genero>Novela</genero>
+    <isbn>978-84-376-0494-7</isbn>
+    <precio moneda="EUR">15.99</precio>
+    <disponible>true</disponible>
+  </libro>
+  <libro id="L002" idioma="es">
+    <titulo>Cien años de soledad</titulo>
+    <autor>
+      <nombre>Gabriel</nombre>
+      <apellidos>García Márquez</apellidos>
+      <nacionalidad>Colombiana</nacionalidad>
+    </autor>
+    <año>1967</año>
+    <genero>Realismo mágico</genero>
+    <isbn>978-84-204-7036-9</isbn>
+    <precio moneda="EUR">18.50</precio>
+    <disponible>true</disponible>
+  </libro>
+</biblioteca>
+-->
+
+<!-- ========================================
+     EJEMPLO 6: Recetas de Cocina
+     Práctica con listas y elementos repetitivos
+     ======================================== -->
+<!--
+<?xml version="1.0" encoding="UTF-8"?>
+<recetario>
+  <receta dificultad="fácil" tiempo="30">
+    <nombre>Tortilla de Patatas</nombre>
+    <ingredientes>
+      <ingrediente cantidad="4" unidad="unidades">huevos</ingrediente>
+      <ingrediente cantidad="500" unidad="gramos">patatas</ingrediente>
+      <ingrediente cantidad="1" unidad="unidad">cebolla</ingrediente>
+      <ingrediente cantidad="100" unidad="ml">aceite de oliva</ingrediente>
+      <ingrediente>sal al gusto</ingrediente>
+    </ingredientes>
+    <pasos>
+      <paso numero="1">Pelar y cortar las patatas en láminas finas</paso>
+      <paso numero="2">Freír las patatas en aceite caliente</paso>
+      <paso numero="3">Batir los huevos y mezclar con las patatas</paso>
+      <paso numero="4">Cuajar en la sartén por ambos lados</paso>
+    </pasos>
+    <categoria>Plato principal</categoria>
+  </receta>
+  <receta dificultad="media" tiempo="45">
+    <nombre>Paella Valenciana</nombre>
+    <ingredientes>
+      <ingrediente cantidad="400" unidad="gramos">arroz</ingrediente>
+      <ingrediente cantidad="200" unidad="gramos">pollo</ingrediente>
+      <ingrediente cantidad="200" unidad="gramos">conejo</ingrediente>
+      <ingrediente cantidad="100" unidad="gramos">judías verdes</ingrediente>
+      <ingrediente cantidad="100" unidad="gramos">garrofó</ingrediente>
+      <ingrediente>azafrán</ingrediente>
+      <ingrediente>aceite de oliva</ingrediente>
+      <ingrediente>sal</ingrediente>
+    </ingredientes>
+    <pasos>
+      <paso numero="1">Dorar la carne en la paellera</paso>
+      <paso numero="2">Añadir las verduras y rehogar</paso>
+      <paso numero="3">Agregar el arroz y el caldo</paso>
+      <paso numero="4">Cocinar a fuego medio durante 20 minutos</paso>
+    </pasos>
+    <categoria>Plato principal</categoria>
+  </receta>
+</recetario>
+-->
+
+<!-- ========================================
+     EJEMPLO 7: Horario Escolar
+     Práctica con atributos múltiples
+     ======================================== -->
+<!--
+<?xml version="1.0" encoding="UTF-8"?>
+<horario curso="DAW1" grupo="A">
+  <dia nombre="Lunes">
+    <clase hora="08:00-09:00" asignatura="Programación" aula="201" profesor="Juan Pérez"/>
+    <clase hora="09:00-10:00" asignatura="Programación" aula="201" profesor="Juan Pérez"/>
+    <clase hora="10:00-11:00" asignatura="Lenguajes de Marcas" aula="202" profesor="Ana López"/>
+    <descanso hora="11:00-11:30"/>
+    <clase hora="11:30-12:30" asignatura="Bases de Datos" aula="203" profesor="Carlos Ruiz"/>
+    <clase hora="12:30-13:30" asignatura="Bases de Datos" aula="203" profesor="Carlos Ruiz"/>
+  </dia>
+  <dia nombre="Martes">
+    <clase hora="08:00-09:00" asignatura="Sistemas Informáticos" aula="204" profesor="María Sánchez"/>
+    <clase hora="09:00-10:00" asignatura="Sistemas Informáticos" aula="204" profesor="María Sánchez"/>
+    <clase hora="10:00-11:00" asignatura="Entornos de Desarrollo" aula="205" profesor="Luis Martín"/>
+    <descanso hora="11:00-11:30"/>
+    <clase hora="11:30-12:30" asignatura="Programación" aula="201" profesor="Juan Pérez"/>
+    <clase hora="12:30-13:30" asignatura="Programación" aula="201" profesor="Juan Pérez"/>
+  </dia>
+</horario>
+-->
+
+<!-- ========================================
+     EJEMPLO 8: Sistema de Pedidos
+     Uso de CDATA y comentarios
+     ======================================== -->
+<!--
+<?xml version="1.0" encoding="UTF-8"?>
+<pedidos>
+  <pedido id="P001" fecha="2026-02-07" estado="procesando">
+    <cliente>
+      <nombre>Juan Martínez</nombre>
+      <email>juan@example.com</email>
+      <direccion>Calle Mayor, 15, Madrid</direccion>
+    </cliente>
+    <productos>
+      <producto codigo="A001" cantidad="2" precio_unitario="799.99"/>
+      <producto codigo="A002" cantidad="1" precio_unitario="25.50"/>
+    </productos>
+    <total>1625.48</total>
+    <notas>
+      <![CDATA[
+        Cliente solicita entrega urgente.
+        Preferencia de horario: <mañana>
+        Teléfono de contacto: 600 123 456
+      ]]>
+    </notas>
+  </pedido>
+</pedidos>
+-->
+
+<!-- ========================================
+     EJERCICIO PROPUESTO 1: Árbol Genealógico
+     Crea un XML que represente tu árbol familiar
+     ======================================== -->
+<!--
+Estructura sugerida:
+- familia (raíz)
+  - persona (con atributos: nombre, sexo, fechaNacimiento)
+    - padre (referencia a otra persona)
+    - madre (referencia a otra persona)
+    - hijos
+      - hijo (referencia a persona)
+-->
+
+<!-- ========================================
+     EJERCICIO PROPUESTO 2: Lista de Películas
+     Crea un catálogo de tus películas favoritas
+     ======================================== -->
+<!--
+Estructura sugerida:
+- peliculas (raíz)
+  - pelicula (con atributos: id, año)
+    - titulo
+    - director
+    - genero
+    - duracion (en minutos)
+    - actores
+      - actor (múltiples)
+    - sinopsis (usar CDATA si contiene caracteres especiales)
+    - puntuacion (de 1 a 10)
+-->
+
+<!-- ========================================
+     EJERCICIO PROPUESTO 3: Inventario Personal
+     Crea un inventario de objetos de tu habitación
+     ======================================== -->
+<!--
+Estructura sugerida:
+- inventario (raíz)
+  - categoria (nombre: electrónica, libros, ropa, etc.)
+    - objeto (con atributos: id, fechaAdquisicion)
+      - nombre
+      - descripcion
+      - valor_estimado (moneda como atributo)
+      - estado (nuevo, usado, deteriorado)
+      - ubicacion
+-->
+
+<!-- ========================================
+     NOTAS IMPORTANTES PARA ESTUDIANTES
+     ======================================== -->
+<!--
+REGLAS DE ORO DEL XML BIEN FORMADO:
+
+1. ✅ Una única raíz
+2. ✅ Todas las etiquetas deben cerrarse
+3. ✅ Case sensitive: <Nombre> ≠ <nombre>
+4. ✅ Anidamiento correcto: <a><b></b></a> no <a><b></a></b>
+5. ✅ Atributos entre comillas: atributo="valor"
+6. ✅ No repetir atributos en el mismo elemento
+7. ✅ Nombres válidos: letra, _, : (no empezar con número o xml)
+
+CARACTERES ESPECIALES:
+- & (ampersand) se escribe como: &amp;
+- < (menor que) se escribe como: &lt;
+- > (mayor que) se escribe como: &gt;
+- " (comillas) se escribe como: &quot;
+- ' (apóstrofo) se escribe como: &apos;
+
+O usa CDATA para texto con estos caracteres:
+<![CDATA[texto con <, >, & sin escapar]]>
+
+COMENTARIOS:
+<!-- Este es un comentario en XML 
+-->
+
+<!-- ========================================
+     FIN DEL ARCHIVO DE EJEMPLOS
+     ======================================== -->

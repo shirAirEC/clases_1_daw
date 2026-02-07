@@ -1,0 +1,1382 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Definición de esquemas y vocabularios en XML — Clase 2</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/white.css" id="theme">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/monokai.css">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <!-- Indicador de progreso del estudiante -->
+    <div id="student-indicator" style="display: none; position: fixed; top: 20px; right: 20px; background: rgba(76,175,80,0.95); color: white; padding: 12px 20px; border-radius: 25px; font-size: 0.85em; font-weight: 600; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+      <span id="student-indicator-text">Conectado</span>
+    </div>
+
+    <div class="reveal">
+      <div class="slides">
+        
+        <!-- Slide 1 — Portada -->
+        <section data-background-gradient="linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
+          <h1 class="grad-text">Definición de esquemas y vocabularios en XML</h1>
+          <p class="subtitle" style="color: #0d47a1; font-size: 1.3em; background: transparent; padding: 15px 30px; border-radius: 0; display: inline-block; margin-top: 20px; text-shadow: 2px 2px 4px rgba(255,255,255,0.8);">Clase 2 (4 horas): DTD y XML Schema (XSD)</p>
+          <p style="color: #0d47a1; margin-top: 40px; font-size: 1em; background: transparent; padding: 15px 30px; border-radius: 0; display: inline-block;">
+            <span class="pill xml">Teoría DTD</span>
+            <span class="pill xml">Ejercicios DTD</span>
+            <span class="pill xml">Introducción XSD</span>
+          </p>
+          <aside class="notes">
+            Bienvenida a la segunda clase de XML. Esta sesión de 4 horas cubre DTD en profundidad e introduce XSD.
+            Prerrequisito: los estudiantes deben dominar XML bien formado de la Clase 1.
+            Presiona Ctrl+Shift+N para ver estas notas del presentador.
+          </aside>
+        </section>
+
+        <!-- Slide 2 — Objetivos de la clase -->
+        <section>
+          <h2><span class="icon">🎯</span>Objetivos de esta clase</h2>
+          <ul class="objetivos-lista">
+            <li class="fragment">✅ Entender qué es un DTD y para qué sirve</li>
+            <li class="fragment">✅ Diferenciar entre XML bien formado y XML válido</li>
+            <li class="fragment">✅ Declarar elementos, atributos y entidades en DTD</li>
+            <li class="fragment">✅ Crear DTDs internos y externos</li>
+            <li class="fragment">✅ Validar documentos XML contra un DTD</li>
+            <li class="fragment">✅ Conocer las diferencias entre DTD y XSD</li>
+            <li class="fragment">✅ Comprender cuándo usar DTD vs XSD</li>
+          </ul>
+          <aside class="notes">
+            Objetivos de aprendizaje de la Clase 2.
+            Enfatiza que hoy pasamos de "bien formado" a "válido".
+            DTD será el enfoque principal (2.5 horas), XSD es introducción (30 min).
+          </aside>
+        </section>
+
+        <!-- Slide 3 — Repaso rápido Clase 1 -->
+        <section data-background-color="#fff8f0">
+          <h2><span class="icon">📚</span>Repaso rápido: Clase 1</h2>
+          <div class="dos-columnas">
+            <div>
+              <h3 style="color: #667eea;">✅ Ya sabemos:</h3>
+              <ul style="font-size: 0.9em;">
+                <li>Estructura de XML (prólogo + raíz)</li>
+                <li>Elementos y jerarquías</li>
+                <li>Atributos</li>
+                <li>Comentarios y CDATA</li>
+                <li>Entidades predefinidas</li>
+                <li>Espacios de nombres</li>
+              </ul>
+            </div>
+            <div class="fragment">
+              <h3 style="color: #f5576c;">🆕 Hoy aprenderemos:</h3>
+              <ul style="font-size: 0.9em;">
+                <li>Cómo definir reglas para XML</li>
+                <li>Qué elementos y atributos son válidos</li>
+                <li>Qué contenido es permitido</li>
+                <li>Validar documentos contra esquemas</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout xml fragment" style="margin-top: 20px;">
+            <strong>🔑 Concepto clave:</strong> Bien formado = sintaxis correcta. Válido = cumple las reglas de un esquema (DTD o XSD).
+          </div>
+          <aside class="notes">
+            Repaso de 3-5 minutos de la clase anterior.
+            Pregunta a los estudiantes si recuerdan la diferencia entre bien formado y válido.
+            Este es el puente conceptual hacia DTD.
+          </aside>
+        </section>
+
+        <!--================================-->
+        <!-- BLOQUE 1: TEORÍA DTD          -->
+        <!--================================-->
+
+        <!-- Slide 4 — ¿Qué es un DTD? -->
+        <section data-background-color="#fff5f0">
+          <h2><span class="icon">📋</span>¿Qué es un DTD?</h2>
+          
+          <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin: 20px 0;">
+            <p style="font-size: 1.1em; line-height: 1.8;">
+              <strong>DTD</strong> significa <strong>Document Type Definition</strong> (Definición de Tipo de Documento).
+            </p>
+            <p style="font-size: 1em; line-height: 1.8; margin-top: 20px;">
+              Es un conjunto de <strong>reglas</strong> que define:
+            </p>
+            <ul style="font-size: 0.95em; margin-top: 15px;">
+              <li>Qué elementos pueden aparecer en el documento</li>
+              <li>En qué orden deben aparecer</li>
+              <li>Cuántas veces pueden repetirse</li>
+              <li>Qué atributos tiene cada elemento</li>
+              <li>Qué valores son válidos</li>
+            </ul>
+          </div>
+
+          <div class="callout xml fragment" style="margin-top: 20px;">
+            <strong>💡 Analogía:</strong> Si XML es un lenguaje, DTD es su gramática. Define las reglas sintácticas que debe seguir el documento.
+          </div>
+
+          <aside class="notes">
+            Introducción al concepto de DTD.
+            Enfatiza que DTD es como un contrato: define qué está permitido y qué no.
+            Un XML puede ser bien formado pero no válido según un DTD.
+          </aside>
+        </section>
+
+        <!-- Slide 5 — Bien formado vs Válido (ejemplo visual) -->
+        <section>
+          <h2><span class="icon">⚖️</span>Bien formado vs Válido</h2>
+          
+          <div class="dos-columnas">
+            <div style="background: #e8f5e9; padding: 25px; border-radius: 15px;">
+              <h3 style="color: #2e7d32;">✅ XML Bien Formado</h3>
+              <pre style="font-size: 0.6em;"><code class="language-xml">&lt;?xml version="1.0"?&gt;
+&lt;libro&gt;
+  &lt;titulo&gt;XML Básico&lt;/titulo&gt;
+  &lt;autor&gt;Juan Pérez&lt;/autor&gt;
+&lt;/libro&gt;</code></pre>
+              <p style="font-size: 0.85em; margin-top: 15px;">
+                ✓ Sintaxis correcta<br>
+                ✓ Etiquetas cerradas<br>
+                ✓ Una raíz
+              </p>
+            </div>
+            
+            <div class="fragment" style="background: #fff3e0; padding: 25px; border-radius: 15px;">
+              <h3 style="color: #e65100;">⚠️ ¿Es válido?</h3>
+              <p style="font-size: 0.9em; margin-top: 15px;">
+                Depende del DTD...
+              </p>
+              <p style="font-size: 0.85em; margin-top: 15px;">
+                Si el DTD dice:<br>
+                "libro debe tener un precio"<br>
+                → Este XML NO es válido
+              </p>
+              <p style="font-size: 0.85em; margin-top: 15px;">
+                Si el DTD dice:<br>
+                "libro solo necesita título y autor"<br>
+                → Este XML SÍ es válido
+              </p>
+            </div>
+          </div>
+
+          <aside class="notes">
+            Ejemplo visual de la diferencia entre bien formado y válido.
+            Un documento puede estar bien formado pero no ser válido según un DTD.
+            La validez depende de las reglas definidas en el DTD.
+          </aside>
+        </section>
+
+        <!-- Slide 6 — DTD Interno vs Externo -->
+        <section data-background-color="#f3f9ff">
+          <h2><span class="icon">📂</span>DTD Interno vs Externo</h2>
+          
+          <div class="dos-columnas">
+            <div>
+              <h3 style="color: #667eea;">📄 DTD Interno</h3>
+              <p style="font-size: 0.85em;">El DTD está dentro del mismo archivo XML</p>
+              <pre style="font-size: 0.5em;"><code class="language-xml">&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE libro [
+  &lt;!ELEMENT libro (titulo,autor)&gt;
+  &lt;!ELEMENT titulo (#PCDATA)&gt;
+  &lt;!ELEMENT autor (#PCDATA)&gt;
+]&gt;
+&lt;libro&gt;
+  &lt;titulo&gt;XML&lt;/titulo&gt;
+  &lt;autor&gt;Juan&lt;/autor&gt;
+&lt;/libro&gt;</code></pre>
+              <p style="font-size: 0.8em; margin-top: 10px;">
+                ✅ Todo en un archivo<br>
+                ❌ No reutilizable
+              </p>
+            </div>
+            
+            <div class="fragment">
+              <h3 style="color: #f5576c;">🔗 DTD Externo</h3>
+              <p style="font-size: 0.85em;">El DTD está en un archivo separado (.dtd)</p>
+              <pre style="font-size: 0.5em;"><code class="language-xml">&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE libro SYSTEM "libro.dtd"&gt;
+&lt;libro&gt;
+  &lt;titulo&gt;XML&lt;/titulo&gt;
+  &lt;autor&gt;Juan&lt;/autor&gt;
+&lt;/libro&gt;</code></pre>
+              <p style="font-size: 0.75em; margin-top: 10px; font-style: italic;">Archivo libro.dtd:</p>
+              <pre style="font-size: 0.5em;"><code class="language-dtd">&lt;!ELEMENT libro (titulo,autor)&gt;
+&lt;!ELEMENT titulo (#PCDATA)&gt;
+&lt;!ELEMENT autor (#PCDATA)&gt;</code></pre>
+              <p style="font-size: 0.8em; margin-top: 10px;">
+                ✅ Reutilizable<br>
+                ✅ Más organizado
+              </p>
+            </div>
+          </div>
+
+          <aside class="notes">
+            Diferencia entre DTD interno (dentro del XML) y externo (archivo separado).
+            En producción se usa más el externo porque es reutilizable.
+            SYSTEM indica archivo local, PUBLIC indica DTD público estándar.
+          </aside>
+        </section>
+
+        <!-- Slide 7 — Sintaxis básica: Declarar elementos -->
+        <section>
+          <h2><span class="icon">🔤</span>Declarar elementos en DTD</h2>
+          
+          <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            <h3 style="color: #667eea;">Sintaxis general:</h3>
+            <pre style="font-size: 0.8em;"><code class="language-dtd">&lt;!ELEMENT nombre-elemento contenido&gt;</code></pre>
+            
+            <h3 style="color: #667eea; margin-top: 25px;">Tipos de contenido:</h3>
+            <table style="width: 100%; font-size: 0.75em; margin-top: 15px;">
+              <tr style="background: #f5f5f5;">
+                <th style="padding: 10px; text-align: left;">Tipo</th>
+                <th style="padding: 10px; text-align: left;">Ejemplo</th>
+                <th style="padding: 10px; text-align: left;">Significado</th>
+              </tr>
+              <tr>
+                <td style="padding: 10px;"><code>#PCDATA</code></td>
+                <td style="padding: 10px;"><code>&lt;!ELEMENT nombre (#PCDATA)&gt;</code></td>
+                <td style="padding: 10px;">Solo texto</td>
+              </tr>
+              <tr style="background: #fafafa;">
+                <td style="padding: 10px;"><code>EMPTY</code></td>
+                <td style="padding: 10px;"><code>&lt;!ELEMENT br EMPTY&gt;</code></td>
+                <td style="padding: 10px;">Elemento vacío</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px;"><code>ANY</code></td>
+                <td style="padding: 10px;"><code>&lt;!ELEMENT div ANY&gt;</code></td>
+                <td style="padding: 10px;">Cualquier contenido</td>
+              </tr>
+              <tr style="background: #fafafa;">
+                <td style="padding: 10px;">Hijos</td>
+                <td style="padding: 10px;"><code>&lt;!ELEMENT libro (titulo,autor)&gt;</code></td>
+                <td style="padding: 10px;">Elementos hijos específicos</td>
+              </tr>
+            </table>
+          </div>
+
+          <aside class="notes">
+            Sintaxis para declarar elementos en DTD.
+            #PCDATA = Parsed Character Data (texto que puede contener entidades).
+            EMPTY para elementos vacíos como br, img, etc.
+            ANY es poco restrictivo, se usa raramente en producción.
+          </aside>
+        </section>
+
+        <!-- Slide 8 — Operadores de secuencia -->
+        <section data-background-color="#fff5f0">
+          <h2><span class="icon">🔢</span>Operadores de secuencia y repetición</h2>
+          
+          <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            <table style="width: 100%; font-size: 0.8em;">
+              <tr style="background: #667eea; color: white;">
+                <th style="padding: 12px;">Operador</th>
+                <th style="padding: 12px;">Significado</th>
+                <th style="padding: 12px;">Ejemplo</th>
+              </tr>
+              <tr>
+                <td style="padding: 10px; text-align: center;"><code>,</code></td>
+                <td style="padding: 10px;">Secuencia (en ese orden)</td>
+                <td style="padding: 10px;"><code>(titulo, autor)</code></td>
+              </tr>
+              <tr style="background: #f5f5f5;">
+                <td style="padding: 10px; text-align: center;"><code>|</code></td>
+                <td style="padding: 10px;">Alternativa (uno u otro)</td>
+                <td style="padding: 10px;"><code>(email | telefono)</code></td>
+              </tr>
+              <tr>
+                <td style="padding: 10px; text-align: center;"><code>?</code></td>
+                <td style="padding: 10px;">Opcional (0 o 1 vez)</td>
+                <td style="padding: 10px;"><code>subtitulo?</code></td>
+              </tr>
+              <tr style="background: #f5f5f5;">
+                <td style="padding: 10px; text-align: center;"><code>*</code></td>
+                <td style="padding: 10px;">Cero o más veces</td>
+                <td style="padding: 10px;"><code>comentario*</code></td>
+              </tr>
+              <tr>
+                <td style="padding: 10px; text-align: center;"><code>+</code></td>
+                <td style="padding: 10px;">Una o más veces</td>
+                <td style="padding: 10px;"><code>capitulo+</code></td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="callout xml fragment" style="margin-top: 20px;">
+            <strong>💡 Ejemplo completo:</strong> <code>&lt;!ELEMENT libro (titulo, autor+, capitulo*, precio?)&gt;</code><br>
+            Significa: título (obligatorio), uno o más autores, cero o más capítulos, precio opcional.
+          </div>
+
+          <aside class="notes">
+            Operadores para controlar la secuencia y cantidad de elementos.
+            Estos operadores son similares a expresiones regulares.
+            Practica con ejemplos: un libro con título, múltiples autores, capítulos opcionales.
+          </aside>
+        </section>
+
+        <!-- Slide 9 — Ejemplo completo de elementos -->
+        <section>
+          <h2><span class="icon">📖</span>Ejemplo completo: Biblioteca</h2>
+          
+          <div class="dos-columnas">
+            <div>
+              <h3 style="color: #667eea;">DTD:</h3>
+              <pre style="font-size: 0.55em;"><code class="language-dtd">&lt;!ELEMENT biblioteca (libro+)&gt;
+&lt;!ELEMENT libro (titulo, autor+, editorial, año, precio?)&gt;
+&lt;!ELEMENT titulo (#PCDATA)&gt;
+&lt;!ELEMENT autor (#PCDATA)&gt;
+&lt;!ELEMENT editorial (#PCDATA)&gt;
+&lt;!ELEMENT año (#PCDATA)&gt;
+&lt;!ELEMENT precio (#PCDATA)&gt;</code></pre>
+            </div>
+            
+            <div class="fragment">
+              <h3 style="color: #f5576c;">XML válido:</h3>
+              <pre style="font-size: 0.5em;"><code class="language-xml">&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE biblioteca SYSTEM "biblioteca.dtd"&gt;
+&lt;biblioteca&gt;
+  &lt;libro&gt;
+    &lt;titulo&gt;Aprendiendo XML&lt;/titulo&gt;
+    &lt;autor&gt;María García&lt;/autor&gt;
+    &lt;autor&gt;Pedro López&lt;/autor&gt;
+    &lt;editorial&gt;TechBooks&lt;/editorial&gt;
+    &lt;año&gt;2026&lt;/año&gt;
+    &lt;precio&gt;29.99&lt;/precio&gt;
+  &lt;/libro&gt;
+&lt;/biblioteca&gt;</code></pre>
+            </div>
+          </div>
+
+          <div class="callout xml fragment" style="margin-top: 20px;">
+            <strong>✅ Este XML es válido porque:</strong> Tiene al menos un libro, con título, al menos un autor, editorial, año, y opcionalmente precio.
+          </div>
+
+          <aside class="notes">
+            Ejemplo completo de DTD con elementos.
+            Nota el uso de autor+ (uno o más autores).
+            precio? es opcional (algunos libros pueden no tener precio público).
+            Pregunta a los estudiantes: ¿Sería válido sin precio? Sí. ¿Sin autor? No.
+          </aside>
+        </section>
+
+        <!-- Slide 10 — Declarar atributos -->
+        <section data-background-color="#f3f9ff">
+          <h2><span class="icon">🏷️</span>Declarar atributos en DTD</h2>
+          
+          <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            <h3 style="color: #667eea;">Sintaxis:</h3>
+            <pre style="font-size: 0.75em;"><code class="language-dtd">&lt;!ATTLIST nombre-elemento
+  atributo1 tipo restricción
+  atributo2 tipo restricción
+&gt;</code></pre>
+
+            <h3 style="color: #667eea; margin-top: 25px;">Tipos de datos:</h3>
+            <ul style="font-size: 0.85em;">
+              <li><code>CDATA</code> - Texto sin procesar</li>
+              <li><code>ID</code> - Identificador único</li>
+              <li><code>IDREF</code> - Referencia a un ID</li>
+              <li><code>NMTOKEN</code> - Token sin espacios</li>
+              <li><code>(valor1|valor2|valor3)</code> - Lista de valores permitidos</li>
+            </ul>
+
+            <h3 style="color: #667eea; margin-top: 25px;">Restricciones:</h3>
+            <ul style="font-size: 0.85em;">
+              <li><code>#REQUIRED</code> - Obligatorio</li>
+              <li><code>#IMPLIED</code> - Opcional</li>
+              <li><code>#FIXED "valor"</code> - Valor fijo</li>
+              <li><code>"valor-por-defecto"</code> - Valor por defecto si no se especifica</li>
+            </ul>
+          </div>
+
+          <aside class="notes">
+            Declaración de atributos con ATTLIST.
+            CDATA es el tipo más común (cualquier texto).
+            ID debe ser único en todo el documento.
+            #REQUIRED vs #IMPLIED: obligatorio vs opcional.
+          </aside>
+        </section>
+
+        <!-- Slide 11 — Ejemplos de atributos -->
+        <section>
+          <h2><span class="icon">📝</span>Ejemplos de declaración de atributos</h2>
+          
+          <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            <pre style="font-size: 0.65em;"><code class="language-dtd">&lt;!-- Atributo obligatorio de tipo texto --&gt;
+&lt;!ATTLIST libro isbn CDATA #REQUIRED&gt;
+
+&lt;!-- Atributo opcional --&gt;
+&lt;!ATTLIST libro edicion CDATA #IMPLIED&gt;
+
+&lt;!-- Atributo con valor por defecto --&gt;
+&lt;!ATTLIST libro idioma CDATA "español"&gt;
+
+&lt;!-- Atributo con valores enumerados --&gt;
+&lt;!ATTLIST libro formato (papel|digital|audio) #REQUIRED&gt;
+
+&lt;!-- Atributo con valor fijo --&gt;
+&lt;!ATTLIST libro moneda CDATA #FIXED "EUR"&gt;
+
+&lt;!-- ID único --&gt;
+&lt;!ATTLIST libro id ID #REQUIRED&gt;</code></pre>
+          </div>
+
+          <div class="callout xml fragment" style="margin-top: 20px;">
+            <strong>🎯 Uso en XML:</strong> <code>&lt;libro isbn="978-84-9999-999-9" formato="digital" id="libro001"&gt;</code>
+          </div>
+
+          <aside class="notes">
+            Ejemplos prácticos de declaración de atributos.
+            isbn es obligatorio (todos los libros deben tenerlo).
+            formato usa enumeración (solo puede ser papel, digital o audio).
+            idioma tiene valor por defecto "español" si no se especifica.
+          </aside>
+        </section>
+
+        <!-- Slide 12 — Entidades en DTD -->
+        <section data-background-color="#fff5f0">
+          <h2><span class="icon">🔗</span>Entidades en DTD</h2>
+          
+          <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            <p style="font-size: 1em; margin-bottom: 20px;">
+              Las <strong>entidades</strong> permiten definir atajos reutilizables en el documento.
+            </p>
+
+            <h3 style="color: #667eea;">Entidad interna:</h3>
+            <pre style="font-size: 0.65em;"><code class="language-dtd">&lt;!ENTITY empresa "TechBooks Editorial S.L."&gt;
+&lt;!ENTITY email "contacto@techbooks.com"&gt;</code></pre>
+            <p style="font-size: 0.85em; margin-top: 10px;">Uso en XML: <code>&amp;empresa;</code> → TechBooks Editorial S.L.</p>
+
+            <h3 style="color: #667eea; margin-top: 25px;">Entidad externa:</h3>
+            <pre style="font-size: 0.65em;"><code class="language-dtd">&lt;!ENTITY copyright SYSTEM "copyright.txt"&gt;</code></pre>
+            <p style="font-size: 0.85em; margin-top: 10px;">Incluye el contenido de un archivo externo</p>
+          </div>
+
+          <div class="callout xml fragment" style="margin-top: 20px;">
+            <strong>💡 Ventaja:</strong> Si cambias el nombre de la empresa en el DTD, se actualiza en todos los XMLs que lo usen.
+          </div>
+
+          <aside class="notes">
+            Entidades para reutilizar contenido.
+            Similar a variables o constantes en programación.
+            Útil para textos que se repiten: nombres de empresas, avisos legales, etc.
+            Entidades externas permiten incluir archivos (cuidado con seguridad).
+          </aside>
+        </section>
+
+        <!-- Slide 13 — DTD completo: ejemplo integrado -->
+        <section>
+          <h2><span class="icon">🎯</span>Ejemplo DTD completo</h2>
+          
+          <div style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            <pre style="font-size: 0.5em;"><code class="language-dtd">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE catalogo [
+  &lt;!-- Definición de entidades --&gt;
+  &lt;!ENTITY empresa "TechBooks"&gt;
+  
+  &lt;!-- Definición de elementos --&gt;
+  &lt;!ELEMENT catalogo (libro+)&gt;
+  &lt;!ELEMENT libro (titulo, autor+, precio)&gt;
+  &lt;!ELEMENT titulo (#PCDATA)&gt;
+  &lt;!ELEMENT autor (#PCDATA)&gt;
+  &lt;!ELEMENT precio (#PCDATA)&gt;
+  
+  &lt;!-- Definición de atributos --&gt;
+  &lt;!ATTLIST libro
+    isbn CDATA #REQUIRED
+    formato (papel|digital|audio) "papel"
+    disponible (si|no) #REQUIRED
+  &gt;
+]&gt;
+
+&lt;catalogo&gt;
+  &lt;libro isbn="978-1-2345-6789-0" formato="digital" disponible="si"&gt;
+    &lt;titulo&gt;Aprende XML con &amp;empresa;&lt;/titulo&gt;
+    &lt;autor&gt;Ana Martínez&lt;/autor&gt;
+    &lt;precio&gt;24.99&lt;/precio&gt;
+  &lt;/libro&gt;
+&lt;/catalogo&gt;</code></pre>
+          </div>
+
+          <aside class="notes">
+            Ejemplo completo de DTD interno con entidades, elementos y atributos.
+            Nota el uso de &empresa; que se expande a "TechBooks".
+            Este es un ejemplo de DTD que podrías usar en producción.
+          </aside>
+        </section>
+
+        <!--================================-->
+        <!-- BLOQUE 2: EJERCICIOS DTD      -->
+        <!--================================-->
+
+        <!-- Slide 14 — Inicio Ejercicios DTD -->
+        <section data-background-gradient="linear-gradient(135deg, #f093fb 0%, #f5576c 100%)">
+          <h2><span class="icon">💻</span>Sesión práctica: Ejercicios DTD</h2>
+          <div class="taller-box">
+            <h3>Ahora es tu turno de crear DTDs:</h3>
+            <ul style="font-size: 1em;">
+              <li>📝 5 ejercicios prácticos progresivos</li>
+              <li>🔍 Validadores integrados en algunos ejercicios</li>
+              <li>🎯 Aplicarás todo lo aprendido sobre DTD</li>
+            </ul>
+          </div>
+          
+          <aside class="notes">
+            INICIO DEL BLOQUE DE EJERCICIOS.
+            Los estudiantes aplicarán los conceptos de DTD aprendidos.
+            Circula por el aula para ayudar individualmente.
+          </aside>
+        </section>
+
+        <!-- Slide 15 — Ejercicio 1: Analizar DTD -->
+        <section data-background-color="#f3f9ff">
+          <h2><span class="icon">📝</span>Ejercicio 1 — Analizar un DTD</h2>
+          
+          <div class="ejercicio-box">
+            <h3>DTD a analizar:</h3>
+            <pre style="font-size: 0.55em;"><code class="language-dtd">&lt;!ELEMENT tienda (producto+)&gt;
+&lt;!ELEMENT producto (nombre, descripcion?, precio)&gt;
+&lt;!ELEMENT nombre (#PCDATA)&gt;
+&lt;!ELEMENT descripcion (#PCDATA)&gt;
+&lt;!ELEMENT precio (#PCDATA)&gt;
+
+&lt;!ATTLIST producto
+  id ID #REQUIRED
+  categoria (electronicos|ropa|alimentos) #REQUIRED
+  stock CDATA #IMPLIED
+&gt;</code></pre>
+          </div>
+          
+          <div style="background: white; padding: 25px; border-radius: 15px; margin-top: 20px;">
+            <h3>Responde:</h3>
+            <ol style="font-size: 0.9em;">
+              <li>¿Cuál es el elemento raíz según este DTD?</li>
+              <li>¿Cuántos productos mínimo debe tener la tienda?</li>
+              <li>¿La descripción es obligatoria u opcional?</li>
+              <li>¿Qué atributos son obligatorios para producto?</li>
+              <li>¿Qué valores puede tener el atributo categoria?</li>
+            </ol>
+          </div>
+
+          <aside class="notes">
+            Ejercicio 1: Análisis de DTD.
+            RESPUESTAS:
+            1. tienda
+            2. Al menos 1 (producto+)
+            3. Opcional (descripcion?)
+            4. id y categoria (#REQUIRED)
+            5. electronicos, ropa o alimentos
+          </aside>
+        </section>
+
+        <!-- Slide 16 — Ejercicio 2: Crear DTD simple -->
+        <section data-background-color="#f3f9ff">
+          <h2><span class="icon">✏️</span>Ejercicio 2 — Crear un DTD simple</h2>
+          
+          <div class="ejercicio-box">
+            <h3>Situación:</h3>
+            <p style="font-size: 0.95em;">Necesitas crear un DTD para este XML:</p>
+            <pre style="font-size: 0.6em;"><code class="language-xml">&lt;?xml version="1.0"?&gt;
+&lt;receta&gt;
+  &lt;nombre&gt;Paella Valenciana&lt;/nombre&gt;
+  &lt;ingrediente&gt;Arroz&lt;/ingrediente&gt;
+  &lt;ingrediente&gt;Pollo&lt;/ingrediente&gt;
+  &lt;ingrediente&gt;Azafrán&lt;/ingrediente&gt;
+  &lt;tiempo&gt;45 minutos&lt;/tiempo&gt;
+&lt;/receta&gt;</code></pre>
+          </div>
+          
+          <div style="background: white; padding: 25px; border-radius: 15px; margin-top: 20px;">
+            <h3>Tu tarea:</h3>
+            <p>Escribe el DTD que valide este XML. Considera:</p>
+            <ul style="font-size: 0.9em;">
+              <li>Una receta tiene: nombre, uno o más ingredientes, tiempo</li>
+              <li>Todos los elementos contienen solo texto</li>
+            </ul>
+          </div>
+
+          <aside class="notes">
+            Ejercicio 2: Crear DTD para XML de recetas.
+            SOLUCIÓN:
+            &lt;!ELEMENT receta (nombre, ingrediente+, tiempo)&gt;
+            &lt;!ELEMENT nombre (#PCDATA)&gt;
+            &lt;!ELEMENT ingrediente (#PCDATA)&gt;
+            &lt;!ELEMENT tiempo (#PCDATA)&gt;
+          </aside>
+        </section>
+
+        <!-- Slide 17 — Ejercicio 3: DTD con atributos -->
+        <section data-background-color="#f3f9ff">
+          <h2><span class="icon">🏷️</span>Ejercicio 3 — DTD con atributos</h2>
+          
+          <div class="ejercicio-box">
+            <h3>Situación:</h3>
+            <p style="font-size: 0.95em;">Crea un DTD para gestionar una agenda de contactos:</p>
+            <ul style="font-size: 0.9em;">
+              <li>Elemento raíz: <code>agenda</code></li>
+              <li>Contiene uno o más elementos <code>contacto</code></li>
+              <li>Cada contacto tiene: <code>nombre</code> y <code>telefono</code></li>
+              <li>El contacto debe tener atributo <code>id</code> (único, obligatorio)</li>
+              <li>El contacto puede tener atributo <code>tipo</code> con valores: "personal", "trabajo", "familia"</li>
+            </ul>
+          </div>
+          
+          <div style="background: white; padding: 25px; border-radius: 15px; margin-top: 20px;">
+            <h3>Escribe el DTD completo</h3>
+            <p style="font-size: 0.85em; font-style: italic;">Incluye declaración de elementos y atributos</p>
+          </div>
+
+          <aside class="notes">
+            Ejercicio 3: DTD con atributos obligatorios y enumerados.
+            SOLUCIÓN:
+            &lt;!ELEMENT agenda (contacto+)&gt;
+            &lt;!ELEMENT contacto (nombre, telefono)&gt;
+            &lt;!ELEMENT nombre (#PCDATA)&gt;
+            &lt;!ELEMENT telefono (#PCDATA)&gt;
+            &lt;!ATTLIST contacto
+              id ID #REQUIRED
+              tipo (personal|trabajo|familia) #IMPLIED
+            &gt;
+          </aside>
+        </section>
+
+        <!-- Slide 18 — Ejercicio 4: Validar XML contra DTD -->
+        <section data-background-color="#f3f9ff">
+          <h2><span class="icon">🔍</span>Ejercicio 4 — ¿Es válido este XML?</h2>
+          
+          <div class="dos-columnas">
+            <div>
+              <h3 style="font-size: 1em;">DTD:</h3>
+              <pre style="font-size: 0.45em;"><code class="language-dtd">&lt;!ELEMENT curso (titulo, profesor, estudiante+)&gt;
+&lt;!ELEMENT titulo (#PCDATA)&gt;
+&lt;!ELEMENT profesor (#PCDATA)&gt;
+&lt;!ELEMENT estudiante (#PCDATA)&gt;
+&lt;!ATTLIST curso
+  codigo CDATA #REQUIRED
+  nivel (basico|intermedio|avanzado) "basico"
+&gt;</code></pre>
+            </div>
+            
+            <div>
+              <h3 style="font-size: 1em;">XML:</h3>
+              <pre style="font-size: 0.45em;"><code class="language-xml">&lt;curso codigo="XML101"&gt;
+  &lt;titulo&gt;XML Básico&lt;/titulo&gt;
+  &lt;profesor&gt;Ana López&lt;/profesor&gt;
+&lt;/curso&gt;</code></pre>
+            </div>
+          </div>
+          
+          <div style="background: white; padding: 25px; border-radius: 15px; margin-top: 20px;">
+            <h3>Pregunta:</h3>
+            <p style="font-size: 1em;">¿Este XML es válido según el DTD? ¿Por qué sí o por qué no?</p>
+          </div>
+
+          <aside class="notes">
+            Ejercicio 4: Validación mental de XML contra DTD.
+            RESPUESTA: NO es válido.
+            Falta al menos un elemento &lt;estudiante&gt; (estudiante+ significa uno o más).
+            El curso está bien formado pero no cumple el DTD.
+          </aside>
+        </section>
+
+        <!-- Slide 19 — Ejercicio 5: Corregir XML inválido -->
+        <section data-background-color="#f3f9ff">
+          <h2><span class="icon">🔧</span>Ejercicio 5 — Corregir XML inválido</h2>
+          
+          <div class="ejercicio-box">
+            <h3>DTD:</h3>
+            <pre style="font-size: 0.5em;"><code class="language-dtd">&lt;!ELEMENT menu (plato+)&gt;
+&lt;!ELEMENT plato (nombre, ingredientes, precio)&gt;
+&lt;!ELEMENT nombre (#PCDATA)&gt;
+&lt;!ELEMENT ingredientes (ingrediente+)&gt;
+&lt;!ELEMENT ingrediente (#PCDATA)&gt;
+&lt;!ELEMENT precio (#PCDATA)&gt;
+&lt;!ATTLIST plato tipo (entrante|principal|postre) #REQUIRED&gt;</code></pre>
+
+            <h3 style="margin-top: 20px;">XML (con errores):</h3>
+            <pre style="font-size: 0.5em;"><code class="language-xml">&lt;menu&gt;
+  &lt;plato&gt;
+    &lt;nombre&gt;Ensalada César&lt;/nombre&gt;
+    &lt;ingredientes&gt;
+      &lt;ingrediente&gt;Lechuga&lt;/ingrediente&gt;
+    &lt;/ingredientes&gt;
+    &lt;precio&gt;8.50&lt;/precio&gt;
+  &lt;/plato&gt;
+&lt;/menu&gt;</code></pre>
+          </div>
+          
+          <div style="background: white; padding: 25px; border-radius: 15px; margin-top: 20px;">
+            <h3>Tu tarea:</h3>
+            <p>Identifica qué falta y corrígelo para que sea válido según el DTD.</p>
+          </div>
+
+          <aside class="notes">
+            Ejercicio 5: Identificar y corregir errores de validación.
+            ERROR: Falta el atributo "tipo" que es #REQUIRED.
+            SOLUCIÓN: Añadir tipo="entrante" (o principal/postre) al elemento plato.
+            &lt;plato tipo="entrante"&gt;
+          </aside>
+        </section>
+
+        <!--================================-->
+        <!-- BLOQUE 3: INTRODUCCIÓN XSD    -->
+        <!--================================-->
+
+        <!-- Slide 20 — ¿Qué es XML Schema (XSD)? -->
+        <section data-background-gradient="linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
+          <h2 style="color: #0d47a1 !important; text-shadow: 2px 2px 4px rgba(255,255,255,0.8);">
+            <span class="icon">🆕</span>Introducción a XML Schema (XSD)
+          </h2>
+          
+          <div style="background: rgba(255,255,255,0.95); padding: 30px; border-radius: 15px; margin: 30px 0;">
+            <p style="font-size: 1.1em; line-height: 1.8; color: #333;">
+              <strong>XSD (XML Schema Definition)</strong> es la evolución de DTD.<br>
+              Es el método recomendado actualmente por el W3C para validar XML.
+            </p>
+            
+            <h3 style="color: #667eea; margin-top: 25px;">Características principales:</h3>
+            <ul style="font-size: 0.95em; color: #333;">
+              <li>✅ Usa sintaxis XML (más fácil de aprender y procesar)</li>
+              <li>✅ Soporta tipos de datos específicos (enteros, fechas, booleanos...)</li>
+              <li>✅ Permite restricciones avanzadas (rangos, patrones, longitudes)</li>
+              <li>✅ Soporta espacios de nombres</li>
+              <li>✅ Más potente y expresivo que DTD</li>
+            </ul>
+          </div>
+
+          <aside class="notes">
+            Introducción a XSD como evolución de DTD.
+            XSD es más complejo pero mucho más potente.
+            En esta clase solo veremos introducción, la Clase 3 será completa sobre XSD.
+          </aside>
+        </section>
+
+        <!-- Slide 21 — DTD vs XSD: Comparación -->
+        <section>
+          <h2><span class="icon">⚖️</span>DTD vs XSD: Diferencias clave</h2>
+          
+          <table style="width: 100%; font-size: 0.75em; border-collapse: collapse;">
+            <tr style="background: #667eea; color: white;">
+              <th style="padding: 15px; text-align: left;">Característica</th>
+              <th style="padding: 15px;">DTD</th>
+              <th style="padding: 15px;">XSD</th>
+            </tr>
+            <tr>
+              <td style="padding: 12px; border-bottom: 1px solid #ddd;"><strong>Sintaxis</strong></td>
+              <td style="padding: 12px; border-bottom: 1px solid #ddd;">No es XML (sintaxis SGML)</td>
+              <td style="padding: 12px; border-bottom: 1px solid #ddd; background: #e8f5e9;">✅ Es XML</td>
+            </tr>
+            <tr>
+              <td style="padding: 12px; border-bottom: 1px solid #ddd;"><strong>Tipos de datos</strong></td>
+              <td style="padding: 12px; border-bottom: 1px solid #ddd;">Solo texto (#PCDATA)</td>
+              <td style="padding: 12px; border-bottom: 1px solid #ddd; background: #e8f5e9;">✅ Muchos tipos (int, date, boolean...)</td>
+            </tr>
+            <tr>
+              <td style="padding: 12px; border-bottom: 1px solid #ddd;"><strong>Restricciones</strong></td>
+              <td style="padding: 12px; border-bottom: 1px solid #ddd;">Limitadas</td>
+              <td style="padding: 12px; border-bottom: 1px solid #ddd; background: #e8f5e9;">✅ Avanzadas (min, max, pattern...)</td>
+            </tr>
+            <tr>
+              <td style="padding: 12px; border-bottom: 1px solid #ddd;"><strong>Namespaces</strong></td>
+              <td style="padding: 12px; border-bottom: 1px solid #ddd;">No soporta</td>
+              <td style="padding: 12px; border-bottom: 1px solid #ddd; background: #e8f5e9;">✅ Soporta completamente</td>
+            </tr>
+            <tr>
+              <td style="padding: 12px; border-bottom: 1px solid #ddd;"><strong>Complejidad</strong></td>
+              <td style="padding: 12px; border-bottom: 1px solid #ddd; background: #e8f5e9;">✅ Simple y ligero</td>
+              <td style="padding: 12px; border-bottom: 1px solid #ddd;">Más complejo</td>
+            </tr>
+            <tr>
+              <td style="padding: 12px;"><strong>Uso actual</strong></td>
+              <td style="padding: 12px;">Legacy / documentos simples</td>
+              <td style="padding: 12px; background: #e8f5e9;">✅ Recomendado por W3C</td>
+            </tr>
+          </table>
+
+          <aside class="notes">
+            Tabla comparativa entre DTD y XSD.
+            DTD es más simple pero limitado.
+            XSD es el estándar moderno, especialmente para aplicaciones empresariales.
+          </aside>
+        </section>
+
+        <!-- Slide 22 — Ejemplo básico de XSD -->
+        <section data-background-color="#f3f9ff">
+          <h2><span class="icon">📄</span>Ejemplo básico: DTD vs XSD</h2>
+          
+          <div class="dos-columnas">
+            <div>
+              <h3 style="font-size: 0.95em;">DTD:</h3>
+              <pre style="font-size: 0.5em;"><code class="language-dtd">&lt;!ELEMENT libro (titulo, autor, año)&gt;
+&lt;!ELEMENT titulo (#PCDATA)&gt;
+&lt;!ELEMENT autor (#PCDATA)&gt;
+&lt;!ELEMENT año (#PCDATA)&gt;
+
+&lt;!ATTLIST libro
+  isbn CDATA #REQUIRED
+&gt;</code></pre>
+            </div>
+            
+            <div>
+              <h3 style="font-size: 0.95em;">XSD equivalente:</h3>
+              <pre style="font-size: 0.45em;"><code class="language-xml">&lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"&gt;
+  
+  &lt;xs:element name="libro"&gt;
+    &lt;xs:complexType&gt;
+      &lt;xs:sequence&gt;
+        &lt;xs:element name="titulo" type="xs:string"/&gt;
+        &lt;xs:element name="autor" type="xs:string"/&gt;
+        &lt;xs:element name="año" type="xs:integer"/&gt;
+      &lt;/xs:sequence&gt;
+      &lt;xs:attribute name="isbn" type="xs:string" use="required"/&gt;
+    &lt;/xs:complexType&gt;
+  &lt;/xs:element&gt;
+  
+&lt;/xs:schema&gt;</code></pre>
+            </div>
+          </div>
+
+          <div class="callout xml fragment" style="margin-top: 20px;">
+            <strong>🎯 Ventaja de XSD:</strong> Nota que "año" es de tipo <code>xs:integer</code>. XSD validará que sea un número, mientras que DTD aceptaría cualquier texto.
+          </div>
+
+          <aside class="notes">
+            Comparación lado a lado de DTD vs XSD.
+            XSD es más verboso pero más preciso.
+            Nota el tipo xs:integer para año - DTD no puede hacer esto.
+            La próxima clase (Clase 3) profundizaremos en XSD.
+          </aside>
+        </section>
+
+        <!-- Slide 23 — Tipos de datos en XSD -->
+        <section>
+          <h2><span class="icon">🔢</span>Tipos de datos en XSD (preview)</h2>
+          
+          <div style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            <p style="font-size: 0.9em; margin-bottom: 15px;">XSD incluye más de 40 tipos de datos predefinidos:</p>
+            
+            <div class="dos-columnas" style="font-size: 0.8em;">
+              <div>
+                <h4 style="color: #667eea; font-size: 1em;">Texto:</h4>
+                <ul style="font-size: 0.95em;">
+                  <li><code>xs:string</code> - Cadena de texto</li>
+                  <li><code>xs:token</code> - Texto sin espacios extra</li>
+                  <li><code>xs:normalizedString</code> - Normalizado</li>
+                </ul>
+                
+                <h4 style="color: #667eea; margin-top: 15px; font-size: 1em;">Numéricos:</h4>
+                <ul style="font-size: 0.95em;">
+                  <li><code>xs:integer</code> - Entero</li>
+                  <li><code>xs:decimal</code> - Decimal</li>
+                  <li><code>xs:float</code>, <code>xs:double</code> - Reales</li>
+                </ul>
+              </div>
+              
+              <div>
+                <h4 style="color: #667eea; font-size: 1em;">Fecha/Hora:</h4>
+                <ul style="font-size: 0.95em;">
+                  <li><code>xs:date</code> - Fecha (YYYY-MM-DD)</li>
+                  <li><code>xs:time</code> - Hora (HH:MM:SS)</li>
+                  <li><code>xs:dateTime</code> - Fecha y hora</li>
+                </ul>
+                
+                <h4 style="color: #667eea; margin-top: 15px; font-size: 1em;">Otros:</h4>
+                <ul style="font-size: 0.95em;">
+                  <li><code>xs:boolean</code> - true/false</li>
+                  <li><code>xs:anyURI</code> - URL</li>
+                  <li><code>xs:base64Binary</code> - Binario</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="callout xml fragment" style="margin-top: 15px;">
+            <strong>📚 En la próxima clase:</strong> Veremos cómo usar estos tipos y crear tipos personalizados con restricciones.
+          </div>
+
+          <aside class="notes">
+            Vista previa de los tipos de datos de XSD.
+            Esta es solo una introducción, la Clase 3 será completa sobre XSD.
+            Enfatiza que DTD no tiene ninguno de estos tipos (todo es texto).
+          </aside>
+        </section>
+
+        <!-- Slide 24 — Cuándo usar DTD vs XSD -->
+        <section data-background-color="#fff8f0">
+          <h2><span class="icon">🤔</span>¿Cuándo usar DTD vs XSD?</h2>
+          
+          <div class="dos-columnas">
+            <div style="background: #fff3e0; padding: 20px; border-radius: 15px;">
+              <h3 style="color: #e65100; font-size: 1.1em;">📋 Usa DTD cuando:</h3>
+              <ul style="font-size: 0.8em;">
+                <li>✅ Necesitas algo simple y rápido</li>
+                <li>✅ El documento es muy básico</li>
+                <li>✅ Trabajas con sistemas legacy</li>
+                <li>✅ No necesitas validación de tipos</li>
+                <li>✅ El archivo debe ser ligero</li>
+              </ul>
+              <p style="font-size: 0.75em; margin-top: 10px; font-style: italic;">
+                Ejemplo: Configuraciones simples, prototipos, documentos internos pequeños.
+              </p>
+            </div>
+            
+            <div style="background: #e8f5e9; padding: 20px; border-radius: 15px;">
+              <h3 style="color: #2e7d32; font-size: 1.1em;">🎯 Usa XSD cuando:</h3>
+              <ul style="font-size: 0.8em;">
+                <li>✅ Necesitas validar tipos de datos</li>
+                <li>✅ Requieres restricciones avanzadas</li>
+                <li>✅ Trabajas con namespaces</li>
+                <li>✅ El proyecto es profesional/empresarial</li>
+                <li>✅ Necesitas documentación clara</li>
+              </ul>
+              <p style="font-size: 0.75em; margin-top: 10px; font-style: italic;">
+                Ejemplo: APIs, intercambio de datos B2B, aplicaciones empresariales, servicios web.
+              </p>
+            </div>
+          </div>
+
+          <div class="callout xml fragment" style="margin-top: 15px;">
+            <strong>💼 Recomendación:</strong> Para proyectos nuevos, usa XSD. Solo usa DTD si tienes razones específicas (simplicidad, compatibilidad).
+          </div>
+
+          <aside class="notes">
+            Guía práctica para decidir entre DTD y XSD.
+            En el mundo real moderno, XSD es el estándar.
+            DTD todavía se usa en sistemas legacy o para prototipos rápidos.
+          </aside>
+        </section>
+
+        <!--================================-->
+        <!-- BLOQUE EJERCICIOS XSD         -->
+        <!--================================-->
+
+        <!-- Slide 25 — Inicio Ejercicios XSD -->
+        <section data-background-gradient="linear-gradient(135deg, #f093fb 0%, #f5576c 100%)">
+          <h2 style="color: #0d47a1 !important; text-shadow: 2px 2px 4px rgba(255,255,255,0.8);">
+            <span class="icon">💻</span>Sesión práctica: Ejercicios XSD
+          </h2>
+          <div class="taller-box">
+            <h3>Ahora practiquemos con XML Schema:</h3>
+            <ul style="font-size: 1em;">
+              <li>📝 3 ejercicios introductorios de XSD</li>
+              <li>🔄 Conversión de DTD a XSD</li>
+              <li>🎯 Uso de tipos de datos específicos</li>
+            </ul>
+          </div>
+          
+          <aside class="notes">
+            INICIO DEL BLOQUE DE EJERCICIOS XSD.
+            Estos ejercicios son introductorios.
+            La Clase 3 tendrá ejercicios más avanzados de XSD.
+          </aside>
+        </section>
+
+        <!-- Slide 26 — Ejercicio 6: Convertir DTD a XSD -->
+        <section data-background-color="#f3f9ff">
+          <h2><span class="icon">🔄</span>Ejercicio 6 — Convertir DTD a XSD</h2>
+          
+          <div class="ejercicio-box">
+            <h3>DTD original:</h3>
+            <pre style="font-size: 0.6em;"><code class="language-dtd">&lt;!ELEMENT nota (para, de, asunto, mensaje)&gt;
+&lt;!ELEMENT para (#PCDATA)&gt;
+&lt;!ELEMENT de (#PCDATA)&gt;
+&lt;!ELEMENT asunto (#PCDATA)&gt;
+&lt;!ELEMENT mensaje (#PCDATA)&gt;
+&lt;!ATTLIST nota
+  prioridad (alta|media|baja) "media"
+&gt;</code></pre>
+          </div>
+          
+          <div style="background: white; padding: 20px; border-radius: 15px; margin-top: 15px;">
+            <h3>Tu tarea:</h3>
+            <p style="font-size: 0.9em;">Convierte este DTD a XSD. Considera:</p>
+            <ul style="font-size: 0.85em;">
+              <li>Usar <code>&lt;xs:element&gt;</code> para cada elemento</li>
+              <li>Usar <code>&lt;xs:sequence&gt;</code> para la secuencia</li>
+              <li>Usar <code>&lt;xs:attribute&gt;</code> para el atributo prioridad</li>
+              <li>Usar enumeración para los valores de prioridad</li>
+            </ul>
+          </div>
+
+          <aside class="notes">
+            Ejercicio 6: Conversión básica de DTD a XSD.
+            Este ejercicio introduce la sintaxis XSD básica.
+            
+            SOLUCIÓN (no mostrar):
+            &lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"&gt;
+              &lt;xs:element name="nota"&gt;
+                &lt;xs:complexType&gt;
+                  &lt;xs:sequence&gt;
+                    &lt;xs:element name="para" type="xs:string"/&gt;
+                    &lt;xs:element name="de" type="xs:string"/&gt;
+                    &lt;xs:element name="asunto" type="xs:string"/&gt;
+                    &lt;xs:element name="mensaje" type="xs:string"/&gt;
+                  &lt;/xs:sequence&gt;
+                  &lt;xs:attribute name="prioridad" default="media"&gt;
+                    &lt;xs:simpleType&gt;
+                      &lt;xs:restriction base="xs:string"&gt;
+                        &lt;xs:enumeration value="alta"/&gt;
+                        &lt;xs:enumeration value="media"/&gt;
+                        &lt;xs:enumeration value="baja"/&gt;
+                      &lt;/xs:restriction&gt;
+                    &lt;/xs:simpleType&gt;
+                  &lt;/xs:attribute&gt;
+                &lt;/xs:complexType&gt;
+              &lt;/xs:element&gt;
+            &lt;/xs:schema&gt;
+          </aside>
+        </section>
+
+        <!-- Slide 27 — Ejercicio 7: Usar tipos de datos específicos -->
+        <section data-background-color="#f3f9ff">
+          <h2><span class="icon">📊</span>Ejercicio 7 — Tipos de datos en XSD</h2>
+          
+          <div class="ejercicio-box">
+            <h3>XML de ejemplo:</h3>
+            <pre style="font-size: 0.55em;"><code class="language-xml">&lt;?xml version="1.0"?&gt;
+&lt;producto&gt;
+  &lt;nombre&gt;Laptop Dell&lt;/nombre&gt;
+  &lt;precio&gt;1299.99&lt;/precio&gt;
+  &lt;stock&gt;45&lt;/stock&gt;
+  &lt;disponible&gt;true&lt;/disponible&gt;
+  &lt;fecha_lanzamiento&gt;2026-01-15&lt;/fecha_lanzamiento&gt;
+&lt;/producto&gt;</code></pre>
+          </div>
+          
+          <div style="background: white; padding: 20px; border-radius: 15px; margin-top: 15px;">
+            <h3>Tu tarea:</h3>
+            <p style="font-size: 0.9em;">Crea un XSD que valide este XML usando los tipos correctos:</p>
+            <ul style="font-size: 0.85em;">
+              <li><code>nombre</code> → <code>xs:string</code></li>
+              <li><code>precio</code> → <code>xs:decimal</code></li>
+              <li><code>stock</code> → <code>xs:integer</code></li>
+              <li><code>disponible</code> → <code>xs:boolean</code></li>
+              <li><code>fecha_lanzamiento</code> → <code>xs:date</code></li>
+            </ul>
+          </div>
+
+          <aside class="notes">
+            Ejercicio 7: Usar tipos de datos específicos de XSD.
+            Este es uno de los mayores beneficios de XSD vs DTD.
+            
+            SOLUCIÓN (simplificada):
+            &lt;xs:element name="producto"&gt;
+              &lt;xs:complexType&gt;
+                &lt;xs:sequence&gt;
+                  &lt;xs:element name="nombre" type="xs:string"/&gt;
+                  &lt;xs:element name="precio" type="xs:decimal"/&gt;
+                  &lt;xs:element name="stock" type="xs:integer"/&gt;
+                  &lt;xs:element name="disponible" type="xs:boolean"/&gt;
+                  &lt;xs:element name="fecha_lanzamiento" type="xs:date"/&gt;
+                &lt;/xs:sequence&gt;
+              &lt;/xs:complexType&gt;
+            &lt;/xs:element&gt;
+          </aside>
+        </section>
+
+        <!-- Slide 28 — Ejercicio 8: Analizar XSD -->
+        <section data-background-color="#f3f9ff">
+          <h2><span class="icon">🔍</span>Ejercicio 8 — Analizar un XSD</h2>
+          
+          <div class="ejercicio-box">
+            <h3>XSD a analizar:</h3>
+            <pre style="font-size: 0.5em;"><code class="language-xml">&lt;xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;xs:element name="empleado"&gt;
+    &lt;xs:complexType&gt;
+      &lt;xs:sequence&gt;
+        &lt;xs:element name="nombre" type="xs:string"/&gt;
+        &lt;xs:element name="edad" type="xs:integer"/&gt;
+        &lt;xs:element name="salario" type="xs:decimal"/&gt;
+        &lt;xs:element name="email" type="xs:string"/&gt;
+      &lt;/xs:sequence&gt;
+      &lt;xs:attribute name="id" type="xs:string" use="required"/&gt;
+      &lt;xs:attribute name="departamento" type="xs:string" use="optional"/&gt;
+    &lt;/xs:complexType&gt;
+  &lt;/xs:element&gt;
+&lt;/xs:schema&gt;</code></pre>
+          </div>
+          
+          <div style="background: white; padding: 20px; border-radius: 15px; margin-top: 15px;">
+            <h3>Responde:</h3>
+            <ol style="font-size: 0.85em;">
+              <li>¿Cuál es el elemento raíz según este XSD?</li>
+              <li>¿Qué tipo de dato debe tener el elemento "edad"?</li>
+              <li>¿Qué atributos son obligatorios?</li>
+              <li>¿Cuál es la diferencia entre este XSD y un DTD equivalente?</li>
+            </ol>
+          </div>
+
+          <aside class="notes">
+            Ejercicio 8: Análisis de XSD.
+            RESPUESTAS:
+            1. empleado
+            2. xs:integer (número entero)
+            3. Solo "id" (use="required")
+            4. XSD especifica tipos de datos (integer, decimal), DTD solo podría usar #PCDATA
+            
+            Esto prepara para la Clase 3 donde veremos XSD en profundidad.
+          </aside>
+        </section>
+
+        <!--================================-->
+        <!-- BLOQUE 4: CUESTIONARIO        -->
+        <!--================================-->
+
+        <!-- Slide 29 — Inicio cuestionario -->
+        <section data-background-gradient="linear-gradient(135deg, #f5576c 0%, #f093fb 100%)">
+          <h2 style="color: #0d47a1 !important; text-shadow: 2px 2px 4px rgba(255,255,255,0.8);">
+            <span class="icon">📝</span>Cuestionario de Evaluación
+          </h2>
+          <div class="taller-box">
+            <h3>Evalúa lo aprendido sobre DTD y XSD:</h3>
+            <ul style="font-size: 1em;">
+              <li>📝 18 preguntas verdadero/falso</li>
+              <li>🎯 Cubre DTD y conceptos de XSD</li>
+              <li>📊 Tu puntuación se muestra en tiempo real</li>
+            </ul>
+          </div>
+          
+          <aside class="notes">
+            INICIO DEL CUESTIONARIO.
+            18 preguntas que cubren todos los conceptos de DTD y la introducción a XSD.
+            Las respuestas se guardan automáticamente en LocalStorage.
+          </aside>
+        </section>
+
+        <!-- Slide 30 — Cuestionario (18 preguntas) -->
+        <section data-background-color="#f3f9ff">
+          <h2><span class="icon">✍️</span>Cuestionario (18 preguntas)</h2>
+          <div class="preguntas-box" style="max-height: 550px; overflow-y: auto; padding: 20px;">
+            
+            <!-- Pregunta 1 -->
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">1. DTD significa "Document Type Definition".</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q1" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q1" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q1"></div>
+            </div>
+
+            <!-- Pregunta 2 -->
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">2. Un XML bien formado es automáticamente un XML válido.</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q2" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q2" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q2"></div>
+            </div>
+
+            <!-- Pregunta 3 -->
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">3. Los DTD internos se escriben dentro del archivo XML.</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q3" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q3" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q3"></div>
+            </div>
+
+            <!-- Pregunta 4 -->
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">4. #PCDATA significa "Parsed Character Data" (datos de caracteres procesados).</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q4" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q4" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q4"></div>
+            </div>
+
+            <!-- Pregunta 5 -->
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">5. El operador + en DTD significa "una o más veces".</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q5" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q5" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q5"></div>
+            </div>
+
+            <!-- Pregunta 6 -->
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">6. El operador ? en DTD significa "obligatorio".</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q6" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q6" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q6"></div>
+            </div>
+
+            <!-- Pregunta 7 -->
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">7. ATTLIST se usa para declarar atributos en DTD.</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q7" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q7" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q7"></div>
+            </div>
+
+            <!-- Pregunta 8 -->
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">8. #REQUIRED significa que un atributo es opcional.</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q8" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q8" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q8"></div>
+            </div>
+
+            <!-- Pregunta 9 -->
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">9. #IMPLIED significa que un atributo es opcional.</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q9" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q9" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q9"></div>
+            </div>
+
+            <!-- Pregunta 10 -->
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">10. Las entidades en DTD permiten definir atajos reutilizables.</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q10" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q10" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q10"></div>
+            </div>
+
+            <!-- Pregunta 11 -->
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">11. EMPTY indica que un elemento no puede tener contenido.</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q11" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q11" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q11"></div>
+            </div>
+
+            <!-- Pregunta 12 -->
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">12. El tipo de atributo ID debe ser único en todo el documento XML.</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q12" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q12" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q12"></div>
+            </div>
+
+            <!-- Pregunta 13 -->
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">13. XSD usa sintaxis XML mientras que DTD no.</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q13" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q13" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q13"></div>
+            </div>
+
+            <!-- Pregunta 14 -->
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">14. XSD soporta tipos de datos específicos como integer, date y boolean.</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q14" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q14" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q14"></div>
+            </div>
+
+            <!-- Pregunta 15 -->
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">15. DTD soporta tipos de datos específicos como integer y date.</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q15" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q15" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q15"></div>
+            </div>
+
+            <!-- Pregunta 16 -->
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">16. XSD es el método recomendado actualmente por el W3C para validar XML.</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q16" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q16" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q16"></div>
+            </div>
+
+            <!-- Pregunta 17 -->
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">17. El operador | en DTD indica alternativa (uno u otro elemento).</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q17" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q17" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q17"></div>
+            </div>
+
+            <!-- Pregunta 18 -->
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">18. Un documento puede tener tanto DTD interno como externo simultáneamente.</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q18" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q18" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q18"></div>
+            </div>
+
+          </div>
+          
+          <aside class="notes">
+            Cuestionario de 18 preguntas sobre DTD y XSD.
+            Las respuestas están en el archivo clase2_script.js.
+          </aside>
+        </section>
+
+        <!-- Slide 31 — Cierre y próxima clase -->
+        <section data-background-gradient="linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
+          <h2 style="color: #0d47a1 !important; text-shadow: 2px 2px 4px rgba(255,255,255,0.8);">🎉 ¡Fin de la Clase 2!</h2>
+          
+          <div style="background: rgba(255,255,255,0.95); padding: 30px; border-radius: 15px; margin: 30px 0;">
+            <h3 style="color: #667eea;">¿Qué hemos aprendido hoy?</h3>
+            <ul style="color: #333; font-size: 0.95em; line-height: 1.8;">
+              <li>✅ Qué es un DTD y para qué sirve</li>
+              <li>✅ Diferencia entre bien formado y válido</li>
+              <li>✅ Declarar elementos, atributos y entidades</li>
+              <li>✅ DTD interno vs externo</li>
+              <li>✅ Introducción a XSD y sus ventajas</li>
+            </ul>
+          </div>
+          
+          <div class="proxima-clase-box">
+            <h3>🔮 Próxima clase (Clase 3)</h3>
+            <p style="font-size: 1.1em; margin-top: 15px;">
+              <strong>XSD en profundidad</strong>
+            </p>
+            <ul style="font-size: 0.95em; margin-top: 15px; text-align: left; display: inline-block;">
+              <li>Tipos de datos simples y complejos</li>
+              <li>Restricciones avanzadas (facets)</li>
+              <li>Secuencias, elecciones y grupos</li>
+              <li>Ejercicios completos de XSD</li>
+            </ul>
+          </div>
+          
+          <aside class="notes">
+            Cierre de la Clase 2.
+            Recuerda a los estudiantes guardar sus DTDs creados.
+            La próxima clase será completa sobre XSD (4 horas).
+          </aside>
+        </section>
+
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/notes/notes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/highlight.js"></script>
+    <script src="clase2_script.js"></script>
+  </body>
+</html>

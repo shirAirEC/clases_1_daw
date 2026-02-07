@@ -1,0 +1,38 @@
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Carpetas de sistema
+.vscode/
+.idea/
+.cursor/
+.codex/
+.chocolatey/
+
+# Cache y temporales
+.cache/
+*.tmp
+*.temp
+~*
+
+# Node modules (si se añade en el futuro)
+node_modules/
+package-lock.json
+
+# Logs
+*.log
+npm-debug.log*
+
+# Archivos de respaldo
+*.bak
+*.backup
+*~
+
+# Archivos de entorno (si se añaden en el futuro)
+.env
+.env.local
+
+# Archivos de Windows
+*.lnk
+$RECYCLE.BIN/

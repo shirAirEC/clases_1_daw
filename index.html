@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Material de Clases - 1º DAW</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #8b5cf6 100%);
+      min-height: 100vh;
+      color: #333;
+      overflow-x: hidden;
+    }
+
+    /* Pantalla de inicio */
+    #home-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+    }
+
+    .home-container {
+      max-width: 1400px;
+      width: 100%;
+      text-align: center;
+      animation: fadeInUp 0.8s ease;
+    }
+
+    .home-header {
+      margin-bottom: 60px;
+    }
+
+    .home-header h1 {
+      font-size: 4.5em;
+      color: white;
+      font-weight: 800;
+      margin-bottom: 20px;
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      letter-spacing: -1px;
+    }
+
+    .home-header p {
+      font-size: 1.5em;
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 300;
+      margin-bottom: 10px;
+    }
+
+    .year-badge {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      color: white;
+      padding: 12px 30px;
+      border-radius: 50px;
+      font-size: 1.1em;
+      font-weight: 600;
+      margin-top: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .asignaturas-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+      gap: 40px;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .asignatura-btn {
+      position: relative;
+      background: rgba(255, 255, 255, 0.98);
+      border-radius: 30px;
+      padding: 60px 40px;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+      border: 3px solid rgba(255, 255, 255, 0.5);
+      overflow: hidden;
+      text-decoration: none;
+      display: block;
+    }
+
+    .asignatura-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .asignatura-btn:hover::before {
+      opacity: 1;
+    }
+
+    .asignatura-btn:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+      border-color: rgba(139, 92, 246, 0.5);
+    }
+
+    .asignatura-icon {
+      font-size: 5em;
+      margin-bottom: 25px;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+
+    .asignatura-btn:hover .asignatura-icon {
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    .asignatura-btn h2 {
+      font-size: 2.2em;
+      color: #1e293b;
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+
+    .asignatura-btn p {
+      font-size: 1.15em;
+      color: #64748b;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .clases-count {
+      display: inline-block;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      color: white;
+      padding: 10px 25px;
+      border-radius: 50px;
+      font-size: 0.95em;
+      font-weight: 600;
+      margin-top: 15px;
+    }
+
+    .coming-soon {
+      opacity: 0.7;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .coming-soon-badge {
+      background: linear-gradient(135deg, #f59e0b, #ef4444);
+      color: white;
+      padding: 8px 20px;
+      border-radius: 50px;
+      font-size: 0.9em;
+      font-weight: 600;
+      display: inline-block;
+      margin-top: 15px;
+    }
+
+    /* Secciones de clases */
+    .clases-screen {
+      display: none;
+      min-height: 100vh;
+      padding: 40px 20px 80px;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .clases-screen.active {
+      display: block;
+    }
+
+    .back-btn {
+      position: fixed;
+      top: 30px;
+      left: 30px;
+      background: rgba(255, 255, 255, 0.95);
+      color: #1e293b;
+      padding: 15px 30px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1em;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+      z-index: 1000;
+      border: 2px solid rgba(59, 130, 246, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .back-btn:hover {
+      transform: translateX(-5px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+      background: white;
+    }
+
+    .clases-header {
+      text-align: center;
+      max-width: 1000px;
+      margin: 80px auto 60px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 50px 40px;
+      border-radius: 30px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    }
+
+    .clases-header h1 {
+      font-size: 3.5em;
+      color: #1e293b;
+      margin-bottom: 20px;
+      font-weight: 800;
+    }
+
+    .clases-header p {
+      font-size: 1.3em;
+      color: #64748b;
+      font-weight: 400;
+    }
+
+    .clases-grid {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+      gap: 35px;
+      padding: 0 20px;
+    }
+
+    .clase-card {
+      background: white;
+      border-radius: 25px;
+      padding: 40px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 2px solid rgba(59, 130, 246, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .clase-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    }
+
+    .clase-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+      border-color: rgba(139, 92, 246, 0.3);
+    }
+
+    .clase-card.disabled {
+      opacity: 0.55;
+      filter: grayscale(40%);
+    }
+
+    .clase-card.disabled:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .clase-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .clase-numero {
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      color: white;
+      padding: 10px 22px;
+      border-radius: 50px;
+      font-size: 0.9em;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-badge {
+      padding: 8px 18px;
+      border-radius: 50px;
+      font-size: 0.85em;
+      font-weight: 600;
+    }
+
+    .status-disponible {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .status-proximamente {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .clase-card h3 {
+      font-size: 1.6em;
+      color: #1e293b;
+      margin-bottom: 15px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .clase-card p {
+      color: #64748b;
+      line-height: 1.7;
+      margin-bottom: 25px;
+      font-size: 1.05em;
+    }
+
+    .clase-stats {
+      display: flex;
+      gap: 15px;
+      margin: 25px 0;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f1f5f9;
+      padding: 10px 18px;
+      border-radius: 50px;
+      font-size: 0.95em;
+      color: #475569;
+      font-weight: 500;
+    }
+
+    .clase-temas {
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      padding: 25px;
+      border-radius: 20px;
+      margin: 25px 0;
+    }
+
+    .clase-temas h4 {
+      color: #3b82f6;
+      font-size: 1em;
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+
+    .clase-temas ul {
+      list-style: none;
+    }
+
+    .clase-temas li {
+      color: #64748b;
+      padding: 8px 0;
+      padding-left: 25px;
+      position: relative;
+      font-size: 0.95em;
+    }
+
+    .clase-temas li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: #8b5cf6;
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+
+    .btn-comenzar {
+      display: block;
+      width: 100%;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      color: white;
+      padding: 18px 35px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.1em;
+      text-align: center;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+      border: none;
+      cursor: pointer;
+      margin-top: 25px;
+    }
+
+    .btn-comenzar:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(59, 130, 246, 0.6);
+    }
+
+    .btn-comenzar:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .empty-state {
+      text-align: center;
+      background: white;
+      padding: 80px 40px;
+      border-radius: 30px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .empty-state-icon {
+      font-size: 6em;
+      margin-bottom: 30px;
+    }
+
+    .empty-state h3 {
+      font-size: 2em;
+      color: #1e293b;
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+
+    .empty-state p {
+      font-size: 1.2em;
+      color: #64748b;
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      color: white;
+      font-size: 0.95em;
+      margin-top: 60px;
+    }
+
+    footer a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+      transition: border-color 0.3s ease;
+    }
+
+    footer a:hover {
+      border-color: white;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .asignaturas-container {
+        grid-template-columns: 1fr;
+        max-width: 600px;
+      }
+
+      .clases-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .home-header h1 {
+        font-size: 2.5em;
+      }
+
+      .home-header p {
+        font-size: 1.2em;
+      }
+
+      .asignatura-btn {
+        padding: 40px 30px;
+      }
+
+      .asignatura-btn h2 {
+        font-size: 1.8em;
+      }
+
+      .clases-header h1 {
+        font-size: 2.5em;
+      }
+
+      .back-btn {
+        top: 20px;
+        left: 20px;
+        padding: 12px 20px;
+        font-size: 0.9em;
+      }
+    }
+
+    /* Decoración de fondo */
+    .bg-decoration {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .bg-circle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+      animation: float 20s infinite ease-in-out;
+    }
+
+    .bg-circle:nth-child(1) {
+      width: 300px;
+      height: 300px;
+      top: 10%;
+      left: 10%;
+      animation-delay: 0s;
+    }
+
+    .bg-circle:nth-child(2) {
+      width: 200px;
+      height: 200px;
+      top: 60%;
+      right: 15%;
+      animation-delay: 3s;
+    }
+
+    .bg-circle:nth-child(3) {
+      width: 150px;
+      height: 150px;
+      bottom: 20%;
+      left: 20%;
+      animation-delay: 6s;
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0) translateX(0);
+      }
+      33% {
+        transform: translateY(-30px) translateX(20px);
+      }
+      66% {
+        transform: translateY(20px) translateX(-20px);
+      }
+    }
+
+    .github-corner {
+      position: fixed;
+      top: 0;
+      right: 0;
+      z-index: 9999;
+    }
+
+    .github-corner svg {
+      fill: white;
+      color: rgba(59, 130, 246, 0.9);
+      width: 80px;
+      height: 80px;
+    }
+
+    .github-corner:hover .octo-arm {
+      animation: octocat-wave 560ms ease-in-out;
+    }
+
+    @keyframes octocat-wave {
+      0%, 100% { transform: rotate(0); }
+      20%, 60% { transform: rotate(-25deg); }
+      40%, 80% { transform: rotate(10deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-decoration">
+    <div class="bg-circle"></div>
+    <div class="bg-circle"></div>
+    <div class="bg-circle"></div>
+  </div>
+  
+  <!-- GitHub Corner -->
+  <a href="https://github.com/shirAirEC/presentaci-n_xml" class="github-corner" aria-label="Ver en GitHub" target="_blank">
+    <svg viewBox="0 0 250 250" style="position: absolute; top: 0; border: 0; right: 0;">
+      <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+      <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+      <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
+    </svg>
+  </a>
+
+  <!-- Pantalla de inicio -->
+  <div id="home-screen">
+    <div class="home-container">
+      <div class="home-header">
+        <h1>📚 Material de Clases</h1>
+        <p>Selecciona una asignatura para comenzar</p>
+        <div class="year-badge">1º Desarrollo de Aplicaciones Web</div>
+      </div>
+
+      <div class="asignaturas-container">
+        <!-- Lenguaje de Marcas -->
+        <a href="#lenguaje-marcas" class="asignatura-btn" onclick="showSection('lenguaje-marcas'); return false;">
+          <span class="asignatura-icon">📝</span>
+          <h2>Lenguaje de Marcas</h2>
+          <p>Aprende XML, DTD, XSD, XPath, XSLT y mucho más en este curso completo sobre lenguajes de marcado.</p>
+          <span class="clases-count">8 Clases · 2 Disponibles</span>
+        </a>
+
+        <!-- Bases de Datos -->
+        <div class="asignatura-btn coming-soon">
+          <span class="asignatura-icon">💾</span>
+          <h2>Bases de Datos</h2>
+          <p>Diseño, gestión y consulta de bases de datos relacionales y no relacionales.</p>
+          <span class="coming-soon-badge">🚧 Próximamente</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección Lenguaje de Marcas -->
+  <div id="lenguaje-marcas" class="clases-screen">
+    <a href="#" class="back-btn" onclick="showHome(); return false;">
+      <span>←</span>
+      <span>Volver al inicio</span>
+    </a>
+
+    <div class="clases-header">
+      <h1>📝 Lenguaje de Marcas</h1>
+      <p>Definición de esquemas y vocabularios en XML</p>
+    </div>
+
+    <div class="clases-grid">
+      <!-- Clase 1 -->
+      <div class="clase-card">
+        <div class="clase-header-row">
+          <span class="clase-numero">Clase 1</span>
+          <span class="status-badge status-disponible">✅ Disponible</span>
+        </div>
+        
+        <h3>Estructura y Sintaxis Básica de XML</h3>
+        <p>Aprende los fundamentos de XML: estructura jerárquica, elementos, atributos, comentarios, CDATA, entidades y espacios de nombres.</p>
+        
+        <div class="clase-stats">
+          <div class="stat">
+            <span>📄</span>
+            <span>39 slides</span>
+          </div>
+          <div class="stat">
+            <span>💻</span>
+            <span>6 ejercicios</span>
+          </div>
+          <div class="stat">
+            <span>📝</span>
+            <span>20 preguntas</span>
+          </div>
+        </div>
+
+        <div class="clase-temas">
+          <h4>📚 Contenido:</h4>
+          <ul>
+            <li>Prólogo y estructura de árbol</li>
+            <li>Etiquetas y elementos</li>
+            <li>Atributos y sus reglas</li>
+            <li>Comentarios y secciones CDATA</li>
+            <li>Referencias a entidades</li>
+            <li>Espacios de nombres</li>
+            <li>XML bien formado vs válido</li>
+          </ul>
+        </div>
+
+        <a href="clases/clase1.html" class="btn-comenzar">🚀 Comenzar Clase 1</a>
+      </div>
+
+      <!-- Clase 2 -->
+      <div class="clase-card">
+        <div class="clase-header-row">
+          <span class="clase-numero">Clase 2</span>
+          <span class="status-badge status-disponible">✅ Disponible</span>
+        </div>
+        
+        <h3>DTD y XML Schema (XSD)</h3>
+        <p>Pasa de XML bien formado a XML válido. Aprende a crear reglas con DTD, declarar elementos y atributos, y conoce las ventajas de XML Schema.</p>
+        
+        <div class="clase-stats">
+          <div class="stat">
+            <span>📄</span>
+            <span>31 slides</span>
+          </div>
+          <div class="stat">
+            <span>💻</span>
+            <span>8 ejercicios</span>
+          </div>
+          <div class="stat">
+            <span>📝</span>
+            <span>18 preguntas</span>
+          </div>
+        </div>
+
+        <div class="clase-temas">
+          <h4>📚 Contenido:</h4>
+          <ul>
+            <li>Qué es un DTD</li>
+            <li>Declaración de elementos y atributos</li>
+            <li>Operadores (+, *, ?, |)</li>
+            <li>Entidades en DTD</li>
+            <li>DTD interno vs externo</li>
+            <li>Introducción a XSD</li>
+            <li>DTD vs XSD</li>
+          </ul>
+        </div>
+
+        <a href="clases/clase2.html" class="btn-comenzar">🚀 Comenzar Clase 2</a>
+      </div>
+
+      <!-- Clase 3 -->
+      <div class="clase-card disabled">
+        <div class="clase-header-row">
+          <span class="clase-numero">Clase 3</span>
+          <span class="status-badge status-proximamente">🔜 Próximamente</span>
+        </div>
+        
+        <h3>XML Schema (XSD) en Profundidad</h3>
+        <p>Tipos simples y complejos, restricciones, secuencias y validación avanzada.</p>
+        
+        <button class="btn-comenzar" disabled>🔒 Próximamente</button>
+      </div>
+
+      <!-- Clase 4 -->
+      <div class="clase-card disabled">
+        <div class="clase-header-row">
+          <span class="clase-numero">Clase 4</span>
+          <span class="status-badge status-proximamente">🔜 Próximamente</span>
+        </div>
+        
+        <h3>XPath y Navegación de Documentos XML</h3>
+        <p>Aprende a navegar y consultar documentos XML usando expresiones XPath.</p>
+        
+        <button class="btn-comenzar" disabled>🔒 Próximamente</button>
+      </div>
+
+      <!-- Clase 5 -->
+      <div class="clase-card disabled">
+        <div class="clase-header-row">
+          <span class="clase-numero">Clase 5</span>
+          <span class="status-badge status-proximamente">🔜 Próximamente</span>
+        </div>
+        
+        <h3>XSLT: Transformaciones XML</h3>
+        <p>Transforma documentos XML en otros formatos usando XSLT.</p>
+        
+        <button class="btn-comenzar" disabled>🔒 Próximamente</button>
+      </div>
+
+      <!-- Clase 6 -->
+      <div class="clase-card disabled">
+        <div class="clase-header-row">
+          <span class="clase-numero">Clase 6</span>
+          <span class="status-badge status-proximamente">🔜 Próximamente</span>
+        </div>
+        
+        <h3>XML y Aplicaciones Web</h3>
+        <p>Procesamiento de XML en aplicaciones web modernas y APIs REST.</p>
+        
+        <button class="btn-comenzar" disabled>🔒 Próximamente</button>
+      </div>
+
+      <!-- Clase 7 -->
+      <div class="clase-card disabled">
+        <div class="clase-header-row">
+          <span class="clase-numero">Clase 7</span>
+          <span class="status-badge status-proximamente">🔜 Próximamente</span>
+        </div>
+        
+        <h3>JSON y Comparación con XML</h3>
+        <p>Diferencias entre XML y JSON, ventajas, casos de uso y conversión.</p>
+        
+        <button class="btn-comenzar" disabled>🔒 Próximamente</button>
+      </div>
+
+      <!-- Clase 8 -->
+      <div class="clase-card disabled">
+        <div class="clase-header-row">
+          <span class="clase-numero">Clase 8</span>
+          <span class="status-badge status-proximamente">🔜 Próximamente</span>
+        </div>
+        
+        <h3>Proyecto Final Integrador</h3>
+        <p>Proyecto completo aplicando todos los conocimientos adquiridos.</p>
+        
+        <button class="btn-comenzar" disabled>🔒 Próximamente</button>
+      </div>
+    </div>
+
+    <footer>
+      <p>📘 Material de Clases 1º DAW · Desarrollado con ❤️ usando HTML5, CSS3 y JavaScript</p>
+      <p style="margin-top: 10px;">
+        <a href="https://github.com/shirAirEC/presentaci-n_xml" target="_blank">Ver proyecto en GitHub</a>
+      </p>
+    </footer>
+  </div>
+
+  <!-- Sección Bases de Datos -->
+  <div id="bases-datos" class="clases-screen">
+    <a href="#" class="back-btn" onclick="showHome(); return false;">
+      <span>←</span>
+      <span>Volver al inicio</span>
+    </a>
+
+    <div class="clases-header">
+      <h1>💾 Bases de Datos</h1>
+      <p>Diseño, gestión y consulta de bases de datos</p>
+    </div>
+
+    <div class="empty-state">
+      <div class="empty-state-icon">🚧</div>
+      <h3>En Construcción</h3>
+      <p>El contenido de Bases de Datos estará disponible próximamente.</p>
+    </div>
+
+    <footer>
+      <p>📘 Material de Clases 1º DAW · Desarrollado con ❤️ usando HTML5, CSS3 y JavaScript</p>
+      <p style="margin-top: 10px;">
+        <a href="https://github.com/shirAirEC/presentaci-n_xml" target="_blank">Ver proyecto en GitHub</a>
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    // Navegación entre secciones
+    function showSection(sectionId) {
+      document.getElementById('home-screen').style.display = 'none';
+      document.querySelectorAll('.clases-screen').forEach(screen => {
+        screen.classList.remove('active');
+      });
+      document.getElementById(sectionId).classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    function showHome() {
+      document.getElementById('home-screen').style.display = 'flex';
+      document.querySelectorAll('.clases-screen').forEach(screen => {
+        screen.classList.remove('active');
+      });
+      window.scrollTo(0, 0);
+    }
+
+    // Mostrar sección si hay hash en la URL al cargar
+    window.addEventListener('load', function() {
+      const hash = window.location.hash.substring(1);
+      if (hash === 'lenguaje-marcas' || hash === 'bases-datos') {
+        showSection(hash);
+      }
+    });
+
+    // Actualizar hash en la URL
+    window.addEventListener('hashchange', function() {
+      const hash = window.location.hash.substring(1);
+      if (hash === 'lenguaje-marcas' || hash === 'bases-datos') {
+        showSection(hash);
+      } else if (hash === '') {
+        showHome();
+      }
+    });
+  </script>
+
+</body>
+</html>

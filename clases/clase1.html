@@ -1,0 +1,1655 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Definición de esquemas y vocabularios en XML — Clase 1</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/white.css" id="theme">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/monokai.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+      /* Botón volver */
+      .btn-volver {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background: rgba(255,255,255,0.95);
+        color: #667eea;
+        padding: 10px 20px;
+        border-radius: 20px;
+        text-decoration: none;
+        font-weight: 600;
+        z-index: 1000;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+      }
+      .btn-volver:hover {
+        background: #667eea;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Botón volver al inicio -->
+    <a href="../index.html" class="btn-volver">← Inicio</a>
+
+    <!-- Indicador de progreso del estudiante -->
+    <div id="student-indicator" style="display: none; position: fixed; top: 20px; right: 20px; background: rgba(76,175,80,0.95); color: white; padding: 12px 20px; border-radius: 25px; font-size: 0.85em; font-weight: 600; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+      <span id="student-indicator-text">Conectado</span>
+    </div>
+
+    <div class="reveal">
+      <div class="slides">
+        
+        <!-- Slide 1 — Portada -->
+        <section data-background-gradient="linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
+          <h1 class="grad-text">Definición de esquemas y vocabularios en XML</h1>
+          <p class="subtitle" style="color: #0d47a1; font-size: 1.3em; background: transparent; padding: 15px 30px; border-radius: 0; display: inline-block; margin-top: 20px; text-shadow: 2px 2px 4px rgba(255,255,255,0.8);">Clase 1 (4 horas): Estructura y sintaxis básica de XML</p>
+          <p style="color: #0d47a1; margin-top: 40px; font-size: 1em; background: transparent; padding: 15px 30px; border-radius: 0; display: inline-block;">
+            <span class="pill xml">Teoría</span>
+            <span class="pill xml">Práctica guiada</span>
+          </p>
+          <aside class="notes">
+            Bienvenida a la primera clase de XML. Esta sesión de 4 horas está dividida en teoría completa primero, luego práctica.
+            El objetivo es que los estudiantes entiendan qué es XML y cómo escribir documentos bien formados.
+            NUEVO: Para abrir estas notas, presiona Ctrl+Shift+N (no solo S, para evitar que los estudiantes las vean por accidente).
+          </aside>
+        </section>
+
+        <!-- Slide 2 — Objetivos de la clase -->
+        <section>
+          <h2><span class="icon">🎯</span>Qué vas a saber hacer al final de esta clase</h2>
+          <ul class="objetivos-lista">
+            <li class="fragment">✅ Reconocer la estructura de un documento XML (prólogo + elemento raíz).</li>
+            <li class="fragment">✅ Identificar elementos, subelementos y jerarquías (estructura en árbol).</li>
+            <li class="fragment">✅ Escribir XML bien formado con:
+              <ul style="margin-left: 40px; font-size: 0.9em;">
+                <li>etiquetas de apertura y cierre,</li>
+                <li>etiquetas vacías,</li>
+                <li>atributos.</li>
+              </ul>
+            </li>
+            <li class="fragment">✅ Usar comentarios y secciones CDATA cuando sea necesario.</li>
+            <li class="fragment">✅ Resolver ejercicios básicos de lectura y modificación de XML.</li>
+          </ul>
+          <aside class="notes">
+            Estos son los objetivos de aprendizaje de la clase de hoy. Al final de las 4 horas, los estudiantes deben ser capaces de crear documentos XML básicos bien formados.
+            Enfatiza que "bien formado" significa cumplir con las reglas sintácticas básicas de XML.
+          </aside>
+        </section>
+
+        <!-- Slide 3 — Mapa del temario -->
+        <section data-background-color="#fff8f0">
+          <h2><span class="icon">🗺️</span>Mapa del curso</h2>
+          <div class="two-col">
+            <div class="mapa-box hoy">
+              <h3>📍 Hoy (Clase 1)</h3>
+              <ul>
+                <li>Estructura de un XML (prólogo y cuerpo)</li>
+                <li>Marcas / etiquetas</li>
+                <li>Elementos y reglas básicas</li>
+                <li>Atributos</li>
+                <li>Comentarios</li>
+                <li>Sección CDATA</li>
+              </ul>
+            </div>
+            <div class="mapa-box despues fragment">
+              <h3>🔮 Más adelante (próximas clases)</h3>
+              <ul>
+                <li>DTD (definición de restricciones)</li>
+                <li>XSD / XML Schema</li>
+                <li>Asociación de esquemas al XML</li>
+                <li>Validación (bien formado vs válido)</li>
+                <li>Herramientas para editar y validar</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout xml fragment" style="margin-top: 20px;">
+            <strong>📌 Importante:</strong> Hoy nos centramos en XML bien formado. La validación con esquemas viene después.
+          </div>
+          <aside class="notes">
+            Este es el mapa general del curso. Hoy (Clase 1) nos centramos en la sintaxis básica.
+            En las próximas clases veremos cómo definir reglas (DTD/XSD) y validar documentos.
+            Es importante que los estudiantes sepan que "bien formado" no es lo mismo que "válido".
+          </aside>
+        </section>
+
+        <!--================================-->
+        <!-- BLOQUE 1: TEORÍA COMPLETA     -->
+        <!--================================-->
+
+        <!-- Slide 4 — ¿Qué es XML y para qué sirve? -->
+        <section data-background-color="#fff5f0">
+          <h2><span class="icon">❓</span>¿Qué es XML y para qué sirve?</h2>
+          <div class="callout xml" style="font-size: 1.2em; padding: 25px;">
+            <strong>XML en una frase:</strong><br>
+            XML es un formato para <em>almacenar e intercambiar información</em> de forma estructurada.
+          </div>
+          
+          <div class="fragment" style="margin-top: 30px;">
+            <p style="font-size: 1em; margin-bottom: 20px;">Se usa cuando necesitamos que distintos programas o sistemas entiendan los datos de forma clara.</p>
+          </div>
+          
+          <div class="fragment">
+            <h3>Ejemplos de uso:</h3>
+            <div class="features-grid" style="grid-template-columns: repeat(2, 1fr);">
+              <div class="feature-card">
+                <span class="icon">💾</span>
+                <h4>Almacenamiento de datos</h4>
+              </div>
+              <div class="feature-card">
+                <span class="icon">🔄</span>
+                <h4>Intercambio entre aplicaciones</h4>
+              </div>
+              <div class="feature-card">
+                <span class="icon">📡</span>
+                <h4>Sindicación de contenidos</h4>
+              </div>
+              <div class="feature-card">
+                <span class="icon">🔧</span>
+                <h4>Configuración de software</h4>
+              </div>
+            </div>
+          </div>
+          <aside class="notes">
+            XML es un metalenguaje que permite definir nuestros propios lenguajes de marcado.
+            Es texto plano, lo que lo hace portable y legible tanto para humanos como para máquinas.
+            Ejemplos reales: feeds RSS, archivos de configuración, intercambio de datos entre APIs, documentos Office.
+          </aside>
+        </section>
+
+        <!-- Slide 5 — Contexto rápido: de SGML a XML -->
+        <section data-background-color="#f5f5f5">
+          <h2><span class="icon">📜</span>De dónde viene XML (idea general)</h2>
+          <ul class="historia-lista">
+            <li class="fragment">📖 <strong>SGML</strong> es un "lenguaje base" del que derivan otros lenguajes de marcado.</li>
+            <li class="fragment">🌐 <strong>XML</strong> surge como una forma legible y estructurada de representar información.</li>
+            <li class="fragment">🏷️ A diferencia de otros lenguajes de marcado, en XML las etiquetas pueden <strong>describir el significado</strong> de los datos.</li>
+          </ul>
+          
+          <div class="callout xml fragment" style="margin-top: 30px;">
+            <strong>💡 Concepto clave:</strong> XML es <em>extensible</em>: tú defines las etiquetas según tus necesidades.
+          </div>
+          <aside class="notes">
+            SGML (Standard Generalized Markup Language) es muy complejo.
+            HTML es fijo (etiquetas predefinidas como &lt;p&gt;, &lt;div&gt;...).
+            XML es extensible: puedes crear &lt;producto&gt;, &lt;cliente&gt;, &lt;factura&gt;... según tu dominio.
+            Esta flexibilidad hace a XML ideal para intercambio de datos.
+          </aside>
+        </section>
+
+        <!-- Slide 6 — XML es un árbol: raíz e hijos -->
+        <section data-background-color="#f0f5ff">
+          <h2><span class="icon">🌳</span>Estructura jerárquica (arborescente)</h2>
+          <ul class="concepto-lista">
+            <li class="fragment">🌲 Un documento XML tiene estructura de <strong>árbol</strong>.</li>
+            <li class="fragment">🌱 Existe un <strong>elemento raíz único</strong> (el "padre").</li>
+            <li class="fragment">🍃 Dentro de la raíz cuelgan <strong>elementos hijos</strong> (y pueden existir subhijos).</li>
+          </ul>
+          
+          <div class="fragment" style="margin-top: 30px;">
+            <h3>Ejemplo mínimo:</h3>
+            <pre style="font-size: 0.75em;"><code class="language-xml">&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;padre&gt;
+  &lt;hijo&gt;
+    &lt;subhijo&gt;...&lt;/subhijo&gt;
+  &lt;/hijo&gt;
+&lt;/padre&gt;</code></pre>
+          </div>
+          
+          <div class="fragment" style="margin-top: 20px;">
+            <div class="arbol-visual" style="background: white; padding: 20px; border-radius: 10px;">
+              <div style="text-align: center; font-family: monospace;">
+                <div style="padding: 10px; background: #667eea; color: white; border-radius: 8px; display: inline-block; margin-bottom: 8px;">padre</div>
+                <div style="font-size: 1.5em; color: #667eea;">↓</div>
+                <div style="padding: 10px; background: #764ba2; color: white; border-radius: 8px; display: inline-block; margin-bottom: 8px;">hijo</div>
+                <div style="font-size: 1.5em; color: #764ba2;">↓</div>
+                <div style="padding: 10px; background: #f093fb; color: white; border-radius: 8px; display: inline-block;">subhijo</div>
+              </div>
+            </div>
+          </div>
+          <aside class="notes">
+            La estructura jerárquica en árbol es fundamental en XML.
+            Siempre hay UNA y solo UNA raíz.
+            Los elementos se anidan dentro de otros formando una jerarquía padre-hijo.
+            Esta estructura permite organizar la información de forma lógica y navegable.
+          </aside>
+        </section>
+
+        <!-- Slide 7 — Partes de un documento XML -->
+        <section data-background-color="#fff5f0">
+          <h2><span class="icon">📄</span>Partes de un documento XML</h2>
+          <div class="callout xml" style="font-size: 1.1em; padding: 25px;">
+            Un documento XML se divide en <strong>dos partes</strong>:
+          </div>
+          
+          <div class="two-col" style="margin-top: 30px;">
+            <div class="parte-box fragment" style="background: #f0f5ff; padding: 25px; border-radius: 15px; border-left: 5px solid #667eea;">
+              <h3 style="color: #667eea; margin-top: 0;">1️⃣ Prólogo</h3>
+              <p>Información técnica del documento</p>
+              <pre style="font-size: 0.65em; margin-top: 10px;"><code class="language-xml">&lt;?xml version="1.0" encoding="utf-8"?&gt;</code></pre>
+            </div>
+            <div class="parte-box fragment" style="background: #fff8f0; padding: 25px; border-radius: 15px; border-left: 5px solid #764ba2;">
+              <h3 style="color: #764ba2; margin-top: 0;">2️⃣ Cuerpo</h3>
+              <p>El elemento raíz y todo lo que contiene</p>
+              <pre style="font-size: 0.65em; margin-top: 10px;"><code class="language-xml">&lt;raiz&gt;
+  &lt;elementos&gt;...&lt;/elementos&gt;
+&lt;/raiz&gt;</code></pre>
+            </div>
+          </div>
+          
+          <div class="callout pulse fragment" style="margin-top: 30px; background: #fffef0; border: 3px solid #f7df1e;">
+            <strong>🔑 Regla clave:</strong> La raíz es <strong>única</strong> y contiene el resto de elementos.
+          </div>
+          <aside class="notes">
+            Todo documento XML tiene estas dos partes: prólogo y cuerpo.
+            El prólogo es opcional técnicamente, pero es muy recomendable incluirlo.
+            El cuerpo DEBE tener una única raíz. Si hay dos elementos al mismo nivel en el nivel superior, el XML no es válido.
+            Ejemplo: no puede haber &lt;raiz1&gt; y &lt;raiz2&gt; al mismo nivel sin un padre que los contenga.
+          </aside>
+        </section>
+
+        <!-- Slide 8 — Prólogo: instrucciones de procesamiento -->
+        <section data-background-color="#f0f5ff">
+          <h2><span class="icon">⚙️</span>La primera línea: versión y codificación</h2>
+          <p class="fragment">La primera línea del documento XML indica información técnica:</p>
+          
+          <div class="features-grid fragment" style="grid-template-columns: 1fr 1fr 1fr; margin-top: 20px;">
+            <div class="feature-card">
+              <h4>version</h4>
+              <p style="font-size: 0.85em;">Versión de XML</p>
+            </div>
+            <div class="feature-card">
+              <h4>encoding</h4>
+              <p style="font-size: 0.85em;">Codificación:<br>UTF-8, ISO-8859-1...</p>
+            </div>
+            <div class="feature-card">
+              <h4>standalone</h4>
+              <p style="font-size: 0.85em;">¿Depende de esquema externo?</p>
+            </div>
+          </div>
+          
+          <div class="fragment" style="margin-top: 30px;">
+            <h3>Sintaxis de las instrucciones de procesamiento:</h3>
+            <div class="callout xml">
+              Empiezan por <code>&lt;?</code> y terminan por <code>?&gt;</code>
+            </div>
+          </div>
+          
+          <div class="fragment" style="margin-top: 20px;">
+            <h3>Ejemplo:</h3>
+            <pre style="font-size: 0.8em;"><code class="language-xml">&lt;?xml version="1.0" encoding="utf-8"?&gt;</code></pre>
+          </div>
+          <aside class="notes">
+            El prólogo contiene instrucciones de procesamiento.
+            La más importante es la declaración XML con version y encoding.
+            Version: normalmente "1.0" (la más común).
+            Encoding: UTF-8 es el más recomendado (soporta todos los caracteres), ISO-8859-1 para caracteres latinos.
+            Standalone lo veremos en la siguiente slide.
+          </aside>
+        </section>
+
+        <!-- Slide 9 — standalone: significado práctico -->
+        <section data-background-color="#f0f5ff">
+          <h2><span class="icon">🔍</span>Atributo standalone</h2>
+          <div class="two-col">
+            <div class="standalone-box yes fragment" style="background: #e8f5e9; padding: 25px; border-radius: 15px; border: 3px solid #4caf50;">
+              <h3 style="color: #2e7d32;">standalone="yes"</h3>
+              <p style="font-size: 0.9em;">
+                ➡️ El documento <strong>no necesita</strong> un esquema externo para interpretarse con esas reglas.
+              </p>
+              <pre style="font-size: 0.6em; margin-top: 10px;"><code class="language-xml">&lt;?xml version="1.0" 
+      encoding="utf-8" 
+      standalone="yes"?&gt;</code></pre>
+            </div>
+            <div class="standalone-box no fragment" style="background: #fff3e0; padding: 25px; border-radius: 15px; border: 3px solid #ff9800;">
+              <h3 style="color: #e65100;">standalone="no"</h3>
+              <p style="font-size: 0.9em;">
+                ➡️ El documento <strong>depende</strong> de un esquema externo para completarse/validarse.
+              </p>
+              <pre style="font-size: 0.6em; margin-top: 10px;"><code class="language-xml">&lt;?xml version="1.0" 
+      encoding="utf-8" 
+      standalone="no"?&gt;</code></pre>
+            </div>
+          </div>
+          
+          <div class="callout xml fragment" style="margin-top: 30px;">
+            <strong>📝 Nota visual:</strong> Hoy solo entendemos el significado. La creación y uso de esquemas se trabaja en <strong>clases posteriores</strong>.
+          </div>
+          <aside class="notes">
+            Standalone indica si el documento es autosuficiente o depende de definiciones externas (DTD/XSD).
+            "yes" = el documento se puede procesar solo.
+            "no" = necesita referencias externas (como un DTD) para entenderse completamente.
+            Por ahora, no se preocupen de esto. Lo veremos en detalle cuando trabajemos con DTD y XSD.
+          </aside>
+        </section>
+
+        <!-- Slide 10 — Ejemplo completo: "biblioteca" con libros -->
+        <section data-background-color="#fff8f0">
+          <h2><span class="icon">📚</span>Ejemplo completo: catálogo de biblioteca</h2>
+          <div class="two-col">
+            <div>
+              <pre style="font-size: 0.5em;"><code class="language-xml">&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;biblioteca&gt;
+  &lt;libro&gt;
+    &lt;titulo&gt;Cien años de soledad&lt;/titulo&gt;
+    &lt;autor&gt;Gabriel García Márquez&lt;/autor&gt;
+    &lt;año&gt;1967&lt;/año&gt;
+    &lt;genero&gt;Realismo mágico&lt;/genero&gt;
+    &lt;idioma&gt;Español&lt;/idioma&gt;
+    &lt;paginas&gt;496&lt;/paginas&gt;
+    &lt;precio&gt;18.50&lt;/precio&gt;
+  &lt;/libro&gt;
+&lt;/biblioteca&gt;</code></pre>
+            </div>
+            <div class="fragment">
+              <h3 style="font-size: 0.9em;">Análisis de la estructura:</h3>
+              <ul style="font-size: 0.8em;">
+                <li>✅ <strong>Prólogo:</strong> línea 1</li>
+                <li>✅ <strong>Elemento raíz:</strong> &lt;biblioteca&gt;</li>
+                <li>✅ <strong>Hijo directo:</strong> &lt;libro&gt;</li>
+                <li>✅ <strong>Subhijos:</strong> titulo, autor, año, genero, idioma, paginas, precio</li>
+              </ul>
+              
+              <div class="arbol-visual" style="background: white; padding: 15px; border-radius: 10px; margin-top: 15px; font-size: 0.75em;">
+                <div style="text-align: center; font-family: monospace;">
+                  <div style="padding: 8px; background: #667eea; color: white; border-radius: 8px; display: inline-block; margin-bottom: 5px;">biblioteca</div>
+                  <div style="font-size: 1.2em; color: #667eea;">↓</div>
+                  <div style="padding: 8px; background: #764ba2; color: white; border-radius: 8px; display: inline-block; margin-bottom: 5px;">libro</div>
+                  <div style="font-size: 1.2em; color: #764ba2;">↓</div>
+                  <div style="display: flex; gap: 5px; justify-content: center; flex-wrap: wrap;">
+                    <div style="padding: 5px 10px; background: #f093fb; color: white; border-radius: 5px; font-size: 0.85em;">titulo</div>
+                    <div style="padding: 5px 10px; background: #f093fb; color: white; border-radius: 5px; font-size: 0.85em;">autor</div>
+                    <div style="padding: 5px 10px; background: #f093fb; color: white; border-radius: 5px; font-size: 0.85em;">año</div>
+                    <div style="padding: 5px 10px; background: #f093fb; color: white; border-radius: 5px; font-size: 0.85em;">...</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <aside class="notes">
+            Este es un ejemplo completo de XML bien formado con un dominio diferente (biblioteca en vez de árboles).
+            Observa: prólogo en la línea 1, una única raíz "biblioteca", un elemento "libro" que contiene varios subelementos.
+            Esta estructura jerárquica es típica en XML: un contenedor general (biblioteca) que puede tener múltiples libros.
+            Los nombres de los elementos son descriptivos (auto-documentación).
+            IMPORTANTE: Este ejemplo es diferente del que usaremos en el ejercicio 4.1.
+          </aside>
+        </section>
+
+        <!--================================-->
+        <!-- BLOQUE 2: TEORÍA (PARTE 2)    -->
+        <!--================================-->
+
+        <!-- Slide 11 — Marcas / etiquetas: la idea central -->
+        <section data-background-color="#fff8f0">
+          <h2><span class="icon">🏷️</span>Marcas o etiquetas (tags)</h2>
+          <ul class="concepto-lista">
+            <li class="fragment">✏️ En XML podemos <strong>definir nuestras propias etiquetas</strong> para representar información.</li>
+            <li class="fragment">📦 Las etiquetas separan:
+              <ul style="margin-left: 40px; margin-top: 10px;">
+                <li>el <strong>contenido</strong> (datos),</li>
+                <li>de la <strong>estructura</strong> (cómo se organizan esos datos).</li>
+              </ul>
+            </li>
+            <li class="fragment">🔖 Una etiqueta se escribe con los símbolos <code>&lt;</code> y <code>&gt;</code>.</li>
+          </ul>
+          
+          <div class="callout xml fragment" style="margin-top: 30px;">
+            <strong>💡 Ventaja de XML:</strong> Los nombres de las etiquetas describen el significado de los datos.
+          </div>
+          <aside class="notes">
+            Las etiquetas son el elemento básico de XML.
+            A diferencia de HTML (donde las etiquetas están predefinidas), en XML tú decides los nombres.
+            Esto hace que XML sea auto-documentado: solo leyendo las etiquetas entiendes qué tipo de información contienen.
+          </aside>
+        </section>
+
+        <!-- Slide 12 — Tipos de etiquetas + ejemplos de no válidas -->
+        <section data-background-color="#f0f5ff">
+          <h2><span class="icon">🔖</span>Tipos de etiquetas en XML</h2>
+          
+          <div class="features-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 30px;">
+            <div class="feature-card fragment">
+              <h4>Etiqueta de apertura</h4>
+              <code style="font-size: 1.2em; color: #667eea;">&lt;casa&gt;</code>
+            </div>
+            <div class="feature-card fragment">
+              <h4>Etiqueta de cierre</h4>
+              <code style="font-size: 1.2em; color: #764ba2;">&lt;/casa&gt;</code>
+            </div>
+            <div class="feature-card fragment">
+              <h4>Etiqueta vacía</h4>
+              <code style="font-size: 1.2em; color: #f093fb;">&lt;casa/&gt;</code>
+            </div>
+          </div>
+          
+          <div class="fragment">
+            <h3>❌ Ejemplos de etiquetas NO válidas:</h3>
+            <div style="background: #ffebee; padding: 20px; border-radius: 10px; border-left: 5px solid #f44336; margin-top: 15px;">
+              <p style="margin-bottom: 10px;"><strong>No se permiten espacios dentro del nombre:</strong></p>
+              <pre style="font-size: 0.7em;"><code class="language-xml">&lt;nombre producto&gt; ... &lt;/nombre producto&gt;  ❌</code></pre>
+              
+              <p style="margin: 20px 0 10px 0;"><strong>No se permite usar / dentro del nombre:</strong></p>
+              <pre style="font-size: 0.7em;"><code class="language-xml">&lt;variedad/precio&gt; ... &lt;/variedad/precio&gt;  ❌</code></pre>
+            </div>
+          </div>
+          <aside class="notes">
+            Tres tipos de etiquetas: apertura, cierre y vacía (autocierre).
+            Las etiquetas vacías se usan para elementos que no tienen contenido.
+            Reglas: sin espacios en el nombre, sin caracteres especiales como /.
+            Los nombres deben ser descriptivos y seguir las convenciones (veremos las reglas completas en slides siguientes).
+          </aside>
+        </section>
+
+        <!-- Slide 13 — Qué es un elemento -->
+        <section data-background-color="#fff5f0">
+          <h2><span class="icon">📦</span>Elemento = etiqueta + contenido + cierre</h2>
+          <div class="callout xml" style="font-size: 1.1em; padding: 25px;">
+            Un <strong>elemento</strong> está compuesto por:
+          </div>
+          
+          <div class="elemento-desglose fragment" style="margin-top: 30px; font-size: 1.2em;">
+            <div style="background: #f0f5ff; padding: 20px; border-radius: 10px; margin-bottom: 15px;">
+              <pre><code class="language-xml">&lt;nombre&gt;Litchi&lt;/nombre&gt;</code></pre>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px;">
+              <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; border-left: 4px solid #2196f3;">
+                <strong>Apertura:</strong><br>
+                <code>&lt;nombre&gt;</code>
+              </div>
+              <div style="background: #f3e5f5; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                <strong>Contenido:</strong><br>
+                <code>Litchi</code>
+              </div>
+              <div style="background: #fce4ec; padding: 15px; border-radius: 8px; border-left: 4px solid #e91e63;">
+                <strong>Cierre:</strong><br>
+                <code>&lt;/nombre&gt;</code>
+              </div>
+            </div>
+          </div>
+          
+          <div class="callout pulse fragment" style="margin-top: 30px; background: #fffef0; border: 3px solid #f7df1e;">
+            <strong>🔑 Regla:</strong> El nombre en la etiqueta de cierre debe ser <strong>idéntico</strong> al de apertura.
+          </div>
+          <aside class="notes">
+            Un elemento completo tiene tres partes: apertura, contenido y cierre.
+            El contenido puede ser texto (PCDATA) u otros elementos (jerarquía).
+            XML es case-sensitive: &lt;Nombre&gt; y &lt;nombre&gt; son diferentes.
+            La etiqueta de cierre DEBE tener exactamente el mismo nombre que la de apertura.
+          </aside>
+        </section>
+
+        <!-- Slide 14 — Elementos vacíos (2 formas) -->
+        <section data-background-color="#f0f5ff">
+          <h2><span class="icon">⭕</span>Elementos vacíos</h2>
+          <div class="callout xml">
+            Puede existir un elemento <strong>sin contenido</strong>.
+          </div>
+          
+          <div style="margin-top: 40px;">
+            <h3>Dos maneras de representarlo:</h3>
+            
+            <div class="two-col fragment" style="margin-top: 20px;">
+              <div style="background: #e3f2fd; padding: 25px; border-radius: 15px; border: 3px solid #2196f3;">
+                <h4 style="color: #1976d2; margin-top: 0;">Forma 1</h4>
+                <p style="font-size: 0.9em;">Apertura y cierre, contenido vacío:</p>
+                <pre style="font-size: 0.8em; margin-top: 10px;"><code class="language-xml">&lt;casado&gt;&lt;/casado&gt;</code></pre>
+              </div>
+              
+              <div style="background: #f3e5f5; padding: 25px; border-radius: 15px; border: 3px solid #9c27b0;">
+                <h4 style="color: #7b1fa2; margin-top: 0;">Forma 2 (preferida)</h4>
+                <p style="font-size: 0.9em;">Autocierre:</p>
+                <pre style="font-size: 0.8em; margin-top: 10px;"><code class="language-xml">&lt;teléfono n="666777888"/&gt;</code></pre>
+              </div>
+            </div>
+          </div>
+          
+          <div class="callout xml fragment" style="margin-top: 30px;">
+            <strong>💡 Recomendación:</strong> Usa la forma 2 (autocierre) para elementos vacíos. Es más concisa.
+          </div>
+          <aside class="notes">
+            Los elementos vacíos son válidos en XML.
+            Se usan cuando el elemento solo necesita existir o cuando toda la información está en atributos.
+            La forma con autocierre (&lt;elemento/&gt;) es más limpia y recomendada.
+            Ejemplo práctico: &lt;saltolinea/&gt;, &lt;imagen src="foto.jpg"/&gt;
+          </aside>
+        </section>
+
+        <!-- Slide 15 — Reglas clave: anidamiento y nombres -->
+        <section data-background-color="#fff8f0">
+          <h2><span class="icon">📏</span>Reglas para que el XML esté bien formado</h2>
+          
+          <div class="reglas-grid" style="display: grid; gap: 20px; margin-top: 30px;">
+            <div class="regla-card fragment">
+              <h3>1️⃣ Anidamiento correcto</h3>
+              <p>Los elementos deben estar anidados correctamente (se cierran en orden inverso a como se abren).</p>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                <div style="background: #e8f5e9; padding: 15px; border-radius: 8px;">
+                  <strong>✅ Correcto:</strong>
+                  <pre style="font-size: 0.7em; margin-top: 8px;"><code>&lt;a&gt;&lt;b&gt;&lt;/b&gt;&lt;/a&gt;</code></pre>
+                </div>
+                <div style="background: #ffebee; padding: 15px; border-radius: 8px;">
+                  <strong>❌ Incorrecto:</strong>
+                  <pre style="font-size: 0.7em; margin-top: 8px;"><code>&lt;a&gt;&lt;b&gt;&lt;/a&gt;&lt;/b&gt;</code></pre>
+                </div>
+              </div>
+            </div>
+            
+            <div class="regla-card fragment">
+              <h3>2️⃣ Apertura y cierre</h3>
+              <p>Los elementos no vacíos deben tener apertura y cierre.</p>
+              <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-top: 10px;">
+                <strong>✅ Siempre cierra:</strong>
+                <pre style="font-size: 0.7em; margin-top: 8px;"><code>&lt;nombre&gt;Juan&lt;/nombre&gt;</code></pre>
+              </div>
+            </div>
+            
+            <div class="regla-card fragment">
+              <h3>3️⃣ Reglas para nombres</h3>
+              <ul style="font-size: 0.9em;">
+                <li>❌ No empezar por números</li>
+                <li>❌ No usar caracteres reservados (&lt; &gt; & ' ")</li>
+                <li>✅ Pueden empezar por letra, _ o :</li>
+                <li>❌ No empezar por la palabra "xml" (reservada)</li>
+              </ul>
+            </div>
+          </div>
+          <aside class="notes">
+            Estas son las reglas fundamentales para XML bien formado.
+            Anidamiento: como las muñecas rusas, se cierran de dentro hacia fuera.
+            XML es estricto: un solo error de sintaxis invalida todo el documento.
+            Nombres: pueden contener letras, números, guiones, guiones bajos y puntos, pero con restricciones en el inicio.
+          </aside>
+        </section>
+
+        <!-- Slide 16 — Atributos: qué son y cómo se escriben -->
+        <section data-background-color="#f0f5ff">
+          <h2><span class="icon">🏷️</span>Atributos</h2>
+          <ul class="concepto-lista">
+            <li class="fragment">🔖 Un <strong>atributo</strong> añade una propiedad a un elemento.</li>
+            <li class="fragment">📝 Los atributos se escriben <strong>dentro de la etiqueta de apertura</strong>.</li>
+            <li class="fragment">✏️ Formato general: <code>atributo="valor"</code></li>
+            <li class="fragment">🚫 En un mismo elemento <strong>no se repite</strong> el mismo nombre de atributo.</li>
+          </ul>
+          
+          <div class="fragment" style="margin-top: 30px;">
+            <h3>Ejemplo:</h3>
+            <div class="desglose-atributo" style="background: #f0f5ff; padding: 25px; border-radius: 15px; border: 3px solid #667eea;">
+              <pre style="font-size: 1em;"><code class="language-xml">&lt;nombre dni="77777777J"&gt;AlumnoLM&lt;/nombre&gt;</code></pre>
+              
+              <div style="margin-top: 20px; font-size: 0.9em;">
+                <p><strong>Análisis:</strong></p>
+                <ul style="margin-left: 20px;">
+                  <li>Elemento: <code>&lt;nombre&gt;</code></li>
+                  <li>Atributo: <code>dni</code></li>
+                  <li>Valor del atributo: <code>"77777777J"</code></li>
+                  <li>Contenido del elemento: <code>AlumnoLM</code></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <div class="callout xml fragment" style="margin-top: 20px;">
+            <strong>💡 Consejo:</strong> Usarlos con criterio: demasiados atributos pueden hacer el XML menos claro.
+          </div>
+          <aside class="notes">
+            Los atributos van SIEMPRE en la etiqueta de apertura, nunca en la de cierre.
+            Los valores de los atributos DEBEN ir entre comillas (simples o dobles).
+            No puede haber dos atributos con el mismo nombre en el mismo elemento.
+            Cuándo usar atributos vs elementos: es un debate. Regla general: atributos para metadatos/propiedades simples, elementos para contenido estructurado.
+          </aside>
+        </section>
+
+        <!-- Slide 17 — Comentarios en XML -->
+        <section data-background-color="#fff5f0">
+          <h2><span class="icon">💬</span>Comentarios</h2>
+          <ul class="concepto-lista">
+            <li class="fragment">📝 Sirven para <strong>aclarar el contenido</strong>, especialmente en documentos extensos.</li>
+            <li class="fragment">📍 Se pueden colocar en <strong>casi cualquier parte</strong> del documento.</li>
+            <li class="fragment">🔍 Los comentarios <strong>no se procesan</strong> como datos.</li>
+          </ul>
+          
+          <div class="fragment" style="margin-top: 30px;">
+            <h3>Sintaxis:</h3>
+            <div class="sintaxis-box">
+              <div style="background: #f0f5ff; padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 15px;">
+                <p style="font-size: 1.1em; margin-bottom: 10px;">Comienzan por <code>&lt;!--</code> y terminan por <code>--&gt;</code></p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="fragment">
+            <h3>Ejemplo:</h3>
+            <pre style="font-size: 0.7em;"><code class="language-xml">&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;agenda&gt;
+  &lt;!-- vamos a crear un contacto --&gt;
+  &lt;contacto nombre="alumno LM"&gt;
+    &lt;ciudad&gt;Málaga&lt;/ciudad&gt;
+  &lt;/contacto&gt;
+  &lt;!-- Este contacto es de ejemplo --&gt;
+&lt;/agenda&gt;</code></pre>
+          </div>
+          <aside class="notes">
+            Los comentarios son ignorados por el procesador XML.
+            Útiles para: documentar el código, explicar decisiones de diseño, dejar notas para otros desarrolladores.
+            Los comentarios NO pueden anidarse: no puedes tener un comentario dentro de otro comentario.
+            No uses -- dentro del comentario (solo al final para cerrarlo).
+          </aside>
+        </section>
+
+        <!-- Slide 18 — Sección CDATA -->
+        <section data-background-color="#f0f5ff">
+          <h2><span class="icon">📜</span>CDATA: contenido que no se analiza como etiquetas</h2>
+          <ul class="concepto-lista">
+            <li class="fragment">🔒 <strong>CDATA</strong> permite escribir contenido que <strong>no será procesado</strong> como marcado.</li>
+            <li class="fragment">⚠️ Es útil cuando el texto incluye símbolos como <code>&lt;</code> y <code>&gt;</code>.</li>
+            <li class="fragment">📝 El contenido dentro de CDATA se trata como <strong>texto literal</strong>.</li>
+          </ul>
+          
+          <div class="fragment" style="margin-top: 30px;">
+            <h3>Sintaxis:</h3>
+            <div style="background: #fff3e0; padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 20px; border: 3px solid #ff9800;">
+              <code style="font-size: 1.1em;">&lt;![CDATA[contenido dentro del bloque]]&gt;</code>
+            </div>
+          </div>
+          
+          <div class="fragment">
+            <h3>Ejemplo:</h3>
+            <pre style="font-size: 0.65em;"><code class="language-xml">&lt;?xml version="1.0"?&gt;
+&lt;asignaturas&gt;
+  &lt;foro&gt;
+    &lt;![CDATA[el &lt;b&gt;examen&lt;/b&gt; será el día &lt;u&gt;viernes&lt;/u&gt;]]&gt;
+  &lt;/foro&gt;
+&lt;/asignaturas&gt;</code></pre>
+            <p style="font-size: 0.85em; margin-top: 15px;">Sin CDATA, los símbolos <code>&lt;b&gt;</code> y <code>&lt;/b&gt;</code> serían interpretados como etiquetas XML.</p>
+          </div>
+          <aside class="notes">
+            CDATA = Character Data (datos de caracteres).
+            Se usa cuando necesitas incluir texto que contiene caracteres reservados de XML (&lt; &gt; &).
+            Dentro de CDATA puedes escribir cualquier cosa excepto la secuencia ]]&gt; que cierra el bloque.
+            Casos de uso: incluir código HTML o JavaScript dentro de XML, texto con muchos caracteres especiales.
+          </aside>
+        </section>
+
+        <!-- Slide 19 — Referencias a entidades y caracteres -->
+        <section data-background-color="#fff8f0">
+          <h2><span class="icon">🔤</span>Referencias a entidades y caracteres</h2>
+          
+          <div class="fragment">
+            <h3>Caracteres especiales en XML:</h3>
+            <table style="width: 100%; font-size: 0.85em; margin-top: 20px;">
+              <thead style="background: #667eea; color: white;">
+                <tr>
+                  <th style="padding: 12px;">Carácter</th>
+                  <th style="padding: 12px;">Nombre</th>
+                  <th style="padding: 12px;">Referencia</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="background: #f0f5ff;">
+                  <td style="padding: 10px; text-align: center;"><code>&lt;</code></td>
+                  <td style="padding: 10px;">Menor que (less than)</td>
+                  <td style="padding: 10px;"><code>&amp;lt;</code></td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px; text-align: center;"><code>&gt;</code></td>
+                  <td style="padding: 10px;">Mayor que (greater than)</td>
+                  <td style="padding: 10px;"><code>&amp;gt;</code></td>
+                </tr>
+                <tr style="background: #f0f5ff;">
+                  <td style="padding: 10px; text-align: center;"><code>&amp;</code></td>
+                  <td style="padding: 10px;">Ampersand</td>
+                  <td style="padding: 10px;"><code>&amp;amp;</code></td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px; text-align: center;"><code>"</code></td>
+                  <td style="padding: 10px;">Comilla doble (quotation)</td>
+                  <td style="padding: 10px;"><code>&amp;quot;</code></td>
+                </tr>
+                <tr style="background: #f0f5ff;">
+                  <td style="padding: 10px; text-align: center;"><code>'</code></td>
+                  <td style="padding: 10px;">Comilla simple (apostrophe)</td>
+                  <td style="padding: 10px;"><code>&amp;apos;</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <div class="callout xml fragment" style="margin-top: 20px;">
+            <strong>⚠️ Caracteres problemáticos:</strong> &lt; y &amp; DEBEN ser escapados siempre. El &gt; es recomendable escaparlo.
+          </div>
+          
+          <aside class="notes">
+            Referencias a entidades para caracteres especiales.
+            El < es problemático porque indica inicio de etiqueta.
+            El & es problemático porque inicia una referencia a entidad.
+            Las comillas se usan en atributos, por eso tienen referencias.
+            Siempre usar &lt; en vez de < en el contenido de texto.
+          </aside>
+        </section>
+
+        <!-- Slide 20 — Referencias de caracteres Unicode -->
+        <section data-background-color="#f0f5ff">
+          <h2><span class="icon">🌐</span>Referencias de caracteres Unicode</h2>
+          
+          <div class="callout xml">
+            XML permite incluir cualquier carácter Unicode usando referencias decimales o hexadecimales.
+          </div>
+          
+          <div class="fragment" style="margin-top: 30px;">
+            <h3>Sintaxis:</h3>
+            <div class="two-col">
+              <div style="background: #e3f2fd; padding: 20px; border-radius: 10px;">
+                <h4 style="color: #1976d2;">Decimal</h4>
+                <pre style="font-size: 0.8em;"><code>&#número;</code></pre>
+                <p style="font-size: 0.85em; margin-top: 10px;">Ejemplo: <code>&amp;#8364;</code> → €</p>
+              </div>
+              <div style="background: #f3e5f5; padding: 20px; border-radius: 10px;">
+                <h4 style="color: #7b1fa2;">Hexadecimal</h4>
+                <pre style="font-size: 0.8em;"><code>&#xCÓDIGO;</code></pre>
+                <p style="font-size: 0.85em; margin-top: 10px;">Ejemplo: <code>&amp;#x20AC;</code> → €</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="fragment" style="margin-top: 20px;">
+            <h3>Ejemplo completo:</h3>
+            <pre style="font-size: 0.7em;"><code class="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;productos&gt;
+  &lt;nombre precio="12.56&amp;#8364;"&gt;Gorro de lana&lt;/nombre&gt;
+  &lt;nombre precio="16.99&amp;#x20AC;"&gt;Gorro polar&lt;/nombre&gt;
+&lt;/productos&gt;</code></pre>
+          </div>
+          
+          <aside class="notes">
+            Referencias de caracteres Unicode permiten incluir cualquier símbolo.
+            Útil para símbolos de monedas, caracteres especiales, emojis, etc.
+            El código decimal se obtiene de la tabla Unicode.
+            El código hexadecimal usa la misma tabla pero en base 16.
+            Ejemplo: Euro (€) = decimal 8364 = hexadecimal 20AC.
+          </aside>
+        </section>
+
+        <!-- Slide 21 — Espacios de nombres (Namespaces) -->
+        <section data-background-color="#fff5f0">
+          <h2><span class="icon">🏷️</span>Espacios de nombres (Namespaces)</h2>
+          
+          <div class="callout xml">
+            Los espacios de nombres resuelven conflictos cuando se combinan documentos XML que tienen elementos con el mismo nombre pero significados diferentes.
+          </div>
+          
+          <div class="fragment" style="margin-top: 30px;">
+            <h3>Problema: Mismo nombre, distinto significado</h3>
+            <div class="two-col">
+              <div style="background: #ffebee; padding: 20px; border-radius: 10px;">
+                <h4 style="color: #c62828;">Carta (naipes)</h4>
+                <pre style="font-size: 0.65em;"><code class="language-xml">&lt;carta&gt;
+  &lt;palo&gt;Corazones&lt;/palo&gt;
+  &lt;numero&gt;7&lt;/numero&gt;
+&lt;/carta&gt;</code></pre>
+              </div>
+              <div style="background: #fff3e0; padding: 20px; border-radius: 10px;">
+                <h4 style="color: #e65100;">Carta (restaurante)</h4>
+                <pre style="font-size: 0.65em;"><code class="language-xml">&lt;carta&gt;
+  &lt;plato&gt;Paella&lt;/plato&gt;
+  &lt;precio&gt;15.50&lt;/precio&gt;
+&lt;/carta&gt;</code></pre>
+              </div>
+            </div>
+          </div>
+          
+          <div class="callout pulse fragment" style="margin-top: 20px;">
+            <strong>❓ Problema:</strong> Si combinamos ambos XML, ¿cómo distinguimos qué tipo de "carta" es cada una?
+          </div>
+          
+          <aside class="notes">
+            Los espacios de nombres (XML Namespaces) resuelven conflictos de nombres.
+            Permiten usar elementos del mismo nombre con significados diferentes en un mismo documento.
+            Se definen usando el atributo xmlns (XML NameSpace).
+            Similar a los paquetes en Java o los namespaces en C++.
+          </aside>
+        </section>
+
+        <!-- Slide 22 — Sintaxis de espacios de nombres -->
+        <section data-background-color="#f0f5ff">
+          <h2><span class="icon">🔧</span>Sintaxis de espacios de nombres</h2>
+          
+          <div class="fragment">
+            <h3>Definir un espacio de nombres:</h3>
+            <pre style="font-size: 0.8em;"><code>xmlns:prefijo="URI"</code></pre>
+          </div>
+          
+          <div class="fragment" style="margin-top: 30px;">
+            <h3>Ejemplo resolviendo el conflicto:</h3>
+            <pre style="font-size: 0.6em;"><code class="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;documento xmlns:naipes="http://ejemplo.com/naipes"
+           xmlns:restaurante="http://ejemplo.com/restaurante"&gt;
+  
+  &lt;naipes:carta&gt;
+    &lt;naipes:palo&gt;Corazones&lt;/naipes:palo&gt;
+    &lt;naipes:numero&gt;7&lt;/naipes:numero&gt;
+  &lt;/naipes:carta&gt;
+  
+  &lt;restaurante:carta&gt;
+    &lt;restaurante:plato&gt;Paella&lt;/restaurante:plato&gt;
+    &lt;restaurante:precio&gt;15.50&lt;/restaurante:precio&gt;
+  &lt;/restaurante:carta&gt;
+  
+&lt;/documento&gt;</code></pre>
+          </div>
+          
+          <div class="callout xml fragment" style="margin-top: 20px;">
+            <strong>💡 Importante:</strong> Los URI no tienen que apuntar a nada real. Su función es ser únicos.
+          </div>
+          
+          <aside class="notes">
+            xmlns es el atributo para definir espacios de nombres.
+            El prefijo se añade antes del nombre del elemento con dos puntos.
+            Los URI solo sirven para identificar de forma única, no necesitan existir.
+            Puedes definir los espacios de nombres en el elemento raíz o en elementos internos.
+            Es una buena práctica usar URLs de tu dominio como URI.
+          </aside>
+        </section>
+
+        <!-- Slide 23 — Espacio de nombres por defecto -->
+        <section data-background-color="#fff8f0">
+          <h2><span class="icon">⭐</span>Espacio de nombres por defecto</h2>
+          
+          <div class="callout xml">
+            Se puede definir un espacio de nombres por defecto sin usar prefijo.
+          </div>
+          
+          <div class="fragment" style="margin-top: 30px;">
+            <h3>Sintaxis:</h3>
+            <pre style="font-size: 0.8em;"><code>xmlns="URI"</code></pre>
+          </div>
+          
+          <div class="fragment" style="margin-top: 20px;">
+            <h3>Ejemplo:</h3>
+            <pre style="font-size: 0.7em;"><code class="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;documento xmlns="http://ejemplo.com/principal"&gt;
+  
+  &lt;carta&gt;
+    &lt;palo&gt;Corazones&lt;/palo&gt;
+    &lt;numero&gt;7&lt;/numero&gt;
+  &lt;/carta&gt;
+  
+  &lt;!-- Cambiar espacio de nombres para un elemento --&gt;
+  &lt;carta xmlns="http://ejemplo.com/restaurante"&gt;
+    &lt;plato&gt;Paella&lt;/plato&gt;
+    &lt;precio&gt;15.50&lt;/precio&gt;
+  &lt;/carta&gt;
+  
+&lt;/documento&gt;</code></pre>
+          </div>
+          
+          <aside class="notes">
+            El espacio de nombres por defecto afecta al elemento donde se define y todos sus descendientes.
+            No requiere usar prefijos, haciendo el XML más limpio.
+            Se puede cambiar el espacio de nombres por defecto en elementos internos.
+            Para indicar que un elemento no pertenece a ningún espacio de nombres: xmlns=""
+          </aside>
+        </section>
+
+        <!-- Slide 24 — Documentos XML bien formados vs válidos -->
+        <section data-background-color="#f0f5ff">
+          <h2><span class="icon">✅</span>XML bien formado vs XML válido</h2>
+          
+          <div class="two-col">
+            <div class="fragment" style="background: #e8f5e9; padding: 25px; border-radius: 15px; border-left: 5px solid #4caf50;">
+              <h3 style="color: #2e7d32;">Bien formado (Well-formed)</h3>
+              <p style="font-size: 0.9em;">No tiene errores de sintaxis:</p>
+              <ul style="font-size: 0.85em; margin-top: 10px;">
+                <li>✅ Única raíz</li>
+                <li>✅ Etiquetas correctamente anidadas</li>
+                <li>✅ Atributos bien escritos</li>
+                <li>✅ Referencias a entidades correctas</li>
+                <li>✅ Comentarios y CDATA válidos</li>
+              </ul>
+            </div>
+            
+            <div class="fragment" style="background: #fff3e0; padding: 25px; border-radius: 15px; border-left: 5px solid #ff9800;">
+              <h3 style="color: #e65100;">Válido (Valid)</h3>
+              <p style="font-size: 0.9em;">Además de bien formado, cumple con un esquema:</p>
+              <ul style="font-size: 0.85em; margin-top: 10px;">
+                <li>✅ Estructura definida en DTD/XSD</li>
+                <li>✅ Elementos permitidos correctos</li>
+                <li>✅ Atributos obligatorios presentes</li>
+                <li>✅ Tipos de datos correctos</li>
+                <li>✅ Orden de elementos válido</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="callout pulse fragment" style="margin-top: 30px;">
+            <strong>📌 Regla de oro:</strong> Un XML válido siempre está bien formado, pero un XML bien formado puede no ser válido.
+          </div>
+          
+          <aside class="notes">
+            Bien formado = cumple las reglas sintácticas de XML.
+            Válido = cumple además un esquema (DTD, XSD, RELAX NG).
+            Hoy nos enfocamos en XML bien formado.
+            La validación con esquemas se verá en clases posteriores.
+            Un documento puede estar bien formado pero no tener ningún sentido semántico.
+          </aside>
+        </section>
+
+        <!-- Slide 25 — Resumen de teoría -->
+        <section data-background-gradient="linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
+          <h2 style="color: white !important; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">📚 Resumen completo de la teoría</h2>
+          <div style="background: rgba(255,255,255,0.95); padding: 30px; border-radius: 15px; margin-top: 20px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; color: #333; font-size: 0.85em;">
+              <div>
+                <h3 style="color: #667eea; font-size: 1em;">Estructura:</h3>
+                <ul style="font-size: 0.9em;">
+                  <li>✅ Prólogo + Cuerpo</li>
+                  <li>✅ Una única raíz</li>
+                  <li>✅ Jerarquía en árbol</li>
+                  <li>✅ Case sensitive</li>
+                </ul>
+              </div>
+              <div>
+                <h3 style="color: #667eea; font-size: 1em;">Etiquetas:</h3>
+                <ul style="font-size: 0.9em;">
+                  <li>✅ Apertura, cierre, vacías</li>
+                  <li>✅ Anidamiento correcto</li>
+                  <li>✅ Nombres descriptivos</li>
+                  <li>✅ Sin espacios en nombres</li>
+                </ul>
+              </div>
+              <div>
+                <h3 style="color: #667eea; font-size: 1em;">Atributos:</h3>
+                <ul style="font-size: 0.9em;">
+                  <li>✅ En etiqueta de apertura</li>
+                  <li>✅ nombre="valor"</li>
+                  <li>✅ Sin repetir nombres</li>
+                  <li>✅ Comillas obligatorias</li>
+                </ul>
+              </div>
+              <div>
+                <h3 style="color: #667eea; font-size: 1em;">Extras:</h3>
+                <ul style="font-size: 0.9em;">
+                  <li>✅ Comentarios: &lt;!-- --&gt;</li>
+                  <li>✅ CDATA: &lt;![CDATA[...]]&gt;</li>
+                  <li>✅ Entidades: &amp;lt; &amp;gt; &amp;amp;</li>
+                  <li>✅ Namespaces: xmlns</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <aside class="notes">
+            Resumen completo de todo lo que hemos visto en la parte teórica.
+            Ahora pasaremos a la parte práctica donde los estudiantes aplicarán estos conceptos.
+            Asegúrate de hacer una pausa de 5-10 minutos antes de empezar con los ejercicios.
+            Los estudiantes deben tener claro que "bien formado" es el objetivo de hoy.
+          </aside>
+        </section>
+
+        <!--================================-->
+        <!-- BLOQUE 3: EJERCICIOS          -->
+        <!--================================-->
+
+        <!-- Slide 26 — Inicio de ejercicios -->
+        <section data-background-gradient="linear-gradient(135deg, #f093fb 0%, #f5576c 100%)">
+          <h2><span class="icon">🛠️</span>Sesión Práctica: Ejercicios</h2>
+          <div class="taller-box">
+            <h3>Ahora es tu turno:</h3>
+            <ul style="font-size: 1em;">
+              <li>🔍 Analizar documentos XML reales</li>
+              <li>✏️ Crear y modificar XML</li>
+              <li>✅ Validar que esté bien formado</li>
+              <li>🎯 Aplicar todas las reglas aprendidas</li>
+            </ul>
+          </div>
+          
+          <div class="callout pulse" style="margin-top: 30px; background: rgba(255,255,255,0.95); border: 3px solid #0d47a1; color: #0d47a1;">
+            <strong>📝 Importante:</strong> Todos los ejercicios incluyen validador integrado para verificar tu XML.
+          </div>
+          
+          <aside class="notes">
+            INICIO DEL BLOQUE DE EJERCICIOS.
+            Tiempo total estimado: 90 minutos para todos los ejercicios.
+            Circula por el aula para ayudar individualmente.
+            Los estudiantes usarán los validadores integrados en las diapositivas.
+          </aside>
+        </section>
+
+        <!-- Slide 27 — Ejercicio 1: Analizar estructura XML -->
+        <section data-background-color="#f3f9ff">
+          <h2><span class="icon">📝</span>Ejercicio 1 — Analizar estructura XML completa</h2>
+          
+          <div class="ejercicio-box">
+            <h3>Documento XML a analizar:</h3>
+            <pre style="font-size: 0.5em;"><code class="language-xml">&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;tienda&gt;
+  &lt;producto&gt;
+    &lt;nombre&gt;Laptop Dell XPS 15&lt;/nombre&gt;
+    &lt;categoria&gt;Informática&lt;/categoria&gt;
+    &lt;marca&gt;Dell&lt;/marca&gt;
+    &lt;precio&gt;1299.99&lt;/precio&gt;
+    &lt;stock&gt;25&lt;/stock&gt;
+    &lt;disponible&gt;true&lt;/disponible&gt;
+    &lt;garantia&gt;2 años&lt;/garantia&gt;
+  &lt;/producto&gt;
+&lt;/tienda&gt;</code></pre>
+          </div>
+          
+          <div class="fragment" style="margin-top: 20px;">
+            <h3>📋 EJERCICIO - Responde:</h3>
+            <ol style="font-size: 0.75em; column-count: 2; column-gap: 30px;">
+              <li><strong>Prólogo:</strong> Identifica versión y codificación</li>
+              <li><strong>Raíz:</strong> ¿Cuál es el elemento raíz?</li>
+              <li><strong>Jerarquía:</strong> Lista los hijos directos de la raíz</li>
+              <li><strong>Subelementos:</strong> Lista todos los subelementos de &lt;producto&gt;</li>
+              <li><strong>Niveles:</strong> ¿Cuántos niveles tiene este XML?</li>
+              <li><strong>PCDATA:</strong> ¿Qué elementos contienen solo texto?</li>
+              <li><strong>Estructura:</strong> ¿Está bien formado? Justifica</li>
+              <li><strong>Diagrama:</strong> Dibuja la estructura en árbol</li>
+            </ol>
+          </div>
+          
+          <aside class="notes">
+            NUEVO XML para el ejercicio 1 (diferente del ejemplo de biblioteca).
+            
+            RESPUESTAS:
+            1. Versión 1.0, codificación UTF-8
+            2. Raíz: tienda
+            3. Hijo directo: producto (solo uno)
+            4. Subelementos: nombre, categoria, marca, precio, stock, disponible, garantia
+            5. Niveles: 3 (tienda → producto → subelementos)
+            6. Todos los elementos de nivel 3 contienen PCDATA
+            7. Sí, está bien formado (única raíz, etiquetas cerradas, anidamiento correcto)
+            8. Diagrama: tienda en raíz, producto debajo, 7 elementos en tercer nivel
+          </aside>
+        </section>
+
+        <!-- Slide 28 — Ejercicio 2: Añadir productos hermanos -->
+        <section data-background-color="#f3f9ff">
+          <h2><span class="icon">📝</span>Ejercicio 2 — Añadir más productos</h2>
+          
+          <div class="ejercicio-box">
+            <h3>Instrucciones:</h3>
+            <ol style="font-size: 0.9em;">
+              <li>Toma el XML del ejercicio anterior</li>
+              <li>Añade <strong>3 productos más</strong> como hermanos del primero</li>
+              <li>Cada producto debe tener los <strong>mismos subelementos</strong></li>
+              <li>Inventa datos realistas diferentes para cada uno</li>
+              <li>Usa el validador de la siguiente slide para verificar</li>
+            </ol>
+          </div>
+          
+          <aside class="notes">
+            Ejercicio 2: Añadir elementos hermanos al mismo nivel.
+            Los estudiantes deben entender que pueden tener múltiples elementos del mismo nombre al mismo nivel.
+            Asegúrate de que todos los productos tengan la misma estructura (mismos subelementos).
+            Verificar que no se les olvide cerrar ninguna etiqueta.
+          </aside>
+        </section>
+
+        <!-- Slide 29 — Ejercicio 2: Editor y validador -->
+        <section data-background-color="#f3f9ff">
+          <h2><span class="icon">✏️</span>Ejercicio 2 — Escribe y valida tu XML</h2>
+          
+          <div style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            <h3 style="color: #667eea; margin-bottom: 15px;">Escribe aquí tu XML completo con 4 productos:</h3>
+            <textarea id="xml-editor-2" rows="16" style="width: 100%; font-family: 'Courier New', monospace; font-size: 0.7em; padding: 15px; border: 2px solid #ddd; border-radius: 8px; resize: vertical;" placeholder="<?xml version='1.0' encoding='utf-8'?>
+<tienda>
+  <producto>
+    ...
+  </producto>
+  <!-- Añade 3 productos más aquí -->
+</tienda>"></textarea>
+            
+            <button onclick="validateXML('xml-editor-2', 'result-2')" style="margin-top: 15px; padding: 12px 30px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 8px; font-size: 1em; font-weight: 600; cursor: pointer; box-shadow: 0 4px 15px rgba(102,126,234,0.4);">
+              🔍 Validar XML
+            </button>
+            
+            <div id="result-2" style="margin-top: 20px; padding: 15px; border-radius: 8px; display: none;"></div>
+          </div>
+          
+          <aside class="notes">
+            Editor de texto integrado donde los estudiantes escriben su XML.
+            El validador les dará feedback inmediato.
+          </aside>
+        </section>
+
+        <!-- Slide 30 — Ejercicio 3: Contar elementos -->
+        <section data-background-color="#f3f9ff">
+          <h2><span class="icon">📝</span>Ejercicio 3 — Contar elementos</h2>
+          
+          <div class="ejercicio-box">
+            <h3>Documento XML a analizar:</h3>
+            <pre style="font-size: 0.6em;"><code class="language-xml">&lt;feed xmlns="http://www.w3.org/2005/Atom"&gt;
+  &lt;title&gt;Árboles subtropicales&lt;/title&gt;
+  &lt;subtitle&gt;Cultivo del aguacate&lt;/subtitle&gt;
+  &lt;link href="http://ejemplo.com"/&gt;
+  &lt;updated&gt;2024-01-15T10:00:00Z&lt;/updated&gt;
+  &lt;author&gt;
+    &lt;name&gt;María Botánica&lt;/name&gt;
+  &lt;/author&gt;
+  &lt;entry&gt;
+    &lt;title&gt;Variedades de aguacate&lt;/title&gt;
+    &lt;summary&gt;Principales variedades comerciales&lt;/summary&gt;
+  &lt;/entry&gt;
+&lt;/feed&gt;</code></pre>
+          </div>
+          
+          <div class="fragment" style="margin-top: 20px;">
+            <h3>📋 Preguntas:</h3>
+            <ol style="font-size: 0.85em;">
+              <li>¿Cuál es el elemento raíz?</li>
+              <li>¿Cuántos elementos hay en TOTAL? (cuenta todos)</li>
+              <li>¿Cuántos son hijos directos de la raíz?</li>
+              <li>¿Cuántos elementos vacíos hay?</li>
+              <li>¿Qué elementos tienen atributos? ¿Cuáles son?</li>
+            </ol>
+          </div>
+          
+          <aside class="notes">
+            Ejercicio 3: Contar elementos y analizar estructura más compleja.
+            
+            RESPUESTAS:
+            1. Raíz: feed
+            2. Total de elementos: 11 (feed, title, subtitle, link, updated, author, name, entry, title, summary)
+            3. Hijos directos de raíz: 6 (title, subtitle, link, updated, author, entry)
+            4. Elementos vacíos: 1 (link)
+            5. Dos elementos tienen atributos: feed (xmlns) y link (href)
+          </aside>
+        </section>
+
+        <!-- Slide 31 — Ejercicio 4: Crear documento XML completo real -->
+        <section data-background-color="#f3f9ff">
+          <h2><span class="icon">🌍</span>Ejercicio 4 — Crear XML Real</h2>
+          
+          <div class="ejercicio-box">
+            <h3>Desafío:</h3>
+            <p style="font-size: 1em; margin: 20px 0;">Busca en internet un ejemplo de XML real y créalo desde cero.</p>
+            
+            <h3 style="margin-top: 25px;">Requisitos:</h3>
+            <ul style="font-size: 0.9em;">
+              <li>📄 Prólogo completo</li>
+              <li>🌳 Estructura jerárquica de al menos 3 niveles</li>
+              <li>📦 Mínimo 5 elementos diferentes</li>
+              <li>🏷️ Al menos 2 elementos con atributos</li>
+              <li>💬 Incluir al menos un comentario</li>
+            </ul>
+          </div>
+          
+          <div class="callout xml fragment" style="margin-top: 20px;">
+            <strong>💡 Ejemplos de XML reales:</strong> RSS feeds, SVG, sitemap.xml, configuraciones, KML, ePub
+          </div>
+          
+          <aside class="notes">
+            Ejercicio donde los estudiantes investigan y crean un XML real.
+            Pueden buscar en GitHub, tutoriales, documentación oficial.
+            Esto les da contexto de uso práctico de XML.
+            Deben escribirlo desde cero, no copiar y pegar.
+          </aside>
+        </section>
+
+        <!-- Slide 32 — Ejercicio 4: Editor y validador -->
+        <section data-background-color="#f3f9ff">
+          <h2><span class="icon">✏️</span>Ejercicio 4 — Escribe tu XML real</h2>
+          
+          <div style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            <h3 style="color: #667eea; margin-bottom: 15px;">Escribe aquí tu documento XML:</h3>
+            <textarea id="xml-editor-4" rows="14" style="width: 100%; font-family: 'Courier New', monospace; font-size: 0.75em; padding: 15px; border: 2px solid #ddd; border-radius: 8px; resize: vertical;" placeholder="<?xml version='1.0' encoding='utf-8'?>
+<!-- Tu XML aquí -->
+<raiz>
+  ...
+</raiz>"></textarea>
+            
+            <button onclick="validateXMLAdvanced('xml-editor-4', 'result-4', {
+              minLevels: 3,
+              minElements: 5,
+              requireAttributes: true,
+              requireComment: true
+            })" style="margin-top: 15px; padding: 12px 30px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 8px; font-size: 1em; font-weight: 600; cursor: pointer; box-shadow: 0 4px 15px rgba(102,126,234,0.4);">
+              🔍 Validar XML
+            </button>
+            
+            <div id="result-4" style="margin-top: 20px; padding: 15px; border-radius: 8px; display: none;"></div>
+          </div>
+          
+          <aside class="notes">
+            El validador verifica todos los requisitos del ejercicio:
+            - Prólogo presente
+            - Al menos 3 niveles de profundidad
+            - Mínimo 5 elementos
+            - Al menos 2 elementos con atributos
+            - Al menos un comentario
+            - XML bien formado e indentado
+          </aside>
+        </section>
+
+        <!-- Slide 33 — Ejercicio 5: Transformar elementos en atributos -->
+        <section data-background-color="#f3f9ff">
+          <h2><span class="icon">🔄</span>Ejercicio 5 — Transformación elementos → atributos</h2>
+          
+          <div class="ejercicio-box">
+            <h3>Documento XML ANTES:</h3>
+            <pre style="font-size: 0.65em;"><code class="language-xml">&lt;?xml version="1.0" encoding="iso-8859-1"?&gt;
+&lt;agenda&gt;
+  &lt;contacto nombre="alumna"&gt;
+    &lt;ciudad&gt;Málaga&lt;/ciudad&gt;
+    &lt;teléfono n="666777888"/&gt;
+    &lt;email&gt;a@librolm.com&lt;/email&gt;
+  &lt;/contacto&gt;
+&lt;/agenda&gt;</code></pre>
+          </div>
+          
+          <div class="fragment" style="margin-top: 20px;">
+            <h3>🎯 Tarea:</h3>
+            <p>Convierte los elementos <code>&lt;ciudad&gt;</code> y <code>&lt;email&gt;</code> en <strong>atributos</strong> del elemento <code>&lt;contacto&gt;</code>.</p>
+            <p style="margin-top: 10px;">Mantén <code>&lt;teléfono&gt;</code> como elemento vacío con su atributo <code>n</code>.</p>
+          </div>
+          
+          <aside class="notes">
+            Ejercicio 5: Transformación de elementos a atributos.
+            Esta es una práctica común en XML: decidir qué va como elemento y qué como atributo.
+            
+            SOLUCIÓN (no mostrar a los estudiantes):
+            <?xml version="1.0" encoding="iso-8859-1"?>
+            <agenda>
+              <contacto nombre="alumna" ciudad="Málaga" email="a@librolm.com">
+                <teléfono n="666777888"/>
+              </contacto>
+            </agenda>
+          </aside>
+        </section>
+
+        <!-- Slide 34 — Ejercicio 5: Editor de transformación -->
+        <section data-background-color="#f3f9ff">
+          <h2><span class="icon">✏️</span>Ejercicio 5 — Escribe el XML transformado</h2>
+          
+          <div style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            <h3 style="color: #667eea; margin-bottom: 15px;">Escribe el XML DESPUÉS de la transformación:</h3>
+            <textarea id="xml-editor-5" rows="10" style="width: 100%; font-family: 'Courier New', monospace; font-size: 0.75em; padding: 15px; border: 2px solid #ddd; border-radius: 8px; resize: vertical;" placeholder="<?xml version='1.0' encoding='iso-8859-1'?>
+<agenda>
+  <contacto nombre='alumna' ciudad='???' email='???'>
+    <teléfono n='666777888'/>
+  </contacto>
+</agenda>"></textarea>
+            
+            <button onclick="validateXML('xml-editor-5', 'result-5')" style="margin-top: 15px; padding: 12px 30px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 8px; font-size: 1em; font-weight: 600; cursor: pointer; box-shadow: 0 4px 15px rgba(102,126,234,0.4);">
+              🔍 Validar XML
+            </button>
+            
+            <div id="result-5" style="margin-top: 20px; padding: 15px; border-radius: 8px; display: none;"></div>
+          </div>
+          
+          <aside class="notes">
+            Los estudiantes escriben el XML transformado aquí.
+            Verifica que hayan movido correctamente los elementos a atributos.
+            El validador comprobará que esté bien formado.
+          </aside>
+        </section>
+
+        <!-- Slide 35 — Ejercicio 6: Crear XML completo desde cero (situación real) -->
+        <section data-background-color="#f3f9ff">
+          <h2><span class="icon">🎨</span>Ejercicio 6 — Crea tu propio XML completo</h2>
+          
+          <div class="ejercicio-box">
+            <h3>Desafío Final:</h3>
+            <p style="font-size: 1em; margin: 20px 0;">Crea desde cero un documento XML completo sobre una situación real de tu elección.</p>
+            
+            <h3 style="margin-top: 25px;">Requisitos obligatorios:</h3>
+            <ul style="font-size: 0.9em;">
+              <li>📄 Prólogo con versión y codificación</li>
+              <li>🌳 Estructura jerárquica de <strong>mínimo 4 niveles</strong></li>
+              <li>📦 Al menos <strong>8 elementos diferentes</strong></li>
+              <li>🏷️ Mínimo <strong>3 elementos con atributos</strong></li>
+              <li>💬 <strong>2 comentarios</strong> explicativos</li>
+              <li>📝 Usar alguna <strong>referencia a entidad</strong> (&amp;lt;, &amp;gt;, &amp;amp;, etc.)</li>
+              <li>✨ Indentación correcta y clara</li>
+            </ul>
+          </div>
+          
+          <div class="callout xml fragment" style="margin-top: 20px;">
+            <strong>💡 Ideas de situaciones reales:</strong> tienda online, biblioteca, recetas de cocina, red social, aplicación de tareas, sistema de reservas, inventario, catálogo de películas, etc.
+          </div>
+          
+          <aside class="notes">
+            EJERCICIO FINAL Y MÁS COMPLETO.
+            Los estudiantes deben aplicar TODO lo aprendido en la clase.
+            Este ejercicio es el más libre y creativo.
+            Permite evaluar si realmente entendieron XML bien formado.
+            El validador verificará todos los requisitos automáticamente.
+            Circula por el aula para ver las diferentes soluciones creativas.
+          </aside>
+        </section>
+
+        <!-- Slide 36 — Ejercicio 6: Editor y validador avanzado -->
+        <section data-background-color="#f3f9ff">
+          <h2><span class="icon">✏️</span>Ejercicio 6 — Escribe tu XML desde cero</h2>
+          
+          <div style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            <h3 style="color: #667eea; margin-bottom: 15px;">Crea aquí tu documento XML completo:</h3>
+            <textarea id="xml-editor-6" rows="16" style="width: 100%; font-family: 'Courier New', monospace; font-size: 0.7em; padding: 15px; border: 2px solid #ddd; border-radius: 8px; resize: vertical;" placeholder="<?xml version='1.0' encoding='utf-8'?>
+<!-- Comentario: describe tu XML aquí -->
+<tu_raiz>
+  <elemento_nivel_2>
+    <elemento_nivel_3 atributo='valor'>
+      <elemento_nivel_4>contenido</elemento_nivel_4>
+    </elemento_nivel_3>
+  </elemento_nivel_2>
+  <!-- Más elementos aquí -->
+</tu_raiz>"></textarea>
+            
+            <button onclick="validateXMLAdvanced('xml-editor-6', 'result-6', {
+              minLevels: 4,
+              minElements: 8,
+              minAttributes: 3,
+              requireComments: 2,
+              requireEntities: true
+            })" style="margin-top: 15px; padding: 12px 30px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 8px; font-size: 1em; font-weight: 600; cursor: pointer; box-shadow: 0 4px 15px rgba(102,126,234,0.4);">
+              🔍 Validar XML Completo
+            </button>
+            
+            <div id="result-6" style="margin-top: 20px; padding: 15px; border-radius: 8px; display: none;"></div>
+          </div>
+          
+          <aside class="notes">
+            El validador avanzado verifica TODOS los requisitos:
+            - Prólogo correcto
+            - Mínimo 4 niveles de profundidad
+            - Al menos 8 elementos únicos
+            - Mínimo 3 elementos con atributos
+            - Al menos 2 comentarios
+            - Uso de al menos una referencia a entidad
+            - Indentación correcta
+            
+            Este es el ejercicio más completo y permite ver si los estudiantes dominan XML.
+          </aside>
+        </section>
+
+        <!--================================-->
+        <!-- BLOQUE 4: CUESTIONARIOS       -->
+        <!--================================-->
+
+        <!-- Slide 37 — Inicio cuestionarios -->
+        <section data-background-gradient="linear-gradient(135deg, #f5576c 0%, #f093fb 100%)">
+          <h2><span class="icon">📝</span>Cuestionarios de Evaluación</h2>
+          <div class="taller-box">
+            <h3>Ahora vamos a evaluar lo aprendido:</h3>
+            <ul style="font-size: 1em;">
+              <li>📝 20 preguntas verdadero/falso</li>
+              <li>⚡ Feedback instantáneo con explicaciones</li>
+              <li>📊 Tu puntuación se registra automáticamente</li>
+              <li>🎯 Cubre todo lo visto en la clase</li>
+            </ul>
+          </div>
+          
+          <div class="callout pulse" style="margin-top: 30px; background: rgba(255,255,255,0.95); border: 3px solid #0d47a1; color: #0d47a1;">
+            <strong>🏆 Puntuación:</strong> 20 preguntas = 20 puntos totales. Aprobado: ≥10 puntos.
+          </div>
+          
+          <aside class="notes">
+            INICIO DEL BLOQUE DE CUESTIONARIOS.
+            Tiempo estimado: 30 minutos para las 20 preguntas.
+            Las respuestas se registran automáticamente.
+            El profesor puede ver estadísticas en tiempo real en el dashboard.
+          </aside>
+        </section>
+
+        <!-- Slide 38 — Cuestionario Completo (20 preguntas) -->
+        <section data-background-color="#f3f9ff">
+          <h2><span class="icon">✍️</span>Cuestionario Completo (20 preguntas)</h2>
+          <div class="preguntas-box" style="max-height: 550px; overflow-y: auto; padding: 20px;">
+            
+            <!-- Preguntas 1-10: Conceptos básicos y estructura -->
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">1. XML es un lenguaje case sensitive (distingue mayúsculas y minúsculas).</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q1" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q1" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q1"></div>
+            </div>
+
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">2. XML deriva de XHTML.</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q2" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q2" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q2"></div>
+            </div>
+
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">3. Un documento XML puede tener múltiples elementos raíz.</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q3" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q3" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q3"></div>
+            </div>
+
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">4. El prólogo XML es obligatorio en todos los documentos.</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q4" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q4" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q4"></div>
+            </div>
+
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">5. En XML, las etiquetas pueden contener espacios en su nombre.</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q5" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q5" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q5"></div>
+            </div>
+
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">6. Los elementos en XML deben estar correctamente anidados.</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q6" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q6" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q6"></div>
+            </div>
+
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">7. standalone="no" indica que el documento depende de un esquema externo.</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q7" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q7" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q7"></div>
+            </div>
+
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">8. Los nombres de elementos XML pueden empezar con números.</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q8" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q8" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q8"></div>
+            </div>
+
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">9. Un elemento vacío se puede escribir como &lt;elemento&gt;&lt;/elemento&gt; o &lt;elemento/&gt;.</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q9" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q9" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q9"></div>
+            </div>
+
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">10. XML permite tener dos elementos con el mismo nombre al mismo nivel.</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q10" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q10" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q10"></div>
+            </div>
+
+            <!-- Preguntas 11-20: Atributos, comentarios y CDATA -->
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">11. Los atributos se añaden dentro de la etiqueta de cierre.</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q11" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q11" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q11"></div>
+            </div>
+
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">12. Los valores de los atributos deben ir siempre entre comillas.</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q12" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q12" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q12"></div>
+            </div>
+
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">13. Un elemento puede tener dos atributos con el mismo nombre.</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q13" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q13" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q13"></div>
+            </div>
+
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">14. Los comentarios en XML tienen la misma sintaxis que los comentarios en HTML.</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q14" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q14" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q14"></div>
+            </div>
+
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">15. Los comentarios XML pueden anidarse unos dentro de otros.</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q15" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q15" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q15"></div>
+            </div>
+
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">16. CDATA permite incluir caracteres especiales como &lt; y &gt; sin que sean procesados como etiquetas.</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q16" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q16" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q16"></div>
+            </div>
+
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">17. La sintaxis de CDATA es &lt;[CDATA[...]]&gt;.</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q17" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q17" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q17"></div>
+            </div>
+
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">18. Los atributos son opcionales en los elementos XML.</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q18" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q18" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q18"></div>
+            </div>
+
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">19. "Bien formado" y "válido" significan lo mismo en XML.</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q19" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q19" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q19"></div>
+            </div>
+
+            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+              <p style="font-weight: 600; margin-bottom: 12px;">20. XML es extensible porque puedes definir tus propias etiquetas.</p>
+              <div style="display: flex; gap: 10px;">
+                <button class="vf-btn" data-question="q20" data-answer="v">✓ Verdadero</button>
+                <button class="vf-btn" data-question="q20" data-answer="f">✗ Falso</button>
+              </div>
+              <div class="feedback" id="feedback-q20"></div>
+            </div>
+
+          </div>
+          
+          <aside class="notes">
+            Cuestionario completo de 20 preguntas.
+            RESPUESTAS:
+            1. V - XML distingue mayúsculas y minúsculas
+            2. F - XML deriva de SGML, no de XHTML
+            3. F - Solo puede haber una única raíz
+            4. F - El prólogo es opcional (aunque recomendado)
+            5. F - Los nombres no pueden contener espacios
+            6. V - El anidamiento correcto es obligatorio
+            7. V - Standalone="no" indica dependencia de esquema externo
+            8. F - Los nombres no pueden empezar con números
+            9. V - Ambas formas son válidas para elementos vacíos
+            10. V - Pueden haber elementos hermanos con el mismo nombre
+            11. F - Los atributos van en la etiqueta de apertura
+            12. V - Los valores siempre deben ir entre comillas
+            13. F - No puede haber atributos duplicados
+            14. V - Misma sintaxis: <!-- -->
+            15. F - Los comentarios no pueden anidarse
+            16. V - Esa es precisamente la función de CDATA
+            17. F - La sintaxis correcta es <![CDATA[...]]>
+            18. V - Los atributos son opcionales
+            19. F - Bien formado = sintaxis correcta, válido = cumple esquema
+            20. V - Esa es la característica principal de XML
+          </aside>
+        </section>
+
+        <!-- Slide 39 — Cierre y próxima clase -->
+        <section data-background-gradient="linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
+          <h2 style="color: white !important; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">🎉 ¡Fin de la Clase 1!</h2>
+          
+          <div style="background: rgba(255,255,255,0.95); padding: 30px; border-radius: 15px; margin: 30px 0;">
+            <h3 style="color: #667eea;">¿Qué hemos aprendido hoy?</h3>
+            <ul style="color: #333; font-size: 0.95em; line-height: 1.8;">
+              <li>✅ Estructura de un documento XML</li>
+              <li>✅ Elementos, atributos y jerarquías</li>
+              <li>✅ Reglas para XML bien formado</li>
+              <li>✅ Comentarios y CDATA</li>
+              <li>✅ Práctica con ejercicios reales</li>
+            </ul>
+          </div>
+          
+          <div class="proxima-clase-box">
+            <h3>🔮 Próxima clase</h3>
+            <p style="font-size: 1.1em; margin-top: 15px;">
+              <strong>Pasaremos de "XML bien formado" a "XML con reglas"</strong>
+            </p>
+            <ul style="font-size: 0.95em; margin-top: 15px; text-align: left; display: inline-block;">
+              <li>Empezaremos a definir restricciones con <strong>DTD</strong></li>
+              <li>Aprenderemos a asociar esas reglas a un XML</li>
+              <li>Validaremos documentos contra esquemas</li>
+            </ul>
+          </div>
+          
+          <aside class="notes">
+            Cierre de la clase.
+            Recuerda a los estudiantes guardar sus trabajos (XML de ejercicios).
+            Los datos del cuestionario ya están guardados automáticamente.
+            Recuérdales que revisen el material antes de la próxima clase.
+          </aside>
+        </section>
+
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/notes/notes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/highlight.js"></script>
+    <script src="clase1_script.js"></script>
+  </body>
+</html>
