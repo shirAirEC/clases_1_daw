@@ -11,18 +11,24 @@ const formatBtn = document.getElementById('formatBtn');
 const refreshSchemaBtn = document.getElementById('refreshSchema');
 const schemaContent = document.getElementById('schemaContent');
 const examplesContent = document.getElementById('examplesContent');
+const exercisesContent = document.getElementById('exercisesContent');
 const resultsContent = document.getElementById('resultsContent');
 const executionInfo = document.getElementById('executionInfo');
 const lineCount = document.getElementById('lineCount');
+const progressText = document.getElementById('progressText');
 
 // Estado actual
 let currentQuery = '';
+let completedExercises = JSON.parse(localStorage.getItem('completedExercises') || '[]');
+let currentExercise = null;
 
 // Inicializar aplicación
 document.addEventListener('DOMContentLoaded', () => {
   loadSchema();
   loadExamples();
+  loadExercises();
   setupEventListeners();
+  setupTabs();
 });
 
 // Event Listeners
@@ -42,6 +48,25 @@ function setupEventListeners() {
       e.preventDefault();
       executeQuery();
     }
+  });
+}
+
+// Setup de pestañas
+function setupTabs() {
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tabName = btn.dataset.tab;
+      
+      // Desactivar todas las pestañas
+      tabBtns.forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      
+      // Activar pestaña seleccionada
+      btn.classList.add('active');
+      document.getElementById(`${tabName}Tab`).classList.add('active');
+    });
   });
 }
 
@@ -311,3 +336,6 @@ function escapeHtml(text) {
 // Hacer funciones globales para onclick
 window.insertTableName = insertTableName;
 window.loadExample = loadExample;
+window.loadExercise = loadExercise;
+window.toggleHint = toggleHint;
+window.markExerciseCompleted = markExerciseCompleted;

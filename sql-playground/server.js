@@ -196,6 +196,236 @@ app.get('/api/examples', (req, res) => {
   res.json({ success: true, examples });
 });
 
+// Endpoint para obtener ejercicios guiados
+app.get('/api/exercises', (req, res) => {
+  const exercises = [
+    // ===== NIVEL 1: BÁSICO - SELECT simple =====
+    {
+      id: 'EJ-01',
+      title: 'Listar todos los clientes',
+      description: 'Muestra el email de todos los clientes.',
+      difficulty: 'facil',
+      hint: 'Usa SELECT email FROM cliente;',
+      template: 'SELECT email FROM cliente;'
+    },
+    {
+      id: 'EJ-02',
+      title: 'Nombres de clientes',
+      description: 'Muestra el nombre de todos los clientes.',
+      difficulty: 'facil',
+      hint: 'Usa SELECT nombre FROM cliente;'
+    },
+    {
+      id: 'EJ-03',
+      title: 'Nombre completo',
+      description: 'Muestra el nombre y apellido de todos los clientes.',
+      difficulty: 'facil',
+      hint: 'Selecciona dos columnas: nombre y apellido'
+    },
+    {
+      id: 'EJ-04',
+      title: 'Datos de contacto',
+      description: 'Muestra la dirección, teléfono y email de todos los clientes.',
+      difficulty: 'facil',
+      hint: 'Selecciona tres columnas de la tabla cliente'
+    },
+    {
+      id: 'EJ-05',
+      title: 'Todas las columnas',
+      description: 'Muestra TODA la información de los clientes.',
+      difficulty: 'facil',
+      hint: 'Usa SELECT * FROM cliente;'
+    },
+    
+    // ===== NIVEL 2: ORDER BY y LIMIT =====
+    {
+      id: 'EJ-06',
+      title: 'Categorías alfabéticas',
+      description: 'Ordena las categorías por orden alfabético.',
+      difficulty: 'facil',
+      hint: 'Usa ORDER BY nombre para ordenar alfabéticamente'
+    },
+    {
+      id: 'EJ-07',
+      title: 'Primeras 6 categorías',
+      description: 'Muestra solo las primeras 6 categorías ordenadas alfabéticamente.',
+      difficulty: 'facil',
+      hint: 'Combina ORDER BY con LIMIT 6'
+    },
+    {
+      id: 'EJ-08',
+      title: 'Últimas películas',
+      description: 'Muestra las últimas 5 películas de la tabla.',
+      difficulty: 'medio',
+      hint: 'Usa ORDER BY pelicula_id DESC LIMIT 5'
+    },
+    
+    // ===== NIVEL 3: WHERE y filtros =====
+    {
+      id: 'EJ-09',
+      title: 'Clientes activos',
+      description: 'Muestra los clientes que están activos.',
+      difficulty: 'facil',
+      hint: 'Usa WHERE activo = true'
+    },
+    {
+      id: 'EJ-10',
+      title: 'Películas baratas',
+      description: 'Muestra las películas que cuestan menos de 3.00 €.',
+      difficulty: 'facil',
+      hint: 'Usa WHERE precio_alquiler < 3.00'
+    },
+    {
+      id: 'EJ-11',
+      title: 'Buscar por email',
+      description: 'Muestra los clientes que tienen email de gmail.',
+      difficulty: 'medio',
+      hint: 'Usa LIKE con el patrón %gmail%'
+    },
+    {
+      id: 'EJ-12',
+      title: 'Películas de terror',
+      description: 'Muestra todas las películas de la categoría Terror.',
+      difficulty: 'medio',
+      hint: 'Necesitas hacer un JOIN con la tabla categoria'
+    },
+    {
+      id: 'EJ-13',
+      title: 'Películas entre 2010 y 2020',
+      description: 'Muestra las películas lanzadas entre 2010 y 2020.',
+      difficulty: 'medio',
+      hint: 'Usa WHERE año_lanzamiento BETWEEN 2010 AND 2020'
+    },
+    {
+      id: 'EJ-14',
+      title: 'Actores españoles',
+      description: 'Muestra los actores que sean de nacionalidad española.',
+      difficulty: 'facil',
+      hint: 'Busca en la columna nacionalidad valores que contengan "España"'
+    },
+    
+    // ===== NIVEL 4: Agregaciones COUNT, SUM, AVG =====
+    {
+      id: 'EJ-15',
+      title: 'Contar películas',
+      description: 'Cuenta cuántas películas hay en total.',
+      difficulty: 'facil',
+      hint: 'Usa COUNT(*) FROM pelicula'
+    },
+    {
+      id: 'EJ-16',
+      title: 'Películas por categoría',
+      description: 'Cuenta cuántas películas hay en cada categoría.',
+      difficulty: 'medio',
+      hint: 'Usa GROUP BY categoria_id y COUNT(*)'
+    },
+    {
+      id: 'EJ-17',
+      title: 'Duración promedio',
+      description: 'Calcula la duración promedio de todas las películas.',
+      difficulty: 'medio',
+      hint: 'Usa AVG(duracion) FROM pelicula'
+    },
+    {
+      id: 'EJ-18',
+      title: 'Ingresos totales',
+      description: 'Calcula los ingresos totales de todos los alquileres.',
+      difficulty: 'medio',
+      hint: 'Usa SUM(precio_pagado) FROM alquiler'
+    },
+    {
+      id: 'EJ-19',
+      title: 'Cliente más gastador',
+      description: 'Encuentra el cliente que más dinero ha gastado en alquileres.',
+      difficulty: 'dificil',
+      hint: 'Agrupa por cliente_id, suma precio_pagado y ordena descendente'
+    },
+    
+    // ===== NIVEL 5: JOINs =====
+    {
+      id: 'EJ-20',
+      title: 'Películas con categoría',
+      description: 'Muestra el título de cada película junto con su categoría.',
+      difficulty: 'medio',
+      hint: 'JOIN entre pelicula y categoria usando categoria_id'
+    },
+    {
+      id: 'EJ-21',
+      title: 'Alquileres con clientes',
+      description: 'Muestra todos los alquileres con el nombre del cliente.',
+      difficulty: 'medio',
+      hint: 'JOIN entre alquiler y cliente usando cliente_id'
+    },
+    {
+      id: 'EJ-22',
+      title: 'Actores y sus películas',
+      description: 'Lista todos los actores con las películas en las que han participado.',
+      difficulty: 'dificil',
+      hint: 'Necesitas JOIN entre actor, pelicula_actor y pelicula'
+    },
+    {
+      id: 'EJ-23',
+      title: 'Películas nunca alquiladas',
+      description: 'Encuentra las películas que nunca han sido alquiladas.',
+      difficulty: 'dificil',
+      hint: 'Usa LEFT JOIN y WHERE alquiler_id IS NULL'
+    },
+    
+    // ===== NIVEL 6: Consultas avanzadas =====
+    {
+      id: 'EJ-24',
+      title: 'Top 5 películas más populares',
+      description: 'Muestra las 5 películas más alquiladas con su número de alquileres.',
+      difficulty: 'dificil',
+      hint: 'Agrupa por película, cuenta alquileres, ordena DESC y limita a 5'
+    },
+    {
+      id: 'EJ-25',
+      title: 'Ingresos por categoría',
+      description: 'Calcula los ingresos totales generados por cada categoría de películas.',
+      difficulty: 'dificil',
+      hint: 'Necesitas JOIN de 3 tablas: pelicula, categoria y alquiler'
+    },
+    {
+      id: 'EJ-26',
+      title: 'Actores más prolíficos',
+      description: 'Muestra los 5 actores que han participado en más películas.',
+      difficulty: 'dificil',
+      hint: 'Cuenta las filas en pelicula_actor agrupadas por actor'
+    },
+    {
+      id: 'EJ-27',
+      title: 'Películas por encima del promedio',
+      description: 'Muestra las películas cuya duración es mayor que el promedio.',
+      difficulty: 'dificil',
+      hint: 'Usa una subconsulta: WHERE duracion > (SELECT AVG(duracion)...)'
+    },
+    {
+      id: 'EJ-28',
+      title: 'Clientes sin alquileres recientes',
+      description: 'Encuentra clientes que no han alquilado nada en 2024.',
+      difficulty: 'dificil',
+      hint: 'Usa NOT IN o NOT EXISTS con una subconsulta filtrada por fecha'
+    },
+    {
+      id: 'EJ-29',
+      title: 'Ranking de categorías',
+      description: 'Crea un ranking de categorías por número de alquileres totales.',
+      difficulty: 'dificil',
+      hint: 'JOIN múltiple con GROUP BY categoria y COUNT de alquileres'
+    },
+    {
+      id: 'EJ-30',
+      title: 'Análisis completo del videoclub',
+      description: 'Crea un resumen con: total películas, actores, clientes activos, alquileres pendientes e ingresos totales.',
+      difficulty: 'dificil',
+      hint: 'Usa múltiples subconsultas con UNION ALL o varios SELECT con CROSS JOIN'
+    }
+  ];
+  
+  res.json({ success: true, exercises });
+});
+
 // Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });

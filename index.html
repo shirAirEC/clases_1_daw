@@ -631,12 +631,12 @@
         </a>
 
         <!-- Bases de Datos -->
-        <div class="asignatura-btn coming-soon">
+        <a href="#bases-datos" class="asignatura-btn" onclick="showSection('bases-datos'); return false;">
           <span class="asignatura-icon">💾</span>
           <h2>Bases de Datos</h2>
-          <p>Diseño, gestión y consulta de bases de datos relacionales y no relacionales.</p>
-          <span class="coming-soon-badge">🚧 Próximamente</span>
-        </div>
+          <p>Aprende SQL con ejercicios interactivos y práctica en tiempo real contra una base de datos PostgreSQL.</p>
+          <span class="clases-count">30 Ejercicios · SQL Playground</span>
+        </a>
       </div>
     </div>
   </div>
@@ -832,19 +832,110 @@
 
     <div class="clases-header">
       <h1>💾 Bases de Datos</h1>
-      <p>Diseño, gestión y consulta de bases de datos</p>
+      <p>Diseño, gestión y consulta de bases de datos relacionales</p>
     </div>
 
-    <div class="empty-state">
-      <div class="empty-state-icon">🚧</div>
-      <h3>En Construcción</h3>
-      <p>El contenido de Bases de Datos estará disponible próximamente.</p>
+    <div class="clases-grid">
+      <!-- SQL Playground -->
+      <div class="clase-card">
+        <div class="clase-header-row">
+          <span class="clase-numero">SQL Playground</span>
+          <span class="status-badge status-disponible">✅ Disponible</span>
+        </div>
+        
+        <h3>🗄️ Practica SQL en Tiempo Real</h3>
+        <p>Accede a nuestro playground interactivo con una base de datos real de PostgreSQL. Ejecuta consultas SQL, resuelve 30 ejercicios guiados y aprende desde lo básico hasta consultas avanzadas.</p>
+        
+        <div class="clase-stats">
+          <div class="stat">
+            <span>📝</span>
+            <span>30 ejercicios</span>
+          </div>
+          <div class="stat">
+            <span>🗄️</span>
+            <span>Base de datos real</span>
+          </div>
+          <div class="stat">
+            <span>⚡</span>
+            <span>Tiempo real</span>
+          </div>
+        </div>
+
+        <div class="clase-temas">
+          <h4>📚 Contenido:</h4>
+          <ul>
+            <li>SELECT, WHERE, ORDER BY (Básico)</li>
+            <li>Agregaciones: COUNT, SUM, AVG</li>
+            <li>JOINs: INNER, LEFT, RIGHT</li>
+            <li>Subconsultas y queries avanzadas</li>
+            <li>Funciones de fecha y texto</li>
+            <li>GROUP BY y HAVING</li>
+            <li>Vistas y optimización</li>
+          </ul>
+        </div>
+
+        <a href="https://tu-app.up.railway.app" target="_blank" class="btn-comenzar">
+          🚀 Abrir SQL Playground
+        </a>
+      </div>
+
+      <!-- Teoría SQL (Próximamente) -->
+      <div class="clase-card disabled">
+        <div class="clase-header-row">
+          <span class="clase-numero">Clase 1</span>
+          <span class="status-badge status-proximamente">🔜 Próximamente</span>
+        </div>
+        
+        <h3>Introducción a Bases de Datos</h3>
+        <p>Conceptos fundamentales, modelos de datos, diseño de bases de datos relacionales y normalización.</p>
+        
+        <button class="btn-comenzar" disabled>🔒 Próximamente</button>
+      </div>
+
+      <!-- Diseño de BD (Próximamente) -->
+      <div class="clase-card disabled">
+        <div class="clase-header-row">
+          <span class="clase-numero">Clase 2</span>
+          <span class="status-badge status-proximamente">🔜 Próximamente</span>
+        </div>
+        
+        <h3>Diseño de Bases de Datos</h3>
+        <p>Modelo Entidad-Relación, diagramas ER, cardinalidad y conversión al modelo relacional.</p>
+        
+        <button class="btn-comenzar" disabled>🔒 Próximamente</button>
+      </div>
+
+      <!-- SQL Avanzado (Próximamente) -->
+      <div class="clase-card disabled">
+        <div class="clase-header-row">
+          <span class="clase-numero">Clase 3</span>
+          <span class="status-badge status-proximamente">🔜 Próximamente</span>
+        </div>
+        
+        <h3>SQL Avanzado</h3>
+        <p>Procedimientos almacenados, triggers, transacciones, índices y optimización de consultas.</p>
+        
+        <button class="btn-comenzar" disabled>🔒 Próximamente</button>
+      </div>
+
+      <!-- NoSQL (Próximamente) -->
+      <div class="clase-card disabled">
+        <div class="clase-header-row">
+          <span class="clase-numero">Clase 4</span>
+          <span class="status-badge status-proximamente">🔜 Próximamente</span>
+        </div>
+        
+        <h3>Bases de Datos NoSQL</h3>
+        <p>MongoDB, Redis, introducción a bases de datos documentales y clave-valor.</p>
+        
+        <button class="btn-comenzar" disabled>🔒 Próximamente</button>
+      </div>
     </div>
 
     <footer>
-      <p>📘 Material de Clases 1º DAW · Desarrollado con ❤️ usando HTML5, CSS3 y JavaScript</p>
+      <p>📘 Material de Clases 1º DAW · Desarrollado con ❤️ usando HTML5, CSS3, JavaScript y PostgreSQL</p>
       <p style="margin-top: 10px;">
-        <a href="https://github.com/shirAirEC/presentaci-n_xml" target="_blank">Ver proyecto en GitHub</a>
+        <a href="https://github.com/shirAirEC/clases_1_daw" target="_blank">Ver proyecto en GitHub</a>
       </p>
     </footer>
   </div>

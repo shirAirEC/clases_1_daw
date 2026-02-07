@@ -19,20 +19,46 @@
 
     <!-- Main Content -->
     <div class="main-content">
-      <!-- Sidebar con esquema -->
+      <!-- Sidebar con tabs -->
       <aside class="sidebar">
-        <div class="sidebar-header">
-          <h3>📋 Esquema de Base de Datos</h3>
-          <button id="refreshSchema" class="btn-icon" title="Actualizar esquema">
-            🔄
-          </button>
-        </div>
-        <div id="schemaContent" class="schema-content">
-          <p class="loading">Cargando esquema...</p>
+        <!-- Tabs -->
+        <div class="sidebar-tabs">
+          <button class="tab-btn active" data-tab="schema">📋 Esquema</button>
+          <button class="tab-btn" data-tab="exercises">📝 Ejercicios</button>
+          <button class="tab-btn" data-tab="examples">📚 Ejemplos</button>
         </div>
 
-        <div class="sidebar-section">
-          <h3>📚 Ejemplos</h3>
+        <!-- Tab: Esquema -->
+        <div id="schemaTab" class="tab-content active">
+          <div class="sidebar-header">
+            <h3>📋 Esquema de Base de Datos</h3>
+            <button id="refreshSchema" class="btn-icon" title="Actualizar esquema">
+              🔄
+            </button>
+          </div>
+          <div id="schemaContent" class="schema-content">
+            <p class="loading">Cargando esquema...</p>
+          </div>
+        </div>
+
+        <!-- Tab: Ejercicios -->
+        <div id="exercisesTab" class="tab-content">
+          <div class="sidebar-header">
+            <h3>📝 Ejercicios Guiados</h3>
+            <div class="exercise-progress" id="exerciseProgress">
+              <span id="progressText">0/0</span>
+            </div>
+          </div>
+          <div id="exercisesContent" class="exercises-content">
+            <p class="loading">Cargando ejercicios...</p>
+          </div>
+        </div>
+
+        <!-- Tab: Ejemplos -->
+        <div id="examplesTab" class="tab-content">
+          <div class="sidebar-header">
+            <h3>📚 Ejemplos</h3>
+          </div>
           <div id="examplesContent" class="examples-content">
             <p class="loading">Cargando ejemplos...</p>
           </div>
@@ -92,5 +118,6 @@
   </div>
 
   <script src="app.js"></script>
+  <script src="exercises.js"></script>
 </body>
 </html>
