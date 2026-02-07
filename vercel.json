@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/sql-playground",
+      "destination": "https://clases1daw-production.up.railway.app"
+    },
+    {
       "source": "/sql-playground/:path*",
       "destination": "https://clases1daw-production.up.railway.app/:path*"
     }
