@@ -931,3 +931,335 @@ pre code {
     font-size: 0.75em;
   }
 }
+
+/* ===== ESTILOS ESPECÍFICOS PARA BASES DE DATOS ===== */
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.card-example {
+  background: rgba(255,255,255,0.95);
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-example:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+
+.card-example h4 {
+  color: #0d47a1 !important;
+  margin: 10px 0;
+  background: none !important;
+  padding: 0 !important;
+  text-shadow: none !important;
+}
+
+.card-relation {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  padding: 25px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.card-relation h3 {
+  color: white !important;
+  margin-top: 0;
+  background: none !important;
+  padding: 0 !important;
+  text-shadow: none !important;
+}
+
+.concepto-box {
+  background: rgba(255,255,255,0.95);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.concepto-box h4 {
+  color: #0d47a1 !important;
+  margin-top: 0;
+  background: none !important;
+  padding: 0 !important;
+  text-shadow: none !important;
+}
+
+.tabla-ejemplo table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 20px 0;
+}
+
+.tabla-mini {
+  padding: 10px;
+}
+
+.tabla-mini table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8em;
+}
+
+.tabla-mini td, .tabla-mini th {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+}
+
+.action-card {
+  background: rgba(255,255,255,0.95);
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.action-card h4 {
+  color: #0d47a1 !important;
+  margin: 10px 0;
+  background: none !important;
+  padding: 0 !important;
+  text-shadow: none !important;
+}
+
+.explanation-box {
+  background: #f0f8ff;
+  padding: 20px;
+  border-radius: 12px;
+  margin: 20px 0;
+}
+
+.explanation-box h3 {
+  color: #0d47a1 !important;
+  margin-top: 0;
+  background: none !important;
+  padding: 0 !important;
+  text-shadow: none !important;
+}
+
+.comparison-box {
+  background: rgba(255,255,255,0.95);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.comparison-box h4 {
+  color: #0d47a1 !important;
+  margin-top: 0;
+  background: none !important;
+  padding: 0 !important;
+  text-shadow: none !important;
+}
+
+.function-card {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.function-card h3 {
+  color: white !important;
+  margin: 10px 0;
+  background: none !important;
+  padding: 0 !important;
+  text-shadow: none !important;
+}
+
+.join-box {
+  background: rgba(255,255,255,0.95);
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.join-box h4 {
+  color: #0d47a1 !important;
+  margin-top: 0;
+  background: none !important;
+  padding: 0 !important;
+  text-shadow: none !important;
+}
+
+.advantage-card {
+  background: rgba(255,255,255,0.95);
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.advantage-card:hover {
+  transform: translateY(-5px);
+}
+
+.advantage-card h4 {
+  color: #0d47a1 !important;
+  margin: 10px 0;
+  background: none !important;
+  padding: 0 !important;
+  text-shadow: none !important;
+}
+
+.acid-box {
+  background: rgba(255,255,255,0.95);
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.acid-box h3 {
+  color: #0d47a1 !important;
+  margin-top: 0;
+  background: none !important;
+  padding: 0 !important;
+  text-shadow: none !important;
+}
+
+.datatype-box {
+  background: rgba(255,255,255,0.95);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.datatype-box h4 {
+  color: #0d47a1 !important;
+  margin-top: 0;
+  background: none !important;
+  padding: 0 !important;
+  text-shadow: none !important;
+}
+
+.tool-card {
+  background: rgba(255,255,255,0.95);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.tool-card h4 {
+  color: #0d47a1 !important;
+  margin: 10px 0;
+  background: none !important;
+  padding: 0 !important;
+  text-shadow: none !important;
+}
+
+.steps-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin: 30px auto;
+  max-width: 800px;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  background: rgba(255,255,255,0.95);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+}
+
+.step:hover {
+  transform: translateX(10px);
+}
+
+.step-number {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-right: 20px;
+  flex-shrink: 0;
+}
+
+.step-content h4 {
+  color: #0d47a1 !important;
+  margin: 0 0 10px 0;
+  background: none !important;
+  padding: 0 !important;
+  text-shadow: none !important;
+}
+
+.step-content p {
+  margin: 0;
+  color: #666;
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin: 30px auto;
+  max-width: 600px;
+}
+
+.timeline-item {
+  background: rgba(255,255,255,0.95);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  border-left: 5px solid #667eea;
+}
+
+.timeline-item.completed {
+  border-left-color: var(--green);
+}
+
+.timeline-item h4 {
+  color: #0d47a1 !important;
+  margin: 0 0 10px 0;
+  background: none !important;
+  padding: 0 !important;
+  text-shadow: none !important;
+}
+
+.er-diagram {
+  margin: 20px 0;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin: 20px 0;
+}
+
+@media (max-width: 768px) {
+  .grid-3, .grid-4, .grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
