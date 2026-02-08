@@ -295,6 +295,14 @@
             </div>
           </div>
           <p class="fragment" style="margin-top: 20px;">El campo <code>cliente_id</code> en <code>alquiler</code> es una <strong>clave foránea</strong> que apunta a <code>cliente</code></p>
+          
+          <div class="fragment" style="background: #fff3cd; padding: 20px; border-radius: 12px; margin-top: 30px; border-left: 5px solid #ffa726;">
+            <h3 style="color: #0d47a1 !important; margin-top: 0; background: none !important; padding: 0 !important; text-shadow: none !important;">🤔 Pregunta para pensar:</h3>
+            <p style="font-size: 1.1em; font-weight: 600; color: #333;">Dada la tabla alquiler, ¿cuál es el <strong>nombre del cliente</strong> cuya fecha es <strong>2024-01-20</strong>?</p>
+            <p class="fragment" style="margin-top: 15px; padding: 15px; background: #e8f5e9; border-radius: 8px; font-weight: 600;">
+              ✅ Respuesta: <strong>Juan</strong> (cliente_id = 1 en el alquiler_id = 3)
+            </p>
+          </div>
         </section>
 
         <!-- Slide 10 — Tipos de Relaciones -->
@@ -304,20 +312,20 @@
             <div class="card-relation fragment">
               <h3>1:1 (Uno a Uno)</h3>
               <div style="font-size: 2em; margin: 20px 0;">👤 ↔️ 📋</div>
-              <p>Una persona tiene un pasaporte</p>
-              <p style="font-size: 0.85em; color: #666;">Poco común</p>
+              <p style="color: white;">Una persona tiene un pasaporte</p>
+              <p style="font-size: 0.85em; color: rgba(255,255,255,0.8);">Poco común</p>
             </div>
             <div class="card-relation fragment">
               <h3>1:N (Uno a Muchos)</h3>
               <div style="font-size: 2em; margin: 20px 0;">👤 ↔️ 📦📦📦</div>
-              <p>Un cliente hace varios pedidos</p>
-              <p style="font-size: 0.85em; color: #666;">¡La más común!</p>
+              <p style="color: white;">Un cliente hace varios pedidos</p>
+              <p style="font-size: 0.85em; color: rgba(255,255,255,0.8);">¡La más común!</p>
             </div>
             <div class="card-relation fragment">
               <h3>N:M (Muchos a Muchos)</h3>
               <div style="font-size: 2em; margin: 20px 0;">👥 ↔️ 🎬🎬</div>
-              <p>Varios actores en varias películas</p>
-              <p style="font-size: 0.85em; color: #666;">Necesita tabla intermedia</p>
+              <p style="color: white;">Varios actores en varias películas</p>
+              <p style="font-size: 0.85em; color: rgba(255,255,255,0.8);">Necesita tabla intermedia</p>
             </div>
           </div>
         </section>
@@ -365,7 +373,7 @@
         <section>
           <h2><span class="icon">🔀</span>Relación N:M (Muchos a Muchos)</h2>
           <p>Varios actores en varias películas → Necesita <strong>tabla intermedia</strong></p>
-          <div class="grid-3" style="margin-top: 30px; font-size: 0.75em;">
+          <div class="grid-3" style="margin-top: 30px; font-size: 0.7em;">
             <div>
               <h4>Tabla: actor</h4>
               <table style="width: 100%;">
@@ -375,6 +383,7 @@
                 </tr>
                 <tr><td>1</td><td>Keanu Reeves</td></tr>
                 <tr><td>2</td><td>Tom Hanks</td></tr>
+                <tr><td>3</td><td>Scarlett Johansson</td></tr>
               </table>
             </div>
             <div class="fragment">
@@ -385,8 +394,11 @@
                   <th>actor_id</th>
                 </tr>
                 <tr><td>1</td><td>1</td></tr>
+                <tr><td>2</td><td>1</td></tr>
                 <tr><td>3</td><td>2</td></tr>
-                <tr><td>6</td><td>2</td></tr>
+                <tr><td>4</td><td>2</td></tr>
+                <tr><td>2</td><td>3</td></tr>
+                <tr><td>5</td><td>3</td></tr>
               </table>
             </div>
             <div>
@@ -397,13 +409,19 @@
                   <th>titulo</th>
                 </tr>
                 <tr><td>1</td><td>Matrix</td></tr>
+                <tr><td>2</td><td>John Wick</td></tr>
                 <tr><td>3</td><td>Toy Story</td></tr>
-                <tr><td>6</td><td>Forrest Gump</td></tr>
+                <tr><td>4</td><td>Forrest Gump</td></tr>
+                <tr><td>5</td><td>Avengers</td></tr>
               </table>
             </div>
           </div>
-          <p class="fragment" style="margin-top: 25px;">
-            Keanu está en Matrix, Tom Hanks en Toy Story y Forrest Gump
+          <p class="fragment" style="margin-top: 25px; font-size: 0.9em;">
+            <strong>Interpretación:</strong><br>
+            • Keanu Reeves actúa en <strong>Matrix</strong> y <strong>John Wick</strong><br>
+            • Tom Hanks actúa en <strong>Toy Story</strong> y <strong>Forrest Gump</strong><br>
+            • Scarlett Johansson actúa en <strong>John Wick</strong> y <strong>Avengers</strong><br>
+            • La película <strong>John Wick</strong> tiene 2 actores (Keanu y Scarlett)
           </p>
         </section>
 
