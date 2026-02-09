@@ -892,7 +892,7 @@ app.get('/api/cuestionario/respuestas/:cuestionario_id?', requireAuth, async (re
         r.nota,
         r.comentarios,
         u.username,
-        u.nombre,
+        u.nombre_completo as nombre,
         u.rol
       FROM respuestas_cuestionario r
       JOIN usuarios u ON r.usuario_id = u.usuario_id
