@@ -169,7 +169,25 @@ async function requireAuth(req, res, next) {
 
 // Helper para obtener usuario actual (desde sesión o token)
 function getCurrentUser(req) {
-  return req.user || req.session?.user;
+  // Priorizar req.user (desde token)
+  if (req.user) {
+    return req.user;
+  }
+  
+  // Fallback a req.session.user (desde cookie de sesión)
+  if (req.session && req.session.user) {
+    // Normalizar el formato para asegurar que tenga usuario_id
+    const sessionUser = req.session.user;
+    return {
+      usuario_id: sessionUser.usuario_id || sessionUser.id,
+      username: sessionUser.username,
+      nombre: sessionUser.nombre,
+      rol: sessionUser.rol,
+      email: sessionUser.email
+    };
+  }
+  
+  return null;
 }
 
 // Health check endpoint para Railway
@@ -261,7 +279,7 @@ app.post('/api/login', async (req, res) => {
     
     // Crear sesión (para compatibilidad)
     req.session.user = {
-      id: user.usuario_id,
+      usuario_id: user.usuario_id,
       username: user.username,
       nombre: user.nombre_completo,
       rol: user.rol,
@@ -779,8 +797,16 @@ app.get('/health', (req, res) => {
 // Endpoint para enviar respuestas de cuestionario (PROTEGIDO)
 app.post('/api/cuestionario/submit', requireAuth, async (req, res) => {
   const user = getCurrentUser(req);
-  console.log('POST /api/cuestionario/submit - Usuario:', user?.username);
+  console.log('POST /api/cuestionario/submit - Usuario completo:', JSON.stringify(user));
   console.log('Body recibido:', req.body);
+  
+  if (!user || !user.usuario_id) {
+    console.error('ERROR: Usuario no encontrado o sin usuario_id');
+    return res.status(401).json({ 
+      success: false, 
+      message: 'No se pudo identificar al usuario' 
+    });
+  }
   
   const { cuestionario_id, respuestas } = req.body;
   const usuario_id = user.usuario_id;
