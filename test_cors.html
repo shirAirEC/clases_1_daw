@@ -56,15 +56,21 @@
   </div>
 
   <div class="test-box">
-    <h3>Test 3: Cuestionario Submit (requiere login)</h3>
-    <button onclick="testCuestionario()">Probar /api/cuestionario/submit</button>
+    <h3>Test 3: POST sin autenticación</h3>
+    <button onclick="testPost()">Probar /api/test-post</button>
     <div id="result3"></div>
   </div>
 
   <div class="test-box">
-    <h3>Test 4: Verificar headers CORS en respuesta</h3>
-    <button onclick="checkCorsHeaders()">Verificar Headers</button>
+    <h3>Test 4: Cuestionario Submit (requiere login)</h3>
+    <button onclick="testCuestionario()">Probar /api/cuestionario/submit</button>
     <div id="result4"></div>
+  </div>
+
+  <div class="test-box">
+    <h3>Test 5: Verificar headers CORS en respuesta</h3>
+    <button onclick="checkCorsHeaders()">Verificar Headers</button>
+    <div id="result5"></div>
   </div>
 
   <script>
@@ -96,8 +102,40 @@
       }
     }
 
-    async function testCuestionario() {
+    async function testPost() {
       const resultDiv = document.getElementById('result3');
+      resultDiv.innerHTML = '<p>🔄 Probando POST...</p>';
+      
+      try {
+        const response = await fetch(`${API_URL}/api/test-post`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            test: 'data',
+            timestamp: new Date().toISOString()
+          })
+        });
+        
+        const data = await response.json();
+        resultDiv.innerHTML = `
+          <p style="color: #28a745;">✅ POST funciona! Status: ${response.status}</p>
+          <pre>${JSON.stringify(data, null, 2)}</pre>
+          <p style="margin-top: 10px;">Si este test funciona, CORS está OK para POST</p>
+        `;
+      } catch (error) {
+        resultDiv.innerHTML = `
+          <p style="color: #dc3545;">❌ Error en POST</p>
+          <pre>${error.message}</pre>
+          <p>Si falla aquí, el problema es CORS en métodos POST</p>
+        `;
+      }
+    }
+
+    async function testCuestionario() {
+      const resultDiv = document.getElementById('result4');
       resultDiv.innerHTML = '<p>🔄 Probando...</p>';
       
       try {
@@ -130,7 +168,7 @@
     }
 
     async function checkCorsHeaders() {
-      const resultDiv = document.getElementById('result4');
+      const resultDiv = document.getElementById('result5');
       resultDiv.innerHTML = '<p>🔄 Verificando headers...</p>';
       
       try {

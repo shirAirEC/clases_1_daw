@@ -3,6 +3,7 @@ const { Pool } = require('pg');
 const cors = require('cors');
 const helmet = require('helmet');
 const session = require('express-session');
+const pgSession = require('connect-pg-simple')(session);
 const bcrypt = require('bcryptjs');
 require('dotenv').config();
 
@@ -31,8 +32,13 @@ app.use(helmet({
   crossOriginResourcePolicy: false
 }));
 
-// Configurar sesiones
+// Configurar sesiones con PostgreSQL store (más robusto para producción)
 app.use(session({
+  store: new pgSession({
+    pool: pool,
+    tableName: 'session',
+    createTableIfMissing: true
+  }),
   secret: process.env.SESSION_SECRET || 'clases1daw-secret-key-2024',
   resave: false,
   saveUninitialized: false,
@@ -115,6 +121,18 @@ app.get('/api/test', (req, res) => {
   res.json({ 
     success: true, 
     message: 'API funcionando correctamente',
+    cors: 'OK',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Test POST para verificar CORS en método POST (sin autenticación)
+app.post('/api/test-post', (req, res) => {
+  console.log('POST /api/test-post recibido', req.body);
+  res.json({ 
+    success: true, 
+    message: 'POST funcionando correctamente',
+    received: req.body,
     cors: 'OK',
     timestamp: new Date().toISOString()
   });
