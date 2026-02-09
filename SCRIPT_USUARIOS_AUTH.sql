@@ -1,3 +1,8 @@
+-- ================================================
+-- SCRIPT DE BASE DE DATOS PARA AUTENTICACIÓN
+-- Sistema de usuarios y roles para 1º DAW
+-- ================================================
+
 -- Crear tabla de usuarios
 CREATE TABLE IF NOT EXISTS usuarios (
     usuario_id SERIAL PRIMARY KEY,
@@ -48,10 +53,20 @@ INSERT INTO usuarios (username, password, nombre_completo, rol) VALUES
 ('alumno29', 'alumno123', 'Alumno 29', 'alumno'),
 ('alumno30', 'alumno123', 'Alumno 30', 'alumno');
 
--- Crear índice para búsquedas rápidas
+-- Crear índices para búsquedas rápidas
 CREATE INDEX idx_usuarios_username ON usuarios(username);
 CREATE INDEX idx_usuarios_rol ON usuarios(rol);
 
--- Dar permisos al usuario estudiante para leer esta tabla
-GRANT SELECT ON usuarios TO estudiante;
-GRANT SELECT ON SEQUENCE usuarios_usuario_id_seq TO estudiante;
+-- Verificar que se crearon correctamente
+SELECT 
+    rol,
+    COUNT(*) as total
+FROM usuarios
+GROUP BY rol
+ORDER BY rol DESC;
+
+-- ================================================
+-- CREDENCIALES:
+-- Profesor: usuario='profesor', password='profesor123'
+-- Alumnos: usuario='alumno1' a 'alumno30', password='alumno123'
+-- ================================================
