@@ -5,10 +5,20 @@ const helmet = require('helmet');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Pool de conexiones a PostgreSQL (definir ANTES de usar en sesión)
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  max: 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 5000,
+});
 
 // CORS debe ir primero - antes de todo
 app.use(cors({
@@ -53,15 +63,6 @@ app.use(session({
 
 app.use(express.static('public'));
 
-// Pool de conexiones a PostgreSQL (usuario de solo lectura)
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-  max: 20, // Máximo 20 conexiones en el pool
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 5000,
-});
-
 // Palabras clave peligrosas (prohibir modificaciones)
 const FORBIDDEN_KEYWORDS = [
   'INSERT', 'UPDATE', 'DELETE', 'DROP', 'CREATE', 'ALTER', 
@@ -94,17 +95,59 @@ app.use((req, res, next) => {
   next();
 });
 
-// Middleware para verificar autenticación
-function requireAuth(req, res, next) {
-  if (!req.session || !req.session.user) {
-    console.log('requireAuth: No autenticado');
-    return res.status(401).json({ 
-      success: false, 
-      error: 'Debes iniciar sesión para acceder' 
-    });
+// Middleware para verificar autenticación (sesión O token)
+async function requireAuth(req, res, next) {
+  // Intentar 1: Verificar sesión
+  if (req.session && req.session.user) {
+    console.log('requireAuth: OK (sesión) -', req.session.user.username);
+    return next();
   }
-  console.log('requireAuth: OK -', req.session.user.username);
-  next();
+
+  // Intentar 2: Verificar token en header Authorization
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.substring(7);
+    
+    try {
+      const result = await pool.query(
+        `SELECT u.* FROM usuarios u 
+         JOIN auth_tokens t ON u.usuario_id = t.usuario_id 
+         WHERE t.token = $1 AND t.expires_at > NOW()`,
+        [token]
+      );
+
+      if (result.rows.length > 0) {
+        const user = result.rows[0];
+        // Actualizar last_used
+        await pool.query('UPDATE auth_tokens SET last_used = NOW() WHERE token = $1', [token]);
+        
+        // Adjuntar usuario a la request
+        req.user = {
+          usuario_id: user.usuario_id,
+          username: user.username,
+          nombre: user.nombre_completo,
+          rol: user.rol,
+          email: user.email
+        };
+        
+        console.log('requireAuth: OK (token) -', user.username);
+        return next();
+      }
+    } catch (error) {
+      console.error('Error validando token:', error);
+    }
+  }
+
+  console.log('requireAuth: No autenticado');
+  return res.status(401).json({ 
+    success: false, 
+    error: 'Debes iniciar sesión para acceder' 
+  });
+}
+
+// Helper para obtener usuario actual (desde sesión o token)
+function getCurrentUser(req) {
+  return req.user || req.session?.user;
 }
 
 // Health check endpoint para Railway
@@ -181,7 +224,20 @@ app.post('/api/login', async (req, res) => {
       [user.usuario_id]
     );
     
-    // Crear sesión
+    // Generar token de autenticación
+    const token = crypto.randomBytes(32).toString('hex');
+    const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 días
+    
+    // Eliminar tokens antiguos del usuario
+    await pool.query('DELETE FROM auth_tokens WHERE usuario_id = $1', [user.usuario_id]);
+    
+    // Guardar nuevo token
+    await pool.query(
+      'INSERT INTO auth_tokens (usuario_id, token, expires_at) VALUES ($1, $2, $3)',
+      [user.usuario_id, token, expiresAt]
+    );
+    
+    // Crear sesión (para compatibilidad)
     req.session.user = {
       id: user.usuario_id,
       username: user.username,
@@ -192,10 +248,13 @@ app.post('/api/login', async (req, res) => {
     
     res.json({
       success: true,
+      token: token, // Token para localStorage
       user: {
+        usuario_id: user.usuario_id,
         username: user.username,
         nombre: user.nombre_completo,
-        rol: user.rol
+        rol: user.rol,
+        email: user.email
       }
     });
     
@@ -224,11 +283,12 @@ app.post('/api/logout', (req, res) => {
 
 // Verificar sesión
 app.get('/api/session', (req, res) => {
-  if (req.session && req.session.user) {
+  const user = getCurrentUser(req);
+  if (user) {
     res.json({
       success: true,
       authenticated: true,
-      user: req.session.user
+      user: user
     });
   } else {
     res.json({
@@ -696,11 +756,12 @@ app.get('/health', (req, res) => {
 
 // Endpoint para enviar respuestas de cuestionario (PROTEGIDO)
 app.post('/api/cuestionario/submit', requireAuth, async (req, res) => {
-  console.log('POST /api/cuestionario/submit - Usuario:', req.session?.user?.username);
+  const user = getCurrentUser(req);
+  console.log('POST /api/cuestionario/submit - Usuario:', user?.username);
   console.log('Body recibido:', req.body);
   
   const { cuestionario_id, respuestas } = req.body;
-  const usuario_id = req.session.user.usuario_id;
+  const usuario_id = user.usuario_id;
 
   if (!cuestionario_id || !respuestas) {
     console.log('Faltan datos del cuestionario');
@@ -760,8 +821,9 @@ app.post('/api/cuestionario/submit', requireAuth, async (req, res) => {
 
 // Endpoint para que el profesor vea las respuestas (SOLO PROFESOR)
 app.get('/api/cuestionario/respuestas/:cuestionario_id?', requireAuth, async (req, res) => {
+  const user = getCurrentUser(req);
   // Verificar que sea profesor
-  if (req.session.user.rol !== 'profesor') {
+  if (user.rol !== 'profesor') {
     return res.status(403).json({ 
       success: false, 
       message: 'Acceso denegado. Solo profesores.' 
@@ -815,8 +877,9 @@ app.get('/api/cuestionario/respuestas/:cuestionario_id?', requireAuth, async (re
 
 // Endpoint para calificar respuestas (SOLO PROFESOR)
 app.post('/api/cuestionario/calificar', requireAuth, async (req, res) => {
+  const user = getCurrentUser(req);
   // Verificar que sea profesor
-  if (req.session.user.rol !== 'profesor') {
+  if (user.rol !== 'profesor') {
     return res.status(403).json({ 
       success: false, 
       message: 'Acceso denegado. Solo profesores.' 

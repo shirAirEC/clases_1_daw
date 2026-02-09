@@ -751,11 +751,17 @@
       messageDiv.innerHTML = '';
       
       try {
+        const token = localStorage.getItem('authToken');
+        const headers = {
+          'Content-Type': 'application/json'
+        };
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+        
         const response = await fetch(`${API_URL}/api/cuestionario/submit`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
+          headers: headers,
           credentials: 'include',
           body: JSON.stringify({
             cuestionario_id: 'BD-CLASE1',

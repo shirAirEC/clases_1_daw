@@ -3,6 +3,18 @@ const API_URL = window.location.pathname.startsWith('/sql-playground')
   ? '/sql-playground' 
   : '';
 
+// Helper para obtener headers con autenticación
+function getAuthHeaders() {
+  const token = localStorage.getItem('authToken');
+  const headers = {
+    'Content-Type': 'application/json'
+  };
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  return headers;
+}
+
 // Elementos del DOM
 const sqlEditor = document.getElementById('sqlEditor');
 const executeBtn = document.getElementById('executeBtn');
@@ -81,7 +93,10 @@ async function loadSchema() {
   schemaContent.innerHTML = '<p class="loading">Cargando esquema...</p>';
   
   try {
-    const response = await fetch(`${API_URL}/api/schema`);
+    const response = await fetch(`${API_URL}/api/schema`, {
+      headers: getAuthHeaders(),
+      credentials: 'include'
+    });
     const data = await response.json();
     
     if (data.success) {
@@ -149,7 +164,10 @@ async function loadExamples() {
   examplesContent.innerHTML = '<p class="loading">Cargando ejemplos...</p>';
   
   try {
-    const response = await fetch(`${API_URL}/api/examples`);
+    const response = await fetch(`${API_URL}/api/examples`, {
+      headers: getAuthHeaders(),
+      credentials: 'include'
+    });
     const data = await response.json();
     
     if (data.success) {
@@ -210,9 +228,8 @@ async function executeQuery() {
   try {
     const response = await fetch(`${API_URL}/api/execute`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: getAuthHeaders(),
+      credentials: 'include',
       body: JSON.stringify({ query })
     });
     

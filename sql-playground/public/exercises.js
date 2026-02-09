@@ -3,7 +3,10 @@ async function loadExercises() {
   exercisesContent.innerHTML = '<p class="loading">Cargando ejercicios...</p>';
   
   try {
-    const response = await fetch(`${API_URL}/api/exercises`);
+    const response = await fetch(`${API_URL}/api/exercises`, {
+      headers: getAuthHeaders(),
+      credentials: 'include'
+    });
     const data = await response.json();
     
     if (data.success) {
