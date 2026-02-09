@@ -309,13 +309,24 @@
       }
     }
 
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
     function renderCalificaciones(respuestas) {
       const list = document.getElementById('calificaciones-list');
+      
+      // Debug: mostrar datos recibidos
+      console.log('Calificaciones recibidas:', respuestas);
       
       list.innerHTML = respuestas.map(resp => {
         const fecha = new Date(resp.fecha_envio).toLocaleString('es-ES');
         const nota = resp.nota !== null ? parseFloat(resp.nota) : null;
         const esAprobado = nota !== null && nota >= 10;
+        const comentarios = resp.comentarios ? escapeHtml(resp.comentarios) : null;
         
         return `
           <div class="calificacion-item ${resp.revisado ? 'revisado' : 'pendiente'}">
@@ -339,10 +350,10 @@
                 ${nota !== null ? nota.toFixed(2) : 'Sin calificar'} / 20
               </div>
 
-              ${resp.comentarios ? `
+              ${comentarios ? `
                 <div class="comentarios">
                   <h4>💬 Comentarios del Profesor</h4>
-                  <p>${resp.comentarios}</p>
+                  <p style="white-space: pre-wrap;">${comentarios}</p>
                 </div>
               ` : ''}
             ` : `
