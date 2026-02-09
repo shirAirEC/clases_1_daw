@@ -15,9 +15,28 @@ app.use(helmet({
 }));
 
 // Configurar CORS con credenciales
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'https://clasesprimerodaw.anaisabelsainz.com',
+  'https://clases-1-daw.vercel.app'
+];
+
 app.use(cors({
-  origin: true,
-  credentials: true
+  origin: function (origin, callback) {
+    // Permitir requests sin origin (como mobile apps o curl)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(null, true); // Permitir todos en desarrollo
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['set-cookie']
 }));
 
 app.use(express.json());
@@ -27,14 +46,19 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'clases1daw-secret-key-2024',
   resave: false,
   saveUninitialized: false,
+  proxy: true, // Confiar en el proxy de Railway
   cookie: {
-    secure: process.env.NODE_ENV === 'production',
+    secure: true, // Siempre true para HTTPS
     httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000 // 24 horas
+    maxAge: 24 * 60 * 60 * 1000, // 24 horas
+    sameSite: 'none' // Permitir cookies cross-site
   }
 }));
 
 app.use(express.static('public'));
+
+// Manejar preflight requests
+app.options('*', cors());
 
 // Pool de conexiones a PostgreSQL (usuario de solo lectura)
 const pool = new Pool({
