@@ -3,6 +3,7 @@ const { Pool } = require('pg');
 const cors = require('cors');
 const helmet = require('helmet');
 const session = require('express-session');
+const bcrypt = require('bcryptjs');
 require('dotenv').config();
 
 const app = express();
@@ -108,8 +109,10 @@ app.post('/api/login', async (req, res) => {
     
     const user = result.rows[0];
     
-    // Verificar contraseña (sin hash por simplicidad)
-    if (password !== user.password) {
+    // Verificar contraseña hasheada con bcrypt
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    
+    if (!passwordMatch) {
       return res.status(401).json({ 
         success: false, 
         error: 'Usuario o contraseña incorrectos' 
