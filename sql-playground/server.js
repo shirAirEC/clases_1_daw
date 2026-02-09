@@ -9,24 +9,27 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Configuración de seguridad
-app.use(helmet({
-  contentSecurityPolicy: false, // Permitir estilos inline
-}));
-
-// Configurar CORS antes que todo lo demás
+// CORS debe ir primero - antes de todo
 app.use(cors({
-  origin: function (origin, callback) {
-    // Permitir todos los orígenes
-    callback(null, true);
-  },
+  origin: true, // Permitir todos los orígenes
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  exposedHeaders: ['set-cookie']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  exposedHeaders: ['set-cookie'],
+  maxAge: 86400 // Cache preflight por 24 horas
 }));
 
+// Manejar preflight OPTIONS explícitamente
+app.options('*', cors());
+
+// JSON parser
 app.use(express.json());
+
+// Configuración de seguridad DESPUÉS de CORS
+app.use(helmet({
+  contentSecurityPolicy: false,
+  crossOriginResourcePolicy: false
+}));
 
 // Configurar sesiones
 app.use(session({
@@ -79,16 +82,34 @@ function validateQuery(query) {
   return { valid: true };
 }
 
+// Logging de todas las peticiones
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path} - Origin: ${req.headers.origin}`);
+  next();
+});
+
 // Middleware para verificar autenticación
 function requireAuth(req, res, next) {
   if (!req.session || !req.session.user) {
+    console.log('requireAuth: No autenticado');
     return res.status(401).json({ 
       success: false, 
       error: 'Debes iniciar sesión para acceder' 
     });
   }
+  console.log('requireAuth: OK -', req.session.user.username);
   next();
 }
+
+// Endpoint de test para CORS (sin autenticación)
+app.get('/api/test', (req, res) => {
+  res.json({ 
+    success: true, 
+    message: 'API funcionando correctamente',
+    cors: 'OK',
+    timestamp: new Date().toISOString()
+  });
+});
 
 // ===== ENDPOINTS DE AUTENTICACIÓN =====
 
@@ -648,10 +669,14 @@ app.get('/health', (req, res) => {
 
 // Endpoint para enviar respuestas de cuestionario (PROTEGIDO)
 app.post('/api/cuestionario/submit', requireAuth, async (req, res) => {
+  console.log('POST /api/cuestionario/submit - Usuario:', req.session?.user?.username);
+  console.log('Body recibido:', req.body);
+  
   const { cuestionario_id, respuestas } = req.body;
   const usuario_id = req.session.user.usuario_id;
 
   if (!cuestionario_id || !respuestas) {
+    console.log('Faltan datos del cuestionario');
     return res.status(400).json({ 
       success: false, 
       message: 'Faltan datos del cuestionario' 
