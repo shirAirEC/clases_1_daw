@@ -20,18 +20,40 @@ const pool = new Pool({
   connectionTimeoutMillis: 5000,
 });
 
-// CORS debe ir primero - antes de todo
-app.use(cors({
-  origin: true, // Permitir todos los orígenes
+// Configuración de CORS más robusta
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Permitir requests sin origin (como Postman) y todos los orígenes
+    callback(null, origin || '*');
+  },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
-  exposedHeaders: ['set-cookie'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH', 'HEAD'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+  exposedHeaders: ['set-cookie', 'Authorization'],
+  optionsSuccessStatus: 200,
   maxAge: 86400 // Cache preflight por 24 horas
-}));
+};
 
-// Manejar preflight OPTIONS explícitamente
-app.options('*', cors());
+// CORS debe ir primero - antes de todo
+app.use(cors(corsOptions));
+
+// Manejar todas las preflight OPTIONS explícitamente ANTES de cualquier middleware
+app.use((req, res, next) => {
+  // Asegurar headers CORS en TODAS las respuestas
+  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS,PATCH,HEAD');
+  res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization,X-Requested-With,Accept,Origin');
+  res.header('Access-Control-Expose-Headers', 'set-cookie,Authorization');
+  
+  // Si es preflight, responder inmediatamente
+  if (req.method === 'OPTIONS') {
+    res.header('Access-Control-Max-Age', '86400');
+    return res.sendStatus(200);
+  }
+  
+  next();
+});
 
 // JSON parser
 app.use(express.json());
