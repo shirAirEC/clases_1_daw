@@ -753,6 +753,62 @@ app.get('/api/cuestionario/respuestas/:cuestionario_id?', requireAuth, async (re
   }
 });
 
+// Endpoint para calificar respuestas (SOLO PROFESOR)
+app.post('/api/cuestionario/calificar', requireAuth, async (req, res) => {
+  // Verificar que sea profesor
+  if (req.session.user.rol !== 'profesor') {
+    return res.status(403).json({ 
+      success: false, 
+      message: 'Acceso denegado. Solo profesores.' 
+    });
+  }
+
+  const { respuesta_id, nota, comentarios } = req.body;
+
+  if (!respuesta_id || nota === undefined) {
+    return res.status(400).json({ 
+      success: false, 
+      message: 'Faltan datos requeridos' 
+    });
+  }
+
+  const client = await pool.connect();
+  
+  try {
+    const query = `
+      UPDATE respuestas_cuestionario
+      SET 
+        revisado = true,
+        nota = $1,
+        comentarios = $2
+      WHERE respuesta_id = $3
+      RETURNING respuesta_id
+    `;
+    
+    const result = await client.query(query, [nota, comentarios, respuesta_id]);
+    
+    if (result.rows.length > 0) {
+      res.json({ 
+        success: true, 
+        message: 'Calificación guardada correctamente' 
+      });
+    } else {
+      res.status(404).json({ 
+        success: false, 
+        message: 'Respuesta no encontrada' 
+      });
+    }
+  } catch (error) {
+    console.error('Error guardando calificación:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Error al guardar la calificación' 
+    });
+  } finally {
+    client.release();
+  }
+});
+
 // Manejador de errores global
 app.use((err, req, res, next) => {
   console.error('Error global:', err);
