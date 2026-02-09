@@ -1202,7 +1202,10 @@
     <div class="modal-content">
       <span class="close-modal" onclick="hideLoginModal()">&times;</span>
       <h2>🔐 Iniciar Sesión</h2>
-      <p style="color: #666; margin-bottom: 30px;">Accede con tu cuenta de alumno o profesor</p>
+      <p style="color: #666; margin-bottom: 10px;">Accede con tu cuenta de alumno o profesor</p>
+      <div style="background: #fef3c7; border: 2px solid #f59e0b; color: #92400e; padding: 12px; border-radius: 10px; margin-bottom: 20px; font-size: 0.9em;">
+        <strong>⚠️ Inicio de sesión requerido:</strong> Debes iniciar sesión para acceder al contenido de las clases.
+      </div>
       
       <form id="login-form" onsubmit="handleLogin(event)">
         <div class="form-group">
@@ -1300,8 +1303,7 @@
         const data = await response.json();
         
         if (data.success) {
-          hideLoginModal();
-          updateUserInterface(data.user);
+          updateUserInterface(data.user, true);
           // Guardar en localStorage también
           localStorage.setItem('user', JSON.stringify(data.user));
         } else {
@@ -1323,9 +1325,10 @@
         });
         
         localStorage.removeItem('user');
-        updateUserInterface(null);
+        updateUserInterface(null, false);
       } catch (error) {
         console.error('Error:', error);
+        updateUserInterface(null, false);
       }
     }
 
@@ -1338,15 +1341,15 @@
         const data = await response.json();
         
         if (data.authenticated && data.user) {
-          updateUserInterface(data.user);
+          updateUserInterface(data.user, true);
           localStorage.setItem('user', JSON.stringify(data.user));
         } else {
           // Verificar localStorage como fallback
           const storedUser = localStorage.getItem('user');
           if (storedUser) {
-            updateUserInterface(JSON.parse(storedUser));
+            updateUserInterface(JSON.parse(storedUser), true);
           } else {
-            updateUserInterface(null);
+            updateUserInterface(null, false);
           }
         }
       } catch (error) {
@@ -1354,33 +1357,60 @@
         // Intentar con localStorage
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
-          updateUserInterface(JSON.parse(storedUser));
+          updateUserInterface(JSON.parse(storedUser), true);
+        } else {
+          updateUserInterface(null, false);
         }
       }
     }
 
-    function updateUserInterface(user) {
+    function updateUserInterface(user, authenticated) {
       const loginBtn = document.getElementById('login-btn');
       const userInfo = document.getElementById('user-info');
       const userName = document.getElementById('user-name');
       const userRole = document.getElementById('user-role');
+      const mainContent = document.querySelectorAll('.bg-decoration, .github-corner, #home-screen, .clases-screen');
+      const loginModal = document.getElementById('login-modal');
+      const closeModalBtn = document.querySelector('.close-modal');
       
-      if (user) {
+      if (authenticated && user) {
+        // Usuario autenticado: mostrar contenido, ocultar login forzado
         loginBtn.style.display = 'none';
         userInfo.style.display = 'flex';
         userName.textContent = user.nombre || user.username;
         userRole.textContent = user.rol === 'profesor' ? '👨‍🏫 Profesor' : '👨‍🎓 Alumno';
         userRole.className = 'role-badge ' + (user.rol === 'profesor' ? 'role-profesor' : 'role-alumno');
+        
+        // Mostrar todo el contenido
+        mainContent.forEach(el => el.style.display = '');
+        loginModal.style.display = 'none';
+        if (closeModalBtn) closeModalBtn.style.display = 'block';
       } else {
+        // Usuario NO autenticado: ocultar contenido, forzar login
         loginBtn.style.display = 'block';
         userInfo.style.display = 'none';
+        
+        // Ocultar todo el contenido
+        mainContent.forEach(el => el.style.display = 'none');
+        
+        // Mostrar modal de login (sin poder cerrar)
+        loginModal.style.display = 'flex';
+        if (closeModalBtn) closeModalBtn.style.display = 'none';
+        
+        // Focus en el campo de usuario
+        setTimeout(() => {
+          const usernameInput = document.getElementById('username');
+          if (usernameInput) usernameInput.focus();
+        }, 300);
       }
     }
 
-    // Cerrar modal al hacer clic fuera
+    // Cerrar modal al hacer clic fuera (solo si hay contenido visible)
     window.onclick = function(event) {
       const modal = document.getElementById('login-modal');
-      if (event.target === modal) {
+      const homeScreen = document.getElementById('home-screen');
+      // Solo permitir cerrar el modal si el contenido está visible (usuario autenticado)
+      if (event.target === modal && homeScreen.style.display !== 'none') {
         hideLoginModal();
       }
     }

@@ -179,8 +179,8 @@ app.get('/api/session', (req, res) => {
   }
 });
 
-// Endpoint para ejecutar queries
-app.post('/api/execute', async (req, res) => {
+// Endpoint para ejecutar queries (PROTEGIDO - requiere autenticación)
+app.post('/api/execute', requireAuth, async (req, res) => {
   const { query } = req.body;
   
   if (!query || query.trim() === '') {
@@ -229,8 +229,8 @@ app.post('/api/execute', async (req, res) => {
   }
 });
 
-// Endpoint para obtener información del esquema
-app.get('/api/schema', async (req, res) => {
+// Endpoint para obtener información del esquema (PROTEGIDO)
+app.get('/api/schema', requireAuth, async (req, res) => {
   try {
     const query = `
       SELECT 
@@ -267,8 +267,8 @@ app.get('/api/schema', async (req, res) => {
   }
 });
 
-// Endpoint para obtener queries de ejemplo
-app.get('/api/examples', (req, res) => {
+// Endpoint para obtener queries de ejemplo (PROTEGIDO)
+app.get('/api/examples', requireAuth, (req, res) => {
   const examples = [
     {
       title: '1. Ver todas las películas',
@@ -325,8 +325,8 @@ app.get('/api/examples', (req, res) => {
   res.json({ success: true, examples });
 });
 
-// Endpoint para obtener ejercicios guiados
-app.get('/api/exercises', (req, res) => {
+// Endpoint para obtener ejercicios guiados (PROTEGIDO)
+app.get('/api/exercises', requireAuth, (req, res) => {
   const exercises = [
     // ===== NIVEL 1: BÁSICO - SELECT simple =====
     {
