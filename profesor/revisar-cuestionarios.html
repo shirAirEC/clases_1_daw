@@ -643,35 +643,138 @@
       }).join('');
     }
 
+    // Mapeo de preguntas de todos los cuestionarios
+    const preguntasCuestionarios = {
+      'BD-CLASE1': {
+        'q1': '¿Qué es una base de datos relacional?',
+        'q2': '¿Cuál es la función de una clave primaria (PRIMARY KEY)?',
+        'q3': '¿Qué comando SQL se utiliza para consultar datos de una tabla?',
+        'q4': 'Analiza esta consulta SQL. ¿Está correctamente escrita? SELECT nombre, apellido FROM cliente WHERE activo = true;',
+        'q5': '¿Qué hace la cláusula ORDER BY en SQL?',
+        'q6': 'Escribe una consulta SQL para seleccionar todos los campos de la tabla "pelicula":',
+        'q7': '¿Qué función de agregación usarías para contar el número de filas?',
+        'q8': 'En una relación 1:N (uno a muchos), ¿dónde se coloca la clave foránea?',
+        'q9': '¿Qué hace la cláusula LIMIT en SQL?',
+        'q10': '¿Esta consulta devolverá películas con precio menor a 3 O mayor a 5? SELECT * FROM pelicula WHERE precio_alquiler < 3 AND precio_alquiler > 5;',
+        'q11': '¿Qué operador se usa en SQL para buscar patrones de texto?',
+        'q12': 'Escribe la consulta SQL para obtener el precio promedio de alquiler de todas las películas (usa AVG):',
+        'q13': '¿Para qué se utiliza GROUP BY?',
+        'q14': 'En el patrón LIKE \'%SQL%\', ¿qué representa el símbolo %?',
+        'q15': '¿Cuál es la diferencia entre AND y OR en SQL?',
+        'q16': '¿Qué función SQL usarías para obtener el valor más alto de una columna?',
+        'q17': 'Identifica el error en esta consulta: SELECT titulo FROM pelicula ORDER titulo;',
+        'q18': '¿Qué hace la función SUM() en SQL?',
+        'q19': 'Escribe una consulta para obtener todas las películas ordenadas por año de lanzamiento de forma descendente:',
+        'q20': 'Explica con tus propias palabras qué es una clave foránea (FOREIGN KEY) y para qué sirve:'
+      },
+      'XML-CLASE1': {
+        'q1': 'XML es un lenguaje case sensitive (distingue mayúsculas y minúsculas).',
+        'q2': 'XML deriva de XHTML.',
+        'q3': 'Un documento XML puede tener múltiples elementos raíz.',
+        'q4': 'El prólogo XML es obligatorio en todos los documentos.',
+        'q5': 'En XML, las etiquetas pueden contener espacios en su nombre.',
+        'q6': 'Los elementos en XML deben estar correctamente anidados.',
+        'q7': 'standalone="no" indica que el documento depende de un esquema externo.',
+        'q8': 'Los nombres de elementos XML pueden empezar con números.',
+        'q9': 'Un elemento vacío se puede escribir como <elemento></elemento> o <elemento/>.',
+        'q10': 'XML permite tener dos elementos con el mismo nombre al mismo nivel.',
+        'q11': 'Los atributos se añaden dentro de la etiqueta de cierre.',
+        'q12': 'Los valores de los atributos deben ir siempre entre comillas.',
+        'q13': 'Un elemento puede tener dos atributos con el mismo nombre.',
+        'q14': 'Los comentarios en XML tienen la misma sintaxis que los comentarios en HTML.',
+        'q15': 'Los comentarios XML pueden anidarse unos dentro de otros.',
+        'q16': 'CDATA permite incluir caracteres especiales como < y > sin que sean procesados como etiquetas.',
+        'q17': 'La sintaxis de CDATA es <[CDATA[...]]>.',
+        'q18': 'Los atributos son opcionales en los elementos XML.',
+        'q19': '"Bien formado" y "válido" significan lo mismo en XML.',
+        'q20': 'XML define una sintaxis donde cada usuario puede crear sus propias etiquetas según sus necesidades.'
+      },
+      'XML-CLASE2': {
+        'q1': 'DTD significa "Document Type Definition".',
+        'q2': 'Un XML bien formado es automáticamente un XML válido.',
+        'q3': 'Los DTD internos se escriben dentro del archivo XML.',
+        'q4': '#PCDATA significa "Parsed Character Data" (datos de caracteres procesados).',
+        'q5': 'El operador + en DTD significa "una o más veces".',
+        'q6': 'El operador ? en DTD significa "obligatorio".',
+        'q7': 'ATTLIST se usa para declarar atributos en DTD.',
+        'q8': '#REQUIRED significa que un atributo es opcional.',
+        'q9': '#IMPLIED significa que un atributo es opcional.',
+        'q10': 'Las entidades en DTD permiten definir atajos reutilizables.',
+        'q11': 'EMPTY indica que un elemento no puede tener contenido.',
+        'q12': 'El tipo de atributo ID debe ser único en todo el documento XML.',
+        'q13': 'XSD usa sintaxis XML mientras que DTD no.',
+        'q14': 'XSD soporta tipos de datos específicos como integer, date y boolean.',
+        'q15': 'DTD soporta tipos de datos específicos como integer y date.',
+        'q16': 'XSD es el método recomendado actualmente por el W3C para validar XML.',
+        'q17': 'El operador | en DTD indica alternativa (uno u otro elemento).',
+        'q18': 'Un documento puede tener tanto DTD interno como externo simultáneamente.'
+      }
+    };
+
     function verDetalles(respuestaId) {
       const respuesta = respuestasActuales.find(r => r.respuesta_id === respuestaId);
       if (!respuesta) return;
 
+      // Obtener el mapeo de preguntas según el cuestionario
+      const cuestionarioId = respuesta.cuestionario_id;
+      const preguntasMap = preguntasCuestionarios[cuestionarioId] || {};
+      
+      // Nombres descriptivos de los cuestionarios
+      const nombresCuestionarios = {
+        'BD-CLASE1': 'Bases de Datos Clase 1 - Fundamentos y SQL Básico',
+        'XML-CLASE1': 'XML Clase 1 - Estructura y Sintaxis Básica',
+        'XML-CLASE2': 'XML Clase 2 - DTD y XML Schema (XSD)'
+      };
+
       // Crear ventana modal con todas las respuestas
       const respuestasObj = respuesta.respuestas;
-      let contenidoHTML = '<div style="max-width: 800px; margin: 20px auto; background: white; padding: 30px; border-radius: 15px;">';
-      contenidoHTML += `<h2 style="color: #667eea; margin-bottom: 20px;">Respuestas de ${respuesta.nombre}</h2>`;
+      let contenidoHTML = '<div style="max-width: 900px; margin: 20px auto; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">';
+      contenidoHTML += `<h2 style="color: #667eea; margin-bottom: 10px; font-size: 2em;">Respuestas de ${respuesta.nombre}</h2>`;
+      contenidoHTML += `<p style="color: #666; margin-bottom: 30px; font-size: 1.1em;"><strong>Cuestionario:</strong> ${nombresCuestionarios[cuestionarioId] || cuestionarioId}</p>`;
       
-      for (let [pregunta, respuestaTexto] of Object.entries(respuestasObj)) {
+      for (let [preguntaId, respuestaTexto] of Object.entries(respuestasObj)) {
+        const preguntaTexto = preguntasMap[preguntaId] || preguntaId;
+        const numeroPregunta = preguntaId.replace('q', '');
+        
         contenidoHTML += `
-          <div style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 10px;">
-            <p style="font-weight: bold; color: #667eea; margin-bottom: 10px;">${pregunta}</p>
-            <p style="color: #333;">${respuestaTexto}</p>
+          <div style="margin-bottom: 30px; padding: 25px; background: #f8f9fa; border-left: 5px solid #667eea; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+            <p style="font-weight: 700; color: #667eea; margin-bottom: 15px; font-size: 1.15em;">📝 Pregunta ${numeroPregunta}</p>
+            <p style="color: #333; margin-bottom: 18px; font-weight: 500; line-height: 1.6;">${preguntaTexto}</p>
+            <div style="padding: 18px; background: white; border-radius: 10px; border: 2px solid #e9ecef;">
+              <p style="color: #495057; white-space: pre-wrap; line-height: 1.8;"><strong style="color: #667eea;">💬 Respuesta del alumno:</strong><br>${respuestaTexto}</p>
+            </div>
           </div>
         `;
       }
       
-      contenidoHTML += '<button onclick="window.close()" style="padding: 10px 30px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Cerrar</button>';
+      contenidoHTML += '<button onclick="window.close()" style="padding: 15px 50px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 1.1em; margin-top: 20px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); transition: all 0.3s;">✖ Cerrar</button>';
       contenidoHTML += '</div>';
 
-      const ventana = window.open('', '_blank', 'width=900,height=700');
+      const ventana = window.open('', '_blank', 'width=1100,height=900,scrollbars=yes');
       ventana.document.write(`
         <!DOCTYPE html>
         <html>
         <head>
           <title>Respuestas - ${respuesta.nombre}</title>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <style>
-            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; }
+            body { 
+              font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+              padding: 20px;
+              margin: 0;
+              min-height: 100vh;
+            }
+            button:hover {
+              transform: translateY(-3px);
+              box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+            }
+            @media print {
+              body {
+                background: white;
+              }
+            }
           </style>
         </head>
         <body>${contenidoHTML}</body>
