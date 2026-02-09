@@ -338,6 +338,19 @@
       font-weight: 600;
     }
 
+    /* Clase especial accesible solo para profesor */
+    .clase-card.profesor-acceso {
+      opacity: 1 !important;
+      filter: none !important;
+      border: 2px solid rgba(139, 92, 246, 0.3);
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%);
+    }
+
+    .clase-card.profesor-acceso:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+    }
+
     .clase-card h3 {
       font-size: 1.6em;
       color: #1e293b;
@@ -627,7 +640,7 @@
     #auth-widget {
       position: fixed;
       top: 20px;
-      left: 20px;
+      right: 20px;
       z-index: 10000;
     }
 
@@ -1116,11 +1129,11 @@
         </a>
       </div>
 
-      <!-- Teoría SQL - Solo Profesor -->
-      <div class="clase-card profesor-only">
+      <!-- Teoría SQL Clase 1 -->
+      <div class="clase-card">
         <div class="clase-header-row">
           <span class="clase-numero">Clase 1</span>
-          <span class="status-badge status-disponible">👨‍🏫 Solo Profesor</span>
+          <span class="status-badge status-disponible">✅ Disponible</span>
         </div>
         
         <h3>🏛️ Fundamentos de Bases de Datos Relacionales</h3>
@@ -1133,7 +1146,7 @@
           </div>
           <div class="stat">
             <span>📊</span>
-            <span>26 slides</span>
+            <span>23 slides</span>
           </div>
           <div class="stat">
             <span>🎯</span>
@@ -1155,22 +1168,22 @@
           </ul>
         </div>
 
-        <a href="clases/basesdatos1.html" class="btn-comenzar btn-profesor">
-          👨‍🏫 Ver Presentación (Profesor)
+        <a href="clases/basesdatos1.html" class="btn-comenzar">
+          📚 Ver Presentación
         </a>
       </div>
 
-      <!-- Diseño de BD (Próximamente) -->
-      <div class="clase-card disabled">
+      <!-- JOINs y SQL Avanzado (Profesor) -->
+      <div class="clase-card disabled" data-profesor-only="true" data-url="clases/basesdatos2.html">
         <div class="clase-header-row">
           <span class="clase-numero">Clase 2</span>
           <span class="status-badge status-proximamente">🔜 Próximamente</span>
         </div>
         
-        <h3>Diseño de Bases de Datos</h3>
-        <p>Modelo Entidad-Relación, diagramas ER, cardinalidad y conversión al modelo relacional.</p>
+        <h3>JOINs y SQL Avanzado</h3>
+        <p>Relaciones entre tablas, normalización, propiedades ACID, DDL (CREATE, INSERT, UPDATE, DELETE), índices, vistas y transacciones.</p>
         
-        <button class="btn-comenzar" disabled>🔒 Próximamente</button>
+        <button class="btn-comenzar btn-clase-especial" disabled>🔒 Próximamente</button>
       </div>
 
       <!-- SQL Avanzado (Próximamente) -->
@@ -1415,6 +1428,25 @@
         } else {
           profesorOnlyCards.forEach(card => card.classList.add('alumno-view'));
         }
+
+        // Manejar clases con data-profesor-only (aparecen como "próximamente" pero el profesor puede acceder)
+        const clasesProfesionales = document.querySelectorAll('.clase-card[data-profesor-only="true"]');
+        clasesProfesionales.forEach(card => {
+          const button = card.querySelector('.btn-clase-especial');
+          if (user.rol === 'profesor') {
+            // Para profesor: activar la clase
+            card.classList.remove('disabled');
+            card.classList.add('profesor-acceso');
+            button.disabled = false;
+            button.textContent = '📚 Ver Presentación';
+            button.onclick = () => {
+              window.location.href = card.getAttribute('data-url');
+            };
+          } else {
+            // Para alumnos: mantener como "próximamente" sin cambios
+            // (ya está disabled por defecto)
+          }
+        });
       } else {
         // Usuario NO autenticado: ocultar contenido, forzar login
         loginBtn.style.display = 'block';

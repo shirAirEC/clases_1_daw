@@ -274,52 +274,127 @@ app.get('/api/schema', requireAuth, async (req, res) => {
 app.get('/api/examples', requireAuth, (req, res) => {
   const examples = [
     {
-      title: '1. Ver todas las películas',
+      title: '1. SELECT básico - Ver todas las películas',
       query: 'SELECT * FROM pelicula LIMIT 10;',
-      category: 'Básico'
+      category: 'SELECT Básico'
     },
     {
-      title: '2. Películas por categoría',
+      title: '2. SELECT específico - Títulos de películas',
+      query: 'SELECT titulo FROM pelicula;',
+      category: 'SELECT Básico'
+    },
+    {
+      title: '3. WHERE simple - Películas baratas',
+      query: 'SELECT titulo, precio_alquiler\nFROM pelicula\nWHERE precio_alquiler < 3.00;',
+      category: 'WHERE'
+    },
+    {
+      title: '4. WHERE con comparación - Películas modernas',
+      query: 'SELECT titulo, año_lanzamiento\nFROM pelicula\nWHERE año_lanzamiento >= 2010\nORDER BY año_lanzamiento;',
+      category: 'WHERE'
+    },
+    {
+      title: '5. ORDER BY - Películas ordenadas por año',
+      query: 'SELECT titulo, año_lanzamiento\nFROM pelicula\nORDER BY año_lanzamiento DESC;',
+      category: 'ORDER BY'
+    },
+    {
+      title: '6. LIMIT - Primeras 5 películas',
+      query: 'SELECT titulo, año_lanzamiento\nFROM pelicula\nORDER BY año_lanzamiento DESC\nLIMIT 5;',
+      category: 'LIMIT'
+    },
+    {
+      title: '7. AND - Películas baratas y recientes',
+      query: 'SELECT titulo, año_lanzamiento, precio_alquiler\nFROM pelicula\nWHERE precio_alquiler < 3.50 AND año_lanzamiento > 2005\nORDER BY año_lanzamiento;',
+      category: 'Operadores Lógicos'
+    },
+    {
+      title: '8. OR - Películas extremas en precio',
+      query: 'SELECT titulo, precio_alquiler\nFROM pelicula\nWHERE precio_alquiler < 2.00 OR precio_alquiler > 4.50\nORDER BY precio_alquiler;',
+      category: 'Operadores Lógicos'
+    },
+    {
+      title: '9. LIKE - Buscar películas por título',
+      query: 'SELECT titulo\nFROM pelicula\nWHERE titulo LIKE \'%Matrix%\';',
+      category: 'LIKE - Búsqueda'
+    },
+    {
+      title: '10. LIKE con patrones - Nombres que empiezan con M',
+      query: 'SELECT nombre, apellido\nFROM cliente\nWHERE nombre LIKE \'M%\'\nORDER BY nombre;',
+      category: 'LIKE - Búsqueda'
+    },
+    {
+      title: '11. COUNT - Contar películas',
+      query: 'SELECT COUNT(*) AS total_peliculas\nFROM pelicula;',
+      category: 'Funciones de Agregación'
+    },
+    {
+      title: '12. AVG - Precio promedio de alquiler',
+      query: 'SELECT AVG(precio_alquiler) AS precio_promedio\nFROM pelicula;',
+      category: 'Funciones de Agregación'
+    },
+    {
+      title: '13. MAX y MIN - Precios extremos',
+      query: 'SELECT \n  MAX(precio_alquiler) AS mas_caro,\n  MIN(precio_alquiler) AS mas_barato\nFROM pelicula;',
+      category: 'Funciones de Agregación'
+    },
+    {
+      title: '14. SUM - Total de ingresos',
+      query: 'SELECT SUM(precio_pagado) AS ingresos_totales\nFROM alquiler;',
+      category: 'Funciones de Agregación'
+    },
+    {
+      title: '15. GROUP BY simple - Contar por categoría',
+      query: 'SELECT categoria_id, COUNT(*) AS total\nFROM pelicula\nGROUP BY categoria_id\nORDER BY total DESC;',
+      category: 'GROUP BY'
+    },
+    {
+      title: '16. GROUP BY con AVG - Precio promedio por categoría',
+      query: 'SELECT categoria_id, AVG(precio_alquiler) AS precio_promedio\nFROM pelicula\nGROUP BY categoria_id\nORDER BY precio_promedio DESC;',
+      category: 'GROUP BY'
+    },
+    {
+      title: '17. Películas por categoría filtradas',
       query: 'SELECT titulo, año_lanzamiento, precio_alquiler\nFROM pelicula\nWHERE categoria_id = 1\nORDER BY titulo;',
-      category: 'Básico'
+      category: 'WHERE + ORDER BY'
     },
     {
-      title: '3. Películas con su categoría (JOIN)',
+      title: '18. Películas con su categoría (JOIN)',
       query: 'SELECT p.titulo, c.nombre AS categoria, p.duracion\nFROM pelicula p\nJOIN categoria c ON p.categoria_id = c.categoria_id\nORDER BY c.nombre, p.titulo;',
       category: 'JOINs'
     },
     {
-      title: '4. Actores y sus películas',
+      title: '19. Actores y sus películas',
       query: 'SELECT a.nombre, a.apellido, p.titulo, pa.personaje\nFROM actor a\nJOIN pelicula_actor pa ON a.actor_id = pa.actor_id\nJOIN pelicula p ON pa.pelicula_id = p.pelicula_id\nORDER BY a.apellido, p.titulo;',
       category: 'JOINs'
     },
     {
-      title: '5. Total de alquileres por cliente',
+      title: '20. Total de alquileres por cliente',
       query: 'SELECT \n  c.nombre || \' \' || c.apellido AS cliente,\n  COUNT(a.alquiler_id) AS total_alquileres,\n  SUM(a.precio_pagado) AS total_gastado\nFROM cliente c\nLEFT JOIN alquiler a ON c.cliente_id = a.cliente_id\nGROUP BY c.cliente_id, c.nombre, c.apellido\nORDER BY total_alquileres DESC;',
-      category: 'Agregaciones'
+      category: 'GROUP BY + JOINs'
     },
     {
-      title: '6. Películas más rentadas',
+      title: '21. Películas más rentadas',
       query: 'SELECT \n  p.titulo,\n  COUNT(a.alquiler_id) AS veces_rentada,\n  SUM(a.precio_pagado) AS ingresos\nFROM pelicula p\nLEFT JOIN alquiler a ON p.pelicula_id = a.pelicula_id\nGROUP BY p.pelicula_id, p.titulo\nHAVING COUNT(a.alquiler_id) > 0\nORDER BY veces_rentada DESC;',
-      category: 'Agregaciones'
+      category: 'GROUP BY + JOINs'
     },
     {
-      title: '7. Alquileres pendientes de devolución',
+      title: '22. Alquileres pendientes de devolución',
       query: 'SELECT * FROM v_alquileres_activos\nORDER BY fecha_alquiler DESC;',
       category: 'Vistas'
     },
     {
-      title: '8. Estadísticas por película',
+      title: '23. Estadísticas por película',
       query: 'SELECT * FROM v_estadisticas_peliculas\nWHERE total_alquileres > 0\nORDER BY ingresos_totales DESC;',
       category: 'Vistas'
     },
     {
-      title: '9. Películas sin alquilar nunca',
+      title: '24. Películas sin alquilar nunca',
       query: 'SELECT p.titulo, c.nombre AS categoria\nFROM pelicula p\nLEFT JOIN alquiler a ON p.pelicula_id = a.pelicula_id\nLEFT JOIN categoria c ON p.categoria_id = c.categoria_id\nWHERE a.alquiler_id IS NULL\nORDER BY p.titulo;',
       category: 'Subconsultas'
     },
     {
-      title: '10. Clientes que nunca han alquilado',
+      title: '25. Clientes que nunca han alquilado',
       query: 'SELECT nombre, apellido, email, fecha_registro\nFROM cliente\nWHERE cliente_id NOT IN (\n  SELECT DISTINCT cliente_id FROM alquiler\n)\nORDER BY fecha_registro;',
       category: 'Subconsultas'
     }

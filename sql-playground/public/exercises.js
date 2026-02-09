@@ -41,14 +41,6 @@ function renderExercises(exercises) {
         <span class="exercise-difficulty difficulty-${exercise.difficulty}">
           ${exercise.difficulty.toUpperCase()}
         </span>
-        ${exercise.hint ? `
-          <button class="btn-hint" onclick="event.stopPropagation(); toggleHint(${index})">
-            💡 Ver pista
-          </button>
-          <div class="exercise-hint" id="hint-${index}">
-            <strong>💡 Pista:</strong> ${exercise.hint}
-          </div>
-        ` : ''}
       </div>
     `;
   }).join('');
