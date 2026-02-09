@@ -14,28 +14,15 @@ app.use(helmet({
   contentSecurityPolicy: false, // Permitir estilos inline
 }));
 
-// Configurar CORS con credenciales
-const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:3000',
-  'https://clasesprimerodaw.anaisabelsainz.com',
-  'https://clases-1-daw.vercel.app'
-];
-
+// Configurar CORS antes que todo lo demás
 app.use(cors({
   origin: function (origin, callback) {
-    // Permitir requests sin origin (como mobile apps o curl)
-    if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(null, true); // Permitir todos en desarrollo
-    }
+    // Permitir todos los orígenes
+    callback(null, true);
   },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   exposedHeaders: ['set-cookie']
 }));
 
@@ -56,9 +43,6 @@ app.use(session({
 }));
 
 app.use(express.static('public'));
-
-// Manejar preflight requests
-app.options('*', cors());
 
 // Pool de conexiones a PostgreSQL (usuario de solo lectura)
 const pool = new Pool({
