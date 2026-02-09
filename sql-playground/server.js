@@ -91,6 +91,14 @@ const FORBIDDEN_KEYWORDS = [
   'TRUNCATE', 'GRANT', 'REVOKE', 'EXEC', 'EXECUTE'
 ];
 
+// Tablas del sistema que NO deben ser accesibles desde el playground
+const FORBIDDEN_TABLES = [
+  'usuarios',
+  'session',
+  'auth_tokens',
+  'respuestas_cuestionario'
+];
+
 // Middleware para validar queries
 function validateQuery(query) {
   const upperQuery = query.toUpperCase();
@@ -99,6 +107,42 @@ function validateQuery(query) {
   for (const keyword of FORBIDDEN_KEYWORDS) {
     if (upperQuery.includes(keyword)) {
       return { valid: false, error: `Operación no permitida: ${keyword}` };
+    }
+  }
+  
+  // Verificar que no se acceda a tablas del sistema
+  for (const table of FORBIDDEN_TABLES) {
+    const tableUpper = table.toUpperCase();
+    // Buscar la tabla en diferentes contextos: FROM, JOIN, etc.
+    const patterns = [
+      `FROM ${tableUpper}`,
+      `FROM\n${tableUpper}`,
+      `FROM\t${tableUpper}`,
+      `JOIN ${tableUpper}`,
+      `JOIN\n${tableUpper}`,
+      `JOIN\t${tableUpper}`,
+      // También detectar con alias: "FROM usuarios u" o "usuarios AS u"
+      new RegExp(`FROM\\s+${tableUpper}(\\s+|$|\\s+AS\\s+)`, 'i'),
+      new RegExp(`JOIN\\s+${tableUpper}(\\s+|$|\\s+AS\\s+)`, 'i')
+    ];
+    
+    for (const pattern of patterns) {
+      if (typeof pattern === 'string') {
+        if (upperQuery.includes(pattern)) {
+          return { 
+            valid: false, 
+            error: `⛔ Acceso denegado: La tabla "${table}" es una tabla del sistema y no está disponible en el playground. Usa solo las tablas del videoclub (pelicula, cliente, actor, alquiler, categoria, pelicula_actor).` 
+          };
+        }
+      } else {
+        // Es una RegExp
+        if (pattern.test(query)) {
+          return { 
+            valid: false, 
+            error: `⛔ Acceso denegado: La tabla "${table}" es una tabla del sistema y no está disponible en el playground. Usa solo las tablas del videoclub (pelicula, cliente, actor, alquiler, categoria, pelicula_actor).` 
+          };
+        }
+      }
     }
   }
   
@@ -405,9 +449,14 @@ app.get('/api/schema', requireAuth, async (req, res) => {
     
     const result = await pool.query(query);
     
-    // Agrupar por tabla
+    // Agrupar por tabla, excluyendo tablas del sistema
     const schema = {};
     result.rows.forEach(row => {
+      // Saltar tablas prohibidas (del sistema)
+      if (FORBIDDEN_TABLES.includes(row.table_name.toLowerCase())) {
+        return;
+      }
+      
       if (!schema[row.table_name]) {
         schema[row.table_name] = [];
       }
