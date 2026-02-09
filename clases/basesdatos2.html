@@ -415,48 +415,58 @@ ORDER BY a.apellido, p.titulo;</code></pre>
             <p><strong>Normalización:</strong> Proceso de organizar datos para <strong>evitar redundancia</strong> y <strong>mejorar la integridad</strong></p>
           </div>
           <div class="fragment" style="margin-top: 30px;">
+            <h3>¿Por qué normalizar?</h3>
+            <ul style="text-align: left; max-width: 800px; margin: 20px auto; font-size: 0.9em;">
+              <li class="fragment">❌ <strong>Sin normalización:</strong> Datos duplicados, difícil de mantener, inconsistencias</li>
+              <li class="fragment">✅ <strong>Con normalización:</strong> Sin redundancia, fácil actualización, datos consistentes</li>
+            </ul>
+          </div>
+          <div class="fragment" style="margin-top: 30px;">
             <h3>Formas Normales (FN):</h3>
-            <ul style="text-align: left; max-width: 700px; margin: 20px auto; font-size: 0.9em;">
-              <li class="fragment"><strong>1FN:</strong> Sin grupos repetitivos, valores atómicos</li>
-              <li class="fragment"><strong>2FN:</strong> Cumple 1FN + sin dependencias parciales</li>
-              <li class="fragment"><strong>3FN:</strong> Cumple 2FN + sin dependencias transitivas</li>
+            <ul style="text-align: left; max-width: 800px; margin: 20px auto; font-size: 0.9em;">
+              <li class="fragment"><strong>1FN:</strong> Cada columna tiene un solo valor (valores atómicos, no listas)</li>
+              <li class="fragment"><strong>2FN:</strong> Cumple 1FN + cada columna depende completamente de la clave primaria</li>
+              <li class="fragment"><strong>3FN:</strong> Cumple 2FN + no hay dependencias transitivas (columnas que dependen de otras columnas no clave)</li>
             </ul>
           </div>
           <p class="fragment tip-box" style="margin-top: 25px;">
-            La mayoría de las bases de datos bien diseñadas están en 3FN
+            💡 La mayoría de las bases de datos bien diseñadas están en 3FN
           </p>
         </section>
 
         <!-- Slide 7 — Ejemplo de Normalización -->
         <section>
-          <h2><span class="icon">❌</span>Tabla NO Normalizada</h2>
+          <h2><span class="icon">❌</span>Tabla NO Normalizada (Violación de 1FN)</h2>
           <table style="font-size: 0.7em; margin: 20px auto;">
             <tr style="background: #e53935; color: white;">
               <th>pedido_id</th>
               <th>cliente</th>
               <th>email</th>
-              <th>producto</th>
-              <th>precio</th>
+              <th>productos</th>
+              <th>precios</th>
             </tr>
             <tr><td>1</td><td>Juan Pérez</td><td>juan@email.com</td><td>Laptop, Mouse</td><td>800, 20</td></tr>
             <tr><td>2</td><td>Juan Pérez</td><td>juan@email.com</td><td>Teclado</td><td>50</td></tr>
+            <tr><td>3</td><td>María López</td><td>maria@email.com</td><td>Monitor, HDMI</td><td>200, 15</td></tr>
           </table>
           <div class="fragment" style="margin-top: 20px;">
-            <h3>❌ Problemas:</h3>
-            <ul style="text-align: left; max-width: 700px; margin: 20px auto; font-size: 0.85em;">
-              <li>Datos de Juan repetidos (redundancia)</li>
-              <li>Si Juan cambia su email, hay que actualizar en varios sitios</li>
-              <li>Columnas con múltiples valores (Laptop, Mouse)</li>
+            <h3>❌ Múltiples problemas:</h3>
+            <ul style="text-align: left; max-width: 800px; margin: 20px auto; font-size: 0.85em;">
+              <li><strong>Violación 1FN:</strong> Columnas "productos" y "precios" contienen listas (no son valores atómicos)</li>
+              <li><strong>Redundancia:</strong> Datos de "Juan Pérez" repetidos 2 veces</li>
+              <li><strong>Anomalía de actualización:</strong> Si Juan cambia su email, hay que modificarlo en 2 lugares</li>
+              <li><strong>Anomalía de inserción:</strong> No puedes agregar un cliente sin un pedido</li>
+              <li><strong>Anomalía de eliminación:</strong> Si borras el pedido 3, pierdes la información de María</li>
             </ul>
           </div>
         </section>
 
         <!-- Slide 8 — Tabla Normalizada -->
         <section>
-          <h2><span class="icon">✅</span>Tablas Normalizadas</h2>
+          <h2><span class="icon">✅</span>Tablas Normalizadas (3FN)</h2>
           <div class="grid-3" style="font-size: 0.65em;">
             <div>
-              <h4>Tabla: cliente</h4>
+              <h4 style="color: #667eea;">Tabla: cliente</h4>
               <table>
                 <tr style="background: #667eea; color: white;">
                   <th>cliente_id</th>
@@ -464,10 +474,12 @@ ORDER BY a.apellido, p.titulo;</code></pre>
                   <th>email</th>
                 </tr>
                 <tr><td>1</td><td>Juan Pérez</td><td>juan@email.com</td></tr>
+                <tr><td>2</td><td>María López</td><td>maria@email.com</td></tr>
               </table>
+              <p style="font-size: 0.9em; color: #667eea; margin-top: 10px;">✅ Cada cliente una sola vez</p>
             </div>
             <div>
-              <h4>Tabla: pedido</h4>
+              <h4 style="color: #764ba2;">Tabla: pedido</h4>
               <table>
                 <tr style="background: #764ba2; color: white;">
                   <th>pedido_id</th>
@@ -476,10 +488,12 @@ ORDER BY a.apellido, p.titulo;</code></pre>
                 </tr>
                 <tr><td>1</td><td>1</td><td>2024-01-15</td></tr>
                 <tr><td>2</td><td>1</td><td>2024-01-20</td></tr>
+                <tr><td>3</td><td>2</td><td>2024-01-22</td></tr>
               </table>
+              <p style="font-size: 0.9em; color: #764ba2; margin-top: 10px;">✅ Relaciona cliente con pedidos</p>
             </div>
             <div>
-              <h4>Tabla: detalle_pedido</h4>
+              <h4 style="color: #ffa726;">Tabla: detalle_pedido</h4>
               <table>
                 <tr style="background: #ffa726; color: white;">
                   <th>pedido_id</th>
@@ -489,11 +503,14 @@ ORDER BY a.apellido, p.titulo;</code></pre>
                 <tr><td>1</td><td>Laptop</td><td>800</td></tr>
                 <tr><td>1</td><td>Mouse</td><td>20</td></tr>
                 <tr><td>2</td><td>Teclado</td><td>50</td></tr>
+                <tr><td>3</td><td>Monitor</td><td>200</td></tr>
+                <tr><td>3</td><td>HDMI</td><td>15</td></tr>
               </table>
+              <p style="font-size: 0.9em; color: #ffa726; margin-top: 10px;">✅ Un producto por fila (1FN)</p>
             </div>
           </div>
           <p class="fragment success-box" style="margin-top: 25px;">
-            ✅ Sin redundancia · ✅ Fácil de actualizar · ✅ Estructura clara
+            ✅ Sin redundancia · ✅ Fácil de actualizar · ✅ Sin anomalías · ✅ Estructura escalable
           </p>
         </section>
 
@@ -579,27 +596,61 @@ ORDER BY a.apellido, p.titulo;</code></pre>
         <!-- Slide 11 — ACID -->
         <section>
           <h2><span class="icon">🔬</span>Propiedades ACID</h2>
-          <p>Garantías de las transacciones en bases de datos relacionales</p>
-          <div class="grid-2 fragment" style="margin-top: 30px;">
+          <div class="definition-box">
+            <p><strong>ACID:</strong> Garantías que ofrecen las bases de datos relacionales para asegurar la confiabilidad de las transacciones</p>
+          </div>
+          <div class="grid-2 fragment" style="margin-top: 30px; gap: 20px;">
             <div class="acid-box">
               <h3>A - Atomicidad</h3>
-              <p>Todo o nada. Si una parte falla, se revierte todo</p>
-              <p class="ejemplo-text">Ejemplo: Transferencia bancaria</p>
+              <p style="margin-bottom: 15px;"><strong>"Todo o nada"</strong> - Si una parte falla, todo se revierte</p>
+              <div style="background: #e3f2fd; padding: 15px; border-radius: 10px; margin-top: 10px;">
+                <p style="font-size: 0.85em; color: #333; text-align: left;"><strong>Ejemplo:</strong> Transferencia bancaria de 100€</p>
+                <ul style="text-align: left; font-size: 0.8em; color: #666; margin-top: 10px;">
+                  <li>1️⃣ Restar 100€ de cuenta A</li>
+                  <li>2️⃣ Sumar 100€ a cuenta B</li>
+                  <li>⚠️ Si falla el paso 2, se revierte el paso 1</li>
+                  <li>✅ No se pierde dinero</li>
+                </ul>
+              </div>
             </div>
             <div class="acid-box">
               <h3>C - Consistencia</h3>
-              <p>Los datos siempre cumplen las reglas</p>
-              <p class="ejemplo-text">Ejemplo: Claves foráneas válidas</p>
+              <p style="margin-bottom: 15px;"><strong>Reglas siempre válidas</strong> - Los datos cumplen todas las restricciones</p>
+              <div style="background: #f3e5f5; padding: 15px; border-radius: 10px; margin-top: 10px;">
+                <p style="font-size: 0.85em; color: #333; text-align: left;"><strong>Ejemplo:</strong> Alquilar una película</p>
+                <ul style="text-align: left; font-size: 0.8em; color: #666; margin-top: 10px;">
+                  <li>✅ El cliente_id debe existir en tabla cliente</li>
+                  <li>✅ El pelicula_id debe existir en tabla pelicula</li>
+                  <li>✅ El precio_pagado debe ser > 0</li>
+                  <li>⛔ No puedes insertar datos inválidos</li>
+                </ul>
+              </div>
             </div>
             <div class="acid-box">
               <h3>I - Aislamiento</h3>
-              <p>Las transacciones no se interfieren entre sí</p>
-              <p class="ejemplo-text">Ejemplo: Dos usuarios simultáneos</p>
+              <p style="margin-bottom: 15px;"><strong>Transacciones independientes</strong> - No se interfieren entre sí</p>
+              <div style="background: #fff3e0; padding: 15px; border-radius: 10px; margin-top: 10px;">
+                <p style="font-size: 0.85em; color: #333; text-align: left;"><strong>Ejemplo:</strong> Dos usuarios comprando la última entrada</p>
+                <ul style="text-align: left; font-size: 0.8em; color: #666; margin-top: 10px;">
+                  <li>👤 Usuario A: Consulta → 1 entrada disponible</li>
+                  <li>👤 Usuario B: Consulta → 1 entrada disponible</li>
+                  <li>✅ Solo UNO podrá comprarla (locks)</li>
+                  <li>⛔ El otro verá "agotado"</li>
+                </ul>
+              </div>
             </div>
             <div class="acid-box">
               <h3>D - Durabilidad</h3>
-              <p>Una vez confirmada, la transacción es permanente</p>
-              <p class="ejemplo-text">Ejemplo: Aunque caiga el servidor</p>
+              <p style="margin-bottom: 15px;"><strong>Cambios permanentes</strong> - Una vez confirmado, no se pierde</p>
+              <div style="background: #e8f5e9; padding: 15px; border-radius: 10px; margin-top: 10px;">
+                <p style="font-size: 0.85em; color: #333; text-align: left;"><strong>Ejemplo:</strong> Confirmar un pedido</p>
+                <ul style="text-align: left; font-size: 0.8em; color: #666; margin-top: 10px;">
+                  <li>✅ Se guarda en disco (no solo en RAM)</li>
+                  <li>💾 Aunque se vaya la luz, el pedido está guardado</li>
+                  <li>🔄 Sistema se recupera automáticamente</li>
+                  <li>✅ Los datos no se pierden nunca</li>
+                </ul>
+              </div>
             </div>
           </div>
         </section>
@@ -646,7 +697,10 @@ ORDER BY a.apellido, p.titulo;</code></pre>
         <!-- Slide 13 — CREATE TABLE -->
         <section>
           <h2><span class="icon">🏗️</span>CREATE TABLE: Crear Tablas</h2>
-          <div class="code-example fragment">
+          <div class="definition-box">
+            <p><strong>CREATE TABLE:</strong> Comando DDL (Data Definition Language) para definir la estructura de una tabla</p>
+          </div>
+          <div class="code-example fragment" style="margin-top: 25px;">
             <pre><code class="sql">CREATE TABLE cliente (
     cliente_id SERIAL PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
@@ -657,14 +711,18 @@ ORDER BY a.apellido, p.titulo;</code></pre>
 );</code></pre>
           </div>
           <div class="fragment" style="margin-top: 25px;">
-            <h3>Restricciones (Constraints):</h3>
-            <ul style="text-align: left; max-width: 700px; margin: 15px auto; font-size: 0.85em;">
-              <li><code>PRIMARY KEY</code> → Clave primaria</li>
-              <li><code>NOT NULL</code> → No puede ser nulo</li>
-              <li><code>UNIQUE</code> → No puede repetirse</li>
-              <li><code>DEFAULT</code> → Valor por defecto</li>
+            <h3 style="font-size: 1.1em;">📋 Explicación línea por línea:</h3>
+            <ul style="text-align: left; max-width: 850px; margin: 15px auto; font-size: 0.85em; line-height: 1.8;">
+              <li><code>cliente_id SERIAL PRIMARY KEY</code> → ID autoincremental, clave primaria única</li>
+              <li><code>nombre VARCHAR(100) NOT NULL</code> → Texto hasta 100 caracteres, obligatorio</li>
+              <li><code>email VARCHAR(150) UNIQUE NOT NULL</code> → Email único, no puede repetirse</li>
+              <li><code>fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP</code> → Fecha/hora actual automática</li>
+              <li><code>activo BOOLEAN DEFAULT true</code> → true/false, por defecto true</li>
             </ul>
           </div>
+          <p class="fragment tip-box" style="margin-top: 20px;">
+            💡 <strong>SERIAL:</strong> Tipo especial que genera IDs automáticamente (1, 2, 3, ...)
+          </p>
         </section>
 
         <!-- Slide 14 — INSERT -->
@@ -725,71 +783,157 @@ DELETE FROM cliente;</code></pre>
         <section>
           <h2><span class="icon">⚡</span>Índices: Acelerar Consultas</h2>
           <div class="definition-box">
-            <p><strong>Índice:</strong> Estructura de datos que mejora la velocidad de búsqueda</p>
-            <p style="font-size: 0.9em; margin-top: 10px;">Similar al índice de un libro 📖</p>
+            <p><strong>Índice:</strong> Estructura de datos que permite encontrar filas rápidamente sin escanear toda la tabla</p>
+            <p style="font-size: 0.9em; margin-top: 10px;">📖 Similar al índice de un libro: saltas directamente a la página que buscas</p>
           </div>
-          <div class="fragment comparison-box" style="margin-top: 30px;">
-            <div class="two-col">
-              <div>
-                <h4>Sin Índice</h4>
-                <p style="font-size: 0.85em;">Busca fila por fila</p>
-                <p style="font-size: 2em;">🐌</p>
-                <p style="font-size: 0.8em; color: #999;">1,000,000 filas = lento</p>
+          <div class="fragment" style="margin-top: 30px;">
+            <h3>🔍 ¿Cómo funcionan?</h3>
+            <div class="two-col" style="gap: 30px; margin-top: 20px;">
+              <div style="background: #ffebee; padding: 25px; border-radius: 15px;">
+                <h4 style="color: #c62828; margin-bottom: 15px;">❌ Sin Índice</h4>
+                <p style="font-size: 0.85em; margin-bottom: 15px;"><strong>Búsqueda secuencial:</strong></p>
+                <pre style="background: white; padding: 15px; border-radius: 8px; font-size: 0.75em; text-align: left;">
+WHERE email = 'juan@email.com'
+
+1. Revisa fila 1 ❌
+2. Revisa fila 2 ❌
+3. Revisa fila 3 ❌
+...
+999,998. Revisa fila 999,998 ❌
+999,999. Revisa fila 999,999 ✅
+
+⏱️ Tiempo: 10 segundos</pre>
+                <p style="font-size: 2em; margin-top: 10px;">🐌</p>
               </div>
-              <div>
-                <h4>Con Índice</h4>
-                <p style="font-size: 0.85em;">Acceso directo</p>
-                <p style="font-size: 2em;">🚀</p>
-                <p style="font-size: 0.8em; color: #999;">1,000,000 filas = rápido</p>
+              <div style="background: #e8f5e9; padding: 25px; border-radius: 15px;">
+                <h4 style="color: #2e7d32; margin-bottom: 15px;">✅ Con Índice</h4>
+                <p style="font-size: 0.85em; margin-bottom: 15px;"><strong>Búsqueda optimizada:</strong></p>
+                <pre style="background: white; padding: 15px; border-radius: 8px; font-size: 0.75em; text-align: left;">
+WHERE email = 'juan@email.com'
+
+1. Consulta índice (estructura árbol)
+2. Salta directamente a la fila ✅
+
+⏱️ Tiempo: 0.001 segundos</pre>
+                <p style="font-size: 2em; margin-top: 10px;">🚀</p>
               </div>
             </div>
           </div>
-          <div class="code-example fragment" style="margin-top: 25px;">
-            <pre><code class="sql">CREATE INDEX idx_cliente_email ON cliente(email);</code></pre>
+          <div class="fragment" style="margin-top: 25px;">
+            <h3>💻 Crear un índice:</h3>
+            <div class="code-example">
+              <pre><code class="sql">-- Índice en columna email para búsquedas rápidas
+CREATE INDEX idx_cliente_email ON cliente(email);
+
+-- Ahora esta consulta es MUY rápida:
+SELECT * FROM cliente WHERE email = 'juan@email.com';</code></pre>
+            </div>
           </div>
+          <p class="fragment warning-box" style="margin-top: 20px;">
+            ⚠️ <strong>Compromiso:</strong> Los índices aceleran SELECT pero ralentizan INSERT/UPDATE (hay que actualizar el índice)
+          </p>
         </section>
 
         <!-- Slide 18 — Vistas (Views) -->
         <section>
           <h2><span class="icon">👁️</span>Vistas (Views)</h2>
           <div class="definition-box">
-            <p><strong>Vista:</strong> Consulta SQL guardada como si fuera una tabla virtual</p>
+            <p><strong>Vista:</strong> Consulta SQL guardada como si fuera una tabla virtual (no almacena datos, solo la consulta)</p>
           </div>
-          <div class="code-example fragment" style="margin-top: 30px;">
-            <pre><code class="sql">CREATE VIEW v_peliculas_completas AS
+          <div class="fragment" style="margin-top: 30px;">
+            <h3>¿Para qué sirven?</h3>
+            <ul style="text-align: left; max-width: 800px; margin: 20px auto; font-size: 0.9em;">
+              <li>✅ <strong>Simplificar consultas complejas:</strong> Escribes el JOIN una vez, lo usas muchas veces</li>
+              <li>✅ <strong>Seguridad:</strong> Ocultar columnas sensibles (contraseñas, datos privados)</li>
+              <li>✅ <strong>Reutilización:</strong> Mismo dato en múltiples lugares</li>
+            </ul>
+          </div>
+          <div class="fragment" style="margin-top: 25px;">
+            <h3>📝 Crear una vista:</h3>
+            <div class="code-example">
+              <pre><code class="sql">-- Crear vista con películas + categoría
+CREATE VIEW v_peliculas_completas AS
 SELECT 
+    p.pelicula_id,
     p.titulo,
     p.año_lanzamiento,
     c.nombre AS categoria,
-    p.duracion
+    p.duracion,
+    p.precio_alquiler
 FROM pelicula p
-JOIN categoria c ON p.categoria_id = c.categoria_id;</code></pre>
+INNER JOIN categoria c ON p.categoria_id = c.categoria_id;</code></pre>
+            </div>
           </div>
           <div class="fragment" style="margin-top: 25px;">
-            <p>Luego puedes consultarla como una tabla normal:</p>
-            <pre><code class="sql">SELECT * FROM v_peliculas_completas WHERE categoria = 'Acción';</code></pre>
+            <h3>🔍 Usar la vista (como si fuera una tabla):</h3>
+            <div class="code-example">
+              <pre><code class="sql">-- Consulta simple, pero ejecuta el JOIN internamente
+SELECT * FROM v_peliculas_completas 
+WHERE categoria = 'Acción' 
+ORDER BY año_lanzamiento DESC;</code></pre>
+            </div>
           </div>
+          <p class="fragment tip-box" style="margin-top: 20px;">
+            💡 La vista no ocupa espacio (no guarda datos), solo ejecuta la consulta cuando la llamas
+          </p>
         </section>
 
         <!-- Slide 19 — Transacciones -->
         <section>
           <h2><span class="icon">💳</span>Transacciones</h2>
           <div class="definition-box">
-            <p><strong>Transacción:</strong> Conjunto de operaciones que se ejecutan como una unidad</p>
-            <p style="font-size: 0.9em;">Todo se completa o nada se completa</p>
+            <p><strong>Transacción:</strong> Conjunto de operaciones SQL que se ejecutan como una unidad atómica</p>
+            <p style="font-size: 0.9em; margin-top: 10px;">Todo se completa exitosamente ✅ o nada se completa ❌</p>
           </div>
-          <div class="code-example fragment" style="margin-top: 30px;">
-            <pre><code class="sql">BEGIN; -- Iniciar transacción
+          <div class="fragment" style="margin-top: 30px;">
+            <h3>📋 Ejemplo: Transferencia bancaria</h3>
+            <div class="two-col" style="gap: 30px; margin-top: 20px;">
+              <div>
+                <h4 style="color: #2e7d32;">✅ Transacción exitosa:</h4>
+                <div class="code-example">
+                  <pre><code class="sql">BEGIN; -- Iniciar transacción
 
-UPDATE cuenta SET saldo = saldo - 100 WHERE cliente_id = 1;
-UPDATE cuenta SET saldo = saldo + 100 WHERE cliente_id = 2;
+-- Paso 1: Restar dinero de cuenta A
+UPDATE cuenta 
+SET saldo = saldo - 100 
+WHERE cliente_id = 1;
 
-COMMIT; -- Confirmar cambios</code></pre>
+-- Paso 2: Sumar dinero a cuenta B
+UPDATE cuenta 
+SET saldo = saldo + 100 
+WHERE cliente_id = 2;
+
+COMMIT; -- ✅ Confirmar cambios
+-- Ambas operaciones se guardan</code></pre>
+                </div>
+              </div>
+              <div>
+                <h4 style="color: #c62828;">❌ Transacción fallida:</h4>
+                <div class="code-example">
+                  <pre><code class="sql">BEGIN; -- Iniciar transacción
+
+-- Paso 1: Restar dinero de cuenta A
+UPDATE cuenta 
+SET saldo = saldo - 100 
+WHERE cliente_id = 1;
+-- ✅ Ejecutado
+
+-- Paso 2: Error (cuenta B no existe)
+UPDATE cuenta 
+SET saldo = saldo + 100 
+WHERE cliente_id = 999;
+-- ❌ ERROR!
+
+ROLLBACK; -- 🔄 Deshacer TODO
+-- El paso 1 se revierte automáticamente
+-- No se pierde dinero</code></pre>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="fragment" style="margin-top: 25px;">
-            <p><strong>Si algo falla:</strong></p>
-            <pre><code class="sql">ROLLBACK; -- Deshacer todos los cambios</code></pre>
-          </div>
+          <p class="fragment success-box" style="margin-top: 25px;">
+            ✅ <strong>Garantía:</strong> O se ejecutan TODAS las operaciones, o NINGUNA. No hay estados intermedios.
+          </p>
         </section>
 
         <!-- Slide 20 — Buenas Prácticas -->
