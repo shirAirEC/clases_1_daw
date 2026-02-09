@@ -101,6 +101,15 @@ function requireAuth(req, res, next) {
   next();
 }
 
+// Health check endpoint para Railway
+app.get('/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
+});
+
 // Endpoint de test para CORS (sin autenticación)
 app.get('/api/test', (req, res) => {
   res.json({ 
@@ -851,10 +860,28 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Iniciar servidor
-app.listen(PORT, () => {
-  console.log(`🚀 Servidor ejecutándose en puerto ${PORT}`);
-  console.log(`📊 Conectado a base de datos PostgreSQL`);
+// Verificar conexión a la base de datos al iniciar
+pool.query('SELECT NOW()', (err, res) => {
+  if (err) {
+    console.error('❌ Error conectando a PostgreSQL:', err.message);
+  } else {
+    console.log('✅ Conexión a PostgreSQL verificada:', res.rows[0].now);
+  }
+});
+
+// Iniciar servidor - escuchar en 0.0.0.0 para Railway
+const HOST = '0.0.0.0';
+const server = app.listen(PORT, HOST, () => {
+  console.log(`🚀 Servidor ejecutándose en ${HOST}:${PORT}`);
+  console.log(`🌍 CORS habilitado para todos los orígenes`);
+  console.log(`🔐 Sesiones configuradas`);
+  console.log(`📡 Listo para recibir peticiones`);
+});
+
+// Manejo de errores del servidor
+server.on('error', (error) => {
+  console.error('❌ Error del servidor:', error);
+  process.exit(1);
 });
 
 // Manejo de cierre graceful

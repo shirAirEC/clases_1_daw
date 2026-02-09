@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Test CORS - Railway API</title>
+  <style>
+    body {
+      font-family: monospace;
+      padding: 20px;
+      background: #1e1e1e;
+      color: #fff;
+    }
+    .test-box {
+      background: #2d2d2d;
+      padding: 20px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border-left: 4px solid #667eea;
+    }
+    .success { border-left-color: #28a745; }
+    .error { border-left-color: #dc3545; }
+    button {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px;
+      font-size: 14px;
+    }
+    button:hover {
+      background: #5568d3;
+    }
+    pre {
+      background: #1e1e1e;
+      padding: 10px;
+      border-radius: 5px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔍 Test de CORS - Railway API</h1>
+  
+  <div class="test-box">
+    <h3>Test 1: API Test Endpoint (sin autenticación)</h3>
+    <button onclick="testEndpoint('/api/test')">Probar /api/test</button>
+    <div id="result1"></div>
+  </div>
+
+  <div class="test-box">
+    <h3>Test 2: Session Endpoint</h3>
+    <button onclick="testEndpoint('/api/session')">Probar /api/session</button>
+    <div id="result2"></div>
+  </div>
+
+  <div class="test-box">
+    <h3>Test 3: Cuestionario Submit (requiere login)</h3>
+    <button onclick="testCuestionario()">Probar /api/cuestionario/submit</button>
+    <div id="result3"></div>
+  </div>
+
+  <div class="test-box">
+    <h3>Test 4: Verificar headers CORS en respuesta</h3>
+    <button onclick="checkCorsHeaders()">Verificar Headers</button>
+    <div id="result4"></div>
+  </div>
+
+  <script>
+    const API_URL = 'https://clases-1-daw.up.railway.app';
+
+    async function testEndpoint(endpoint) {
+      const resultDiv = document.getElementById(`result${endpoint === '/api/test' ? '1' : '2'}`);
+      resultDiv.innerHTML = '<p>🔄 Probando...</p>';
+      
+      try {
+        const response = await fetch(`${API_URL}${endpoint}`, {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        const data = await response.json();
+        resultDiv.innerHTML = `
+          <p style="color: #28a745;">✅ Éxito! Status: ${response.status}</p>
+          <pre>${JSON.stringify(data, null, 2)}</pre>
+        `;
+      } catch (error) {
+        resultDiv.innerHTML = `
+          <p style="color: #dc3545;">❌ Error</p>
+          <pre>${error.message}</pre>
+        `;
+      }
+    }
+
+    async function testCuestionario() {
+      const resultDiv = document.getElementById('result3');
+      resultDiv.innerHTML = '<p>🔄 Probando...</p>';
+      
+      try {
+        const response = await fetch(`${API_URL}/api/cuestionario/submit`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            cuestionario_id: 'TEST',
+            respuestas: { q1: 'test' }
+          })
+        });
+        
+        const data = await response.json();
+        resultDiv.innerHTML = `
+          <p style="color: ${response.status === 401 ? '#ffc107' : '#28a745'};">
+            Status: ${response.status} ${response.status === 401 ? '(esperado - sin login)' : ''}
+          </p>
+          <pre>${JSON.stringify(data, null, 2)}</pre>
+        `;
+      } catch (error) {
+        resultDiv.innerHTML = `
+          <p style="color: #dc3545;">❌ Error CORS</p>
+          <pre>${error.message}</pre>
+          <p>Si ves este error, CORS sigue bloqueado</p>
+        `;
+      }
+    }
+
+    async function checkCorsHeaders() {
+      const resultDiv = document.getElementById('result4');
+      resultDiv.innerHTML = '<p>🔄 Verificando headers...</p>';
+      
+      try {
+        const response = await fetch(`${API_URL}/api/test`, {
+          method: 'GET',
+          credentials: 'include'
+        });
+        
+        const headers = {};
+        response.headers.forEach((value, key) => {
+          headers[key] = value;
+        });
+        
+        resultDiv.innerHTML = `
+          <p style="color: #28a745;">✅ Headers recibidos:</p>
+          <pre>${JSON.stringify(headers, null, 2)}</pre>
+          <p style="margin-top: 10px;">
+            <strong>CORS OK:</strong> ${headers['access-control-allow-origin'] ? '✅' : '❌'}<br>
+            <strong>Credentials:</strong> ${headers['access-control-allow-credentials'] ? '✅' : '❌'}
+          </p>
+        `;
+      } catch (error) {
+        resultDiv.innerHTML = `
+          <p style="color: #dc3545;">❌ Error</p>
+          <pre>${error.message}</pre>
+        `;
+      }
+    }
+
+    // Auto-test al cargar
+    setTimeout(() => {
+      console.log('🚀 Ejecutando tests automáticos...');
+      testEndpoint('/api/test');
+    }, 1000);
+  </script>
+</body>
+</html>
