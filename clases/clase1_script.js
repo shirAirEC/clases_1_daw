@@ -22,154 +22,53 @@ Reveal.initialize({
   }
 });
 
-// ===== SISTEMA SIMPLE DE IDENTIFICACIÓN =====
-let currentStudent = null;
-
-// Verificar si el estudiante ya se identificó
-function checkStudentIdentification() {
-  const studentData = localStorage.getItem('current-student');
-  if (studentData) {
-    currentStudent = JSON.parse(studentData);
-    return true;
-  }
-  return false;
-}
-
-// Modal de identificación
-function showStudentModal() {
-  if (checkStudentIdentification()) {
-    return; // Ya está identificado
-  }
-
-  const modal = document.createElement('div');
-  modal.id = 'student-modal';
-  modal.style.cssText = `
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.8);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10000;
-  `;
-
-  modal.innerHTML = `
-    <div style="background: white; padding: 40px; border-radius: 20px; max-width: 500px; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
-      <h2 style="color: #667eea; margin-bottom: 20px; text-align: center;">🎓 Identificación de Estudiante</h2>
-      <p style="color: #666; margin-bottom: 25px; text-align: center;">Para comenzar, identifícate:</p>
-      
-      <div style="margin-bottom: 20px;">
-        <label style="display: block; color: #333; font-weight: 600; margin-bottom: 8px;">Nombre completo:</label>
-        <input type="text" id="student-name" placeholder="Ej: María García López" 
-          style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 1em;">
-      </div>
-      
-      <button onclick="registerStudent()" 
-        style="width: 100%; padding: 15px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 8px; font-size: 1.1em; font-weight: 600; cursor: pointer; box-shadow: 0 4px 15px rgba(102,126,234,0.3);">
-        Comenzar
-      </button>
-    </div>
-  `;
-
-  document.body.appendChild(modal);
-
-  // Focus en el input
-  setTimeout(() => {
-    document.getElementById('student-name').focus();
-  }, 100);
-
-  // Permitir Enter para enviar
-  document.getElementById('student-name').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') registerStudent();
-  });
-}
-
-// Registrar estudiante
-window.registerStudent = function() {
-  const name = document.getElementById('student-name').value.trim();
-
-  if (!name) {
-    alert('Por favor, ingresa tu nombre');
-    return;
-  }
-
-  currentStudent = {
-    name: name,
-    startTime: Date.now(),
-    correctAnswers: 0,
-    totalAnswers: 0
-  };
-
-  localStorage.setItem('current-student', JSON.stringify(currentStudent));
-  
-  // Cerrar modal
-  const modal = document.getElementById('student-modal');
-  if (modal) modal.remove();
-
-  // Mostrar indicador
-  updateStudentIndicator();
-  
-  const indicator = document.getElementById('student-indicator');
-  if (indicator) {
-    indicator.style.display = 'block';
-  }
-};
-
-// Actualizar indicador de estudiante
-function updateStudentIndicator() {
-  const indicator = document.getElementById('student-indicator');
-  if (!indicator) return;
-
-  if (currentStudent) {
-    indicator.style.display = 'block';
-    const percentage = currentStudent.totalAnswers > 0 
-      ? Math.round((currentStudent.correctAnswers / currentStudent.totalAnswers) * 100)
-      : 0;
-    
-    document.getElementById('student-indicator-text').textContent = 
-      `${currentStudent.name} - ${currentStudent.correctAnswers}/${currentStudent.totalAnswers} (${percentage}%)`;
-  } else {
-    indicator.style.display = 'none';
-  }
-}
-
-// Guardar respuesta de estudiante
-function saveStudentAnswer(questionId, answer, isCorrect) {
-  if (!currentStudent) {
-    console.warn('Estudiante no identificado');
-    return;
-  }
-
-  currentStudent.totalAnswers++;
-  if (isCorrect) {
-    currentStudent.correctAnswers++;
-  }
-
-  localStorage.setItem('current-student', JSON.stringify(currentStudent));
-  updateStudentIndicator();
-}
-
-// Mostrar identificación al cargar
-document.addEventListener('DOMContentLoaded', () => {
-  setTimeout(showStudentModal, 1000);
-});
-
-// Verificar identificación al iniciar
-setTimeout(() => {
-  if (checkStudentIdentification()) {
-    const indicator = document.getElementById('student-indicator');
-    if (indicator) {
-      indicator.style.display = 'block';
-      updateStudentIndicator();
-    }
-  }
-}, 2000);
-
 // ===== VALIDADOR XML INTEGRADO =====
 function validateXML(textareaId, resultId) {
+  const textarea = document.getElementById(textareaId);
+  const resultDiv = document.getElementById(resultId);
+  const xmlString = textarea.value.trim();
+
+  if (!xmlString) {
+    showValidationResult(resultDiv, false, '⚠️ El campo está vacío. Escribe tu XML aquí.');
+    return;
+  }
+
+  // Intentar parsear el XML
+  const parser = new DOMParser();
+  const xmlDoc = parser.parseFromString(xmlString, 'text/xml');
+
+  // Verificar errores de parseo
+  const parseError = xmlDoc.querySelector('parsererror');
+  
+  if (parseError) {
+    const errorMessage = parseError.textContent;
+    showValidationResult(resultDiv, false, `❌ XML NO válido:\n${errorMessage}`);
+    return;
+  }
+
+  // Verificar que tenga prólogo
+  const hasProlog = xmlString.trim().startsWith('<?xml');
+  
+  // Verificar que tenga una única raíz
+  const rootElements = xmlDoc.documentElement ? 1 : 0;
+  
+  if (rootElements === 0) {
+    showValidationResult(resultDiv, false, '❌ No se encontró elemento raíz.');
+    return;
+  }
+
+  // Si llegamos aquí, el XML es válido
+  showValidationResult(resultDiv, true, 
+    `✅ ¡XML bien formado!\n` +
+    `${hasProlog ? '✓ Tiene prólogo' : '⚠️ No tiene prólogo (opcional pero recomendado)'}\n` +
+    `✓ Tiene raíz única: <${xmlDoc.documentElement.tagName}>\n` +
+    `✓ Anidamiento correcto`
+  );
+}
+
+
+// ===== VALIDADOR XML AVANZADO (con requisitos específicos) =====
+function validateXMLAdvanced(textareaId, resultId, requirements) {
   const textarea = document.getElementById(textareaId);
   const resultDiv = document.getElementById(resultId);
   const xmlString = textarea.value.trim();
@@ -498,11 +397,8 @@ document.addEventListener('click', function(e) {
       ? explicacionesVF[pregunta].correcta 
       : explicacionesVF[pregunta].incorrecta;
     
-    // Guardar respuesta del estudiante
-    saveStudentAnswer(pregunta, respuesta, esCorrecta);
   }
 });
 
-console.log('✅ Presentación XML cargada correctamente');
-console.log('🎓 Sistema simple de registro activo');
+console.log('✅ Presentación XML Clase 1 cargada correctamente');
 console.log('⌨️ Presiona Ctrl+Shift+N para abrir notas del presentador');

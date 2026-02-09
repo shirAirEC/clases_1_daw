@@ -16,111 +16,6 @@ Reveal.initialize({
   }
 });
 
-// ===== SISTEMA DE LOGIN Y PROGRESO SIMPLE =====
-let currentStudent = null;
-
-// Cargar estudiante actual al iniciar
-window.addEventListener('DOMContentLoaded', function() {
-  const stored = localStorage.getItem('currentStudent');
-  if (stored) {
-    currentStudent = JSON.parse(stored);
-    showStudentIndicator();
-  } else {
-    showLoginModal();
-  }
-});
-
-function showLoginModal() {
-  const modal = document.createElement('div');
-  modal.id = 'login-modal';
-  modal.style.cssText = `
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0,0,0,0.85);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10000;
-  `;
-  
-  modal.innerHTML = `
-    <div style="background: white; padding: 40px; border-radius: 20px; max-width: 500px; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
-      <h2 style="color: #667eea; margin-bottom: 20px; font-size: 1.8em;">🎓 Clase 2: DTD y XSD</h2>
-      <p style="color: #666; margin-bottom: 25px; font-size: 1.1em;">Ingresa tu nombre para comenzar:</p>
-      <input type="text" id="student-name-input" placeholder="Tu nombre completo" style="width: 100%; padding: 15px; font-size: 1.1em; border: 2px solid #ddd; border-radius: 10px; margin-bottom: 20px;" autofocus>
-      <button onclick="startSession()" style="width: 100%; padding: 15px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 10px; font-size: 1.2em; font-weight: 600; cursor: pointer; transition: transform 0.2s;">
-        Comenzar →
-      </button>
-      <p style="color: #999; font-size: 0.85em; margin-top: 15px; text-align: center;">
-        Tu progreso se guardará automáticamente
-      </p>
-    </div>
-  `;
-  
-  document.body.appendChild(modal);
-  
-  // Enter para enviar
-  document.getElementById('student-name-input').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-      startSession();
-    }
-  });
-}
-
-function startSession() {
-  const nameInput = document.getElementById('student-name-input');
-  const name = nameInput.value.trim();
-  
-  if (!name) {
-    alert('Por favor ingresa tu nombre');
-    return;
-  }
-  
-  currentStudent = {
-    name: name,
-    startTime: new Date().toISOString(),
-    correctAnswers: 0,
-    totalAnswers: 0
-  };
-  
-  localStorage.setItem('currentStudent', JSON.stringify(currentStudent));
-  
-  // Cerrar modal
-  document.getElementById('login-modal').remove();
-  
-  // Mostrar indicador
-  showStudentIndicator();
-}
-
-function showStudentIndicator() {
-  const indicator = document.getElementById('student-indicator');
-  const indicatorText = document.getElementById('student-indicator-text');
-  
-  if (currentStudent.totalAnswers === 0) {
-    indicatorText.textContent = `✅ ${currentStudent.name}`;
-  } else {
-    const percentage = Math.round((currentStudent.correctAnswers / currentStudent.totalAnswers) * 100);
-    indicatorText.textContent = `✅ ${currentStudent.name} - ${currentStudent.correctAnswers}/${currentStudent.totalAnswers} (${percentage}%)`;
-  }
-  
-  indicator.style.display = 'block';
-}
-
-function saveStudentAnswer(question, answer, isCorrect) {
-  if (!currentStudent) return;
-  
-  currentStudent.totalAnswers++;
-  if (isCorrect) {
-    currentStudent.correctAnswers++;
-  }
-  
-  localStorage.setItem('currentStudent', JSON.stringify(currentStudent));
-  showStudentIndicator();
-}
-
 // ===== RESPUESTAS DEL CUESTIONARIO =====
 const respuestasVF = {
   q1: 'v',  // DTD = Document Type Definition
@@ -246,9 +141,6 @@ document.addEventListener('click', function(e) {
     feedbackElement.innerHTML = esCorrecta 
       ? explicacionesVF[pregunta].correcta 
       : explicacionesVF[pregunta].incorrecta;
-    
-    // Guardar respuesta del estudiante
-    saveStudentAnswer(pregunta, respuesta, esCorrecta);
   }
 });
 
