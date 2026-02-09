@@ -86,41 +86,135 @@
           </div>
         </section>
 
-        <!-- Slide 3 — JOINs Introducción -->
+        <!-- Slide 3 — JOINs Introducción Mejorado -->
         <section>
-          <h2><span class="icon">🔗</span>JOINs: Unir Tablas</h2>
+          <h2><span class="icon">🔗</span>JOINs: Unir Tablas Relacionadas</h2>
           <div class="definition-box">
-            <p><strong>JOIN</strong> permite combinar datos de múltiples tablas relacionadas</p>
+            <p><strong>JOIN</strong> permite combinar filas de dos o más tablas basándose en una columna relacionada</p>
           </div>
           <div class="fragment" style="margin-top: 30px;">
-            <h3>Tipos principales:</h3>
-            <div class="two-col" style="margin-top: 20px;">
-              <div class="join-box">
-                <h4>INNER JOIN</h4>
-                <p style="font-size: 0.85em;">Solo registros que coinciden en ambas tablas</p>
-                <div style="font-size: 2em; margin: 10px 0;">⭕ ∩ ⭕</div>
+            <h3>¿Por qué necesitamos JOINs?</h3>
+            <ul style="text-align: left; max-width: 800px; margin: 20px auto; font-size: 0.9em;">
+              <li class="fragment">📦 Los datos están distribuidos en múltiples tablas (normalización)</li>
+              <li class="fragment">🔑 Las tablas se relacionan mediante claves foráneas</li>
+              <li class="fragment">📊 Necesitamos combinar información de diferentes tablas en una sola consulta</li>
+            </ul>
+          </div>
+          <p class="fragment tip-box" style="margin-top: 25px;">
+            <strong>Ejemplo:</strong> Unir la tabla "pelicula" con "categoria" para ver el nombre de la categoría en lugar de solo su ID
+          </p>
+        </section>
+
+        <!-- Slide 3.5 — Tipos de JOINs con Diagramas de Venn -->
+        <section>
+          <h2><span class="icon">🔗</span>Tipos de JOINs</h2>
+          <div class="two-col" style="margin-top: 40px; gap: 50px;">
+            <div class="fragment">
+              <h3 style="color: #667eea; margin-bottom: 20px;">INNER JOIN</h3>
+              <svg width="200" height="150" style="margin: 20px auto; display: block;">
+                <!-- Círculo izquierdo (Tabla A) -->
+                <circle cx="70" cy="75" r="50" fill="#667eea" opacity="0.3" stroke="#667eea" stroke-width="3"/>
+                <!-- Círculo derecho (Tabla B) -->
+                <circle cx="130" cy="75" r="50" fill="#764ba2" opacity="0.3" stroke="#764ba2" stroke-width="3"/>
+                <!-- Intersección -->
+                <path d="M 100 35 A 50 50 0 0 1 100 115 A 50 50 0 0 1 100 35" fill="#ffa726" opacity="0.9"/>
+                <!-- Etiquetas -->
+                <text x="45" y="80" fill="white" font-size="14" font-weight="bold">A</text>
+                <text x="155" y="80" fill="white" font-size="14" font-weight="bold">B</text>
+                <text x="95" y="80" fill="white" font-size="16" font-weight="bold">✓</text>
+              </svg>
+              <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                ✅ Solo registros que <strong>coinciden en ambas tablas</strong>
+              </p>
+            </div>
+            
+            <div class="fragment">
+              <h3 style="color: #667eea; margin-bottom: 20px;">LEFT JOIN</h3>
+              <svg width="200" height="150" style="margin: 20px auto; display: block;">
+                <!-- Círculo izquierdo completo (Tabla A) -->
+                <circle cx="70" cy="75" r="50" fill="#667eea" opacity="0.7" stroke="#667eea" stroke-width="3"/>
+                <!-- Círculo derecho (Tabla B) - solo borde -->
+                <circle cx="130" cy="75" r="50" fill="none" stroke="#764ba2" stroke-width="3" stroke-dasharray="5,5"/>
+                <!-- Intersección -->
+                <path d="M 100 35 A 50 50 0 0 1 100 115 A 50 50 0 0 1 100 35" fill="#ffa726" opacity="0.9"/>
+                <!-- Etiquetas -->
+                <text x="45" y="80" fill="white" font-size="14" font-weight="bold">A</text>
+                <text x="155" y="50" fill="#764ba2" font-size="14" font-weight="bold">B</text>
+                <text x="95" y="80" fill="white" font-size="16" font-weight="bold">✓</text>
+              </svg>
+              <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                ✅ <strong>Todos</strong> los de la tabla izquierda + coincidencias
+              </p>
+            </div>
+          </div>
+          <p class="fragment tip-box" style="margin-top: 30px;">
+            También existen RIGHT JOIN y FULL OUTER JOIN, pero INNER y LEFT son los más usados
+          </p>
+        </section>
+
+        <!-- Slide 4 — INNER JOIN Explicación Detallada -->
+        <section>
+          <h2><span class="icon">🔗</span>INNER JOIN - Explicación</h2>
+          <div class="definition-box">
+            <p><strong>INNER JOIN:</strong> Devuelve solo las filas que tienen coincidencias en AMBAS tablas</p>
+          </div>
+          <div style="margin-top: 30px;">
+            <h3 style="color: #667eea;">Sintaxis:</h3>
+            <div class="code-example">
+              <pre><code class="sql">SELECT columnas
+FROM tabla_a
+INNER JOIN tabla_b ON tabla_a.clave = tabla_b.clave;</code></pre>
+            </div>
+          </div>
+          <div class="fragment" style="margin-top: 25px;">
+            <h3>📋 Ejemplo práctico:</h3>
+            <div class="two-col" style="font-size: 0.75em; gap: 30px;">
+              <div>
+                <h4>Tabla: pelicula</h4>
+                <table style="font-size: 1em;">
+                  <tr style="background: #667eea; color: white;">
+                    <th>pelicula_id</th>
+                    <th>titulo</th>
+                    <th>categoria_id</th>
+                  </tr>
+                  <tr><td>1</td><td>Matrix</td><td>3</td></tr>
+                  <tr><td>2</td><td>Toy Story</td><td>1</td></tr>
+                  <tr><td>3</td><td>Titanic</td><td>5</td></tr>
+                  <tr style="background: #ffcdd2;"><td>4</td><td>Sin Cat</td><td>NULL</td></tr>
+                </table>
               </div>
-              <div class="join-box">
-                <h4>LEFT JOIN</h4>
-                <p style="font-size: 0.85em;">Todos los de la izquierda + coincidencias</p>
-                <div style="font-size: 2em; margin: 10px 0;">⭕ ⊃ ⭕</div>
+              <div>
+                <h4>Tabla: categoria</h4>
+                <table style="font-size: 1em;">
+                  <tr style="background: #764ba2; color: white;">
+                    <th>categoria_id</th>
+                    <th>nombre</th>
+                  </tr>
+                  <tr><td>1</td><td>Animación</td></tr>
+                  <tr><td>3</td><td>Ciencia Ficción</td></tr>
+                  <tr><td>5</td><td>Romance</td></tr>
+                  <tr style="background: #ffcdd2;"><td>9</td><td>Sin Películas</td></tr>
+                </table>
               </div>
             </div>
           </div>
+          <p class="fragment warning-box" style="margin-top: 20px;">
+            ⚠️ "Sin Cat" y "Sin Películas" NO aparecerán en el resultado (no hay coincidencias)
+          </p>
         </section>
 
-        <!-- Slide 4 — INNER JOIN Ejemplo -->
+        <!-- Slide 4.5 — INNER JOIN Resultado -->
         <section>
-          <h2><span class="icon">🔗</span>INNER JOIN en Acción</h2>
+          <h2><span class="icon">✅</span>INNER JOIN - Resultado</h2>
           <div class="code-example">
             <pre><code class="sql">SELECT p.titulo, c.nombre AS categoria 
 FROM pelicula p
 INNER JOIN categoria c ON p.categoria_id = c.categoria_id;</code></pre>
           </div>
           <div class="fragment" style="margin-top: 25px;">
-            <p><strong>Resultado:</strong> Lista de películas con el nombre de su categoría</p>
-            <table style="font-size: 0.8em; margin: 20px auto; max-width: 500px;">
-              <tr style="background: #667eea; color: white;">
+            <h3>📊 Resultado:</h3>
+            <table style="font-size: 0.85em; margin: 20px auto; max-width: 600px;">
+              <tr style="background: #ffa726; color: white;">
                 <th>titulo</th>
                 <th>categoria</th>
               </tr>
@@ -128,9 +222,170 @@ INNER JOIN categoria c ON p.categoria_id = c.categoria_id;</code></pre>
               <tr><td>Toy Story</td><td>Animación</td></tr>
               <tr><td>Titanic</td><td>Romance</td></tr>
             </table>
+            <p style="color: #666; font-size: 0.9em; margin-top: 20px;">
+              ✅ Solo 3 filas (las que tienen coincidencias en ambas tablas)
+            </p>
+          </div>
+          <div class="fragment" style="margin-top: 30px;">
+            <div class="two-col" style="gap: 20px;">
+              <div class="tip-box">
+                <strong>Alias:</strong> <code>p</code> para pelicula, <code>c</code> para categoria (más legible)
+              </div>
+              <div class="success-box">
+                <strong>ON:</strong> Define la condición de unión (qué columnas relacionar)
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Slide 5 — LEFT JOIN Explicación Detallada -->
+        <section>
+          <h2><span class="icon">⬅️</span>LEFT JOIN - Explicación</h2>
+          <div class="definition-box">
+            <p><strong>LEFT JOIN:</strong> Devuelve TODAS las filas de la tabla izquierda + las coincidencias de la derecha (NULL si no hay coincidencia)</p>
+          </div>
+          <div style="margin-top: 30px;">
+            <h3 style="color: #667eea;">Sintaxis:</h3>
+            <div class="code-example">
+              <pre><code class="sql">SELECT columnas
+FROM tabla_a
+LEFT JOIN tabla_b ON tabla_a.clave = tabla_b.clave;</code></pre>
+            </div>
+          </div>
+          <div class="fragment" style="margin-top: 25px;">
+            <h3>📋 Mismo ejemplo con LEFT JOIN:</h3>
+            <div class="code-example">
+              <pre><code class="sql">SELECT p.titulo, c.nombre AS categoria 
+FROM pelicula p
+LEFT JOIN categoria c ON p.categoria_id = c.categoria_id;</code></pre>
+            </div>
+          </div>
+          <div class="fragment" style="margin-top: 20px;">
+            <table style="font-size: 0.8em; margin: 20px auto; max-width: 600px;">
+              <tr style="background: #ffa726; color: white;">
+                <th>titulo</th>
+                <th>categoria</th>
+              </tr>
+              <tr><td>Matrix</td><td>Ciencia Ficción</td></tr>
+              <tr><td>Toy Story</td><td>Animación</td></tr>
+              <tr><td>Titanic</td><td>Romance</td></tr>
+              <tr style="background: #fff3e0;"><td>Sin Cat</td><td style="color: #999;">NULL</td></tr>
+            </table>
+            <p style="color: #666; font-size: 0.9em; margin-top: 20px;">
+              ✅ 4 filas - <strong>todas las películas</strong> (incluso "Sin Cat" con NULL)
+            </p>
+          </div>
+        </section>
+
+        <!-- Slide 5.5 — Cuándo usar cada JOIN -->
+        <section>
+          <h2><span class="icon">🤔</span>¿Cuándo usar cada JOIN?</h2>
+          <div class="two-col" style="margin-top: 40px; gap: 40px;">
+            <div class="fragment">
+              <div style="background: #e3f2fd; padding: 25px; border-radius: 15px; border-left: 5px solid #667eea;">
+                <h3 style="color: #667eea; margin-bottom: 15px;">⭕ INNER JOIN</h3>
+                <ul style="text-align: left; font-size: 0.85em; line-height: 1.8;">
+                  <li>✅ Cuando solo quieres datos <strong>completos</strong></li>
+                  <li>✅ Ejemplo: "Películas CON categoría"</li>
+                  <li>✅ Ejemplo: "Alquileres con cliente válido"</li>
+                  <li>✅ Es el más restrictivo (menos filas)</li>
+                </ul>
+              </div>
+            </div>
+            
+            <div class="fragment">
+              <div style="background: #f3e5f5; padding: 25px; border-radius: 15px; border-left: 5px solid #764ba2;">
+                <h3 style="color: #764ba2; margin-bottom: 15px;">⬅️ LEFT JOIN</h3>
+                <ul style="text-align: left; font-size: 0.85em; line-height: 1.8;">
+                  <li>✅ Cuando quieres <strong>todo de la izquierda</strong></li>
+                  <li>✅ Ejemplo: "Todas las películas (con o sin categoría)"</li>
+                  <li>✅ Ejemplo: "Todos los clientes (alquilaron o no)"</li>
+                  <li>✅ Permite detectar datos faltantes (NULL)</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <p class="fragment tip-box" style="margin-top: 40px;">
+            💡 <strong>Regla práctica:</strong> Si dices "TODOS los X..." probablemente necesitas LEFT JOIN
+          </p>
+        </section>
+
+        <!-- Slide 6 — JOIN con 3 tablas (Ejemplo Videoclub) -->
+        <section>
+          <h2><span class="icon">🎬</span>JOIN con Múltiples Tablas</h2>
+          <p style="font-size: 0.9em; color: #666; margin-bottom: 30px;">
+            Podemos unir <strong>más de 2 tablas</strong> en una sola consulta
+          </p>
+          <div class="code-example">
+            <pre><code class="sql">-- ¿Qué películas alquiló cada cliente?
+SELECT 
+  c.nombre,
+  c.apellido,
+  p.titulo,
+  a.fecha_alquiler,
+  a.precio_pagado
+FROM alquiler a
+INNER JOIN cliente c ON a.cliente_id = c.cliente_id
+INNER JOIN pelicula p ON a.pelicula_id = p.pelicula_id
+ORDER BY a.fecha_alquiler DESC
+LIMIT 5;</code></pre>
+          </div>
+          <div class="fragment" style="margin-top: 25px;">
+            <table style="font-size: 0.7em; margin: 20px auto;">
+              <tr style="background: #ffa726; color: white;">
+                <th>nombre</th>
+                <th>apellido</th>
+                <th>titulo</th>
+                <th>fecha_alquiler</th>
+                <th>precio_pagado</th>
+              </tr>
+              <tr><td>Juan</td><td>García</td><td>Matrix</td><td>2024-01-20</td><td>3.99</td></tr>
+              <tr><td>María</td><td>López</td><td>Toy Story</td><td>2024-01-19</td><td>2.99</td></tr>
+              <tr><td>Pedro</td><td>Martínez</td><td>Titanic</td><td>2024-01-18</td><td>3.49</td></tr>
+            </table>
+          </div>
+          <p class="fragment success-box" style="margin-top: 20px;">
+            ✅ Unimos 3 tablas: alquiler → cliente + pelicula
+          </p>
+        </section>
+
+        <!-- Slide 7 — Práctica JOIN -->
+        <section>
+          <h2><span class="icon">💪</span>Ejercicio: Películas por Actor</h2>
+          <p style="font-size: 0.9em; color: #666; margin-bottom: 20px;">
+            <strong>Objetivo:</strong> Listar todos los actores con sus películas
+          </p>
+          <div class="fragment">
+            <h3 style="color: #667eea; font-size: 1em;">Tablas involucradas:</h3>
+            <div class="three-col" style="font-size: 0.7em; gap: 15px; margin: 20px 0;">
+              <div style="background: #e3f2fd; padding: 15px; border-radius: 10px;">
+                <strong>actor</strong><br>
+                actor_id, nombre, apellido
+              </div>
+              <div style="background: #fce4ec; padding: 15px; border-radius: 10px;">
+                <strong>pelicula_actor</strong><br>
+                actor_id, pelicula_id
+              </div>
+              <div style="background: #f3e5f5; padding: 15px; border-radius: 10px;">
+                <strong>pelicula</strong><br>
+                pelicula_id, titulo
+              </div>
+            </div>
+          </div>
+          <div class="fragment" style="margin-top: 25px;">
+            <div class="code-example">
+              <pre><code class="sql">SELECT 
+  a.nombre,
+  a.apellido,
+  p.titulo
+FROM actor a
+INNER JOIN pelicula_actor pa ON a.actor_id = pa.actor_id
+INNER JOIN pelicula p ON pa.pelicula_id = p.pelicula_id
+ORDER BY a.apellido, p.titulo;</code></pre>
+            </div>
           </div>
           <p class="fragment tip-box" style="margin-top: 20px;">
-            <strong>Nota:</strong> Usamos alias <code>p</code> y <code>c</code> para abreviar
+            💡 Relación N:M necesita una <strong>tabla intermedia</strong> (pelicula_actor)
           </p>
         </section>
 
