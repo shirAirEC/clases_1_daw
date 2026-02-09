@@ -274,6 +274,27 @@
       box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
     }
 
+    /* Clases solo para profesor */
+    .clase-card.profesor-only {
+      border: 2px solid rgba(139, 92, 246, 0.3);
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%);
+    }
+
+    .clase-card.profesor-only.alumno-view {
+      opacity: 0.55;
+      filter: grayscale(40%);
+      pointer-events: none;
+    }
+
+    .clase-card.profesor-only.alumno-view .btn-profesor {
+      background: #666;
+      cursor: not-allowed;
+    }
+
+    .clase-card.profesor-only.alumno-view .status-badge {
+      background: #666;
+    }
+
     .clase-header-row {
       display: flex;
       justify-content: space-between;
@@ -309,6 +330,12 @@
     .status-proximamente {
       background: #fef3c7;
       color: #92400e;
+    }
+
+    .clase-card.profesor-only .status-badge {
+      background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+      color: white;
+      font-weight: 600;
     }
 
     .clase-card h3 {
@@ -1089,24 +1116,24 @@
         </a>
       </div>
 
-      <!-- Teoría SQL -->
-      <div class="clase-card">
+      <!-- Teoría SQL - Solo Profesor -->
+      <div class="clase-card profesor-only">
         <div class="clase-header-row">
           <span class="clase-numero">Clase 1</span>
-          <span class="status-badge status-disponible">✅ Disponible</span>
+          <span class="status-badge status-disponible">👨‍🏫 Solo Profesor</span>
         </div>
         
         <h3>🏛️ Fundamentos de Bases de Datos Relacionales</h3>
-        <p>Introducción completa al modelo relacional, SQL básico y diseño de bases de datos. Desde los conceptos fundamentales hasta consultas prácticas.</p>
+        <p>Introducción completa al modelo relacional, SQL básico y conceptos esenciales. Desde los fundamentos hasta consultas con GROUP BY.</p>
         
         <div class="clase-stats">
           <div class="stat">
             <span>⏱️</span>
-            <span>4 horas</span>
+            <span>2 horas</span>
           </div>
           <div class="stat">
             <span>📊</span>
-            <span>46 slides</span>
+            <span>26 slides</span>
           </div>
           <div class="stat">
             <span>🎯</span>
@@ -1122,18 +1149,14 @@
             <li>Claves primarias y foráneas</li>
             <li>Relaciones: 1:1, 1:N, N:M</li>
             <li>SQL: SELECT, WHERE, ORDER BY, LIMIT</li>
-            <li>Funciones de agregación y GROUP BY</li>
-            <li>JOINs: INNER y LEFT</li>
-            <li>Normalización y diseño de BBDD</li>
-            <li>Propiedades ACID y transacciones</li>
-            <li>CREATE, INSERT, UPDATE, DELETE</li>
-            <li>Índices y vistas</li>
-            <li>Buenas prácticas</li>
+            <li>Operadores lógicos: AND, OR, LIKE</li>
+            <li>Funciones de agregación: COUNT, SUM, AVG, MAX, MIN</li>
+            <li>GROUP BY: agrupar y agregar datos</li>
           </ul>
         </div>
 
-        <a href="clases/basesdatos1.html" class="btn-comenzar">
-          📚 Ver Presentación
+        <a href="clases/basesdatos1.html" class="btn-comenzar btn-profesor">
+          👨‍🏫 Ver Presentación (Profesor)
         </a>
       </div>
 
@@ -1210,12 +1233,12 @@
       <form id="login-form" onsubmit="handleLogin(event)">
         <div class="form-group">
           <label for="username">👤 Usuario</label>
-          <input type="text" id="username" name="username" required placeholder="alumno1 o profesor">
+          <input type="text" id="username" name="username" required placeholder="Introduce tu usuario">
         </div>
         
         <div class="form-group">
           <label for="password">🔑 Contraseña</label>
-          <input type="password" id="password" name="password" required placeholder="alumno123 o profesor123">
+          <input type="password" id="password" name="password" required placeholder="Introduce tu contraseña">
         </div>
         
         <div id="login-error" class="error-message" style="display: none;"></div>
@@ -1384,6 +1407,14 @@
         mainContent.forEach(el => el.style.display = '');
         loginModal.style.display = 'none';
         if (closeModalBtn) closeModalBtn.style.display = 'block';
+
+        // Aplicar restricciones para alumnos en clases solo-profesor
+        const profesorOnlyCards = document.querySelectorAll('.clase-card.profesor-only');
+        if (user.rol === 'profesor') {
+          profesorOnlyCards.forEach(card => card.classList.remove('alumno-view'));
+        } else {
+          profesorOnlyCards.forEach(card => card.classList.add('alumno-view'));
+        }
       } else {
         // Usuario NO autenticado: ocultar contenido, forzar login
         loginBtn.style.display = 'block';

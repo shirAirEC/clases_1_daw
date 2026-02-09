@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bases de Datos Relacionales — Clase 1</title>
+    <title>Bases de Datos Relacionales — Teoría Clase 1</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/white.css" id="theme">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/monokai.css">
@@ -644,21 +644,41 @@ WHERE email LIKE '%gmail.com' OR email LIKE '%hotmail.com';</code></pre>
               <code style="font-size: 0.75em;">MIN(precio)</code>
             </div>
           </div>
-          <div class="code-example fragment" style="margin-top: 30px;">
-            <pre><code class="sql">SELECT COUNT(*) FROM pelicula;
--- Resultado: 20 (hay 20 películas)</code></pre>
-          </div>
         </section>
 
         <!-- Slide 22 — GROUP BY -->
         <section>
           <h2><span class="icon">📦</span>GROUP BY: Agrupar Datos</h2>
-          <p>Agrupar filas por un criterio y aplicar funciones de agregación</p>
-          <div class="code-example fragment">
+          <div class="definition-box">
+            <p><strong>GROUP BY</strong> agrupa filas que tienen el mismo valor en una columna específica</p>
+            <p style="font-size: 0.9em; margin-top: 10px;">Permite aplicar funciones de agregación a cada grupo</p>
+          </div>
+          
+          <div class="fragment" style="margin-top: 30px;">
+            <h3>¿Cómo funciona?</h3>
+            <ol style="text-align: left; max-width: 700px; margin: 20px auto; line-height: 1.8;">
+              <li class="fragment">SQL <strong>agrupa</strong> todas las filas que tienen el mismo valor en la columna especificada</li>
+              <li class="fragment">Luego <strong>aplica la función</strong> de agregación (COUNT, SUM, AVG, etc.) a cada grupo</li>
+              <li class="fragment">Devuelve <strong>un resultado por grupo</strong></li>
+            </ol>
+          </div>
+
+          <div class="code-example fragment" style="margin-top: 30px;">
             <pre><code class="sql">SELECT categoria_id, COUNT(*) AS total 
 FROM pelicula 
 GROUP BY categoria_id;</code></pre>
           </div>
+          
+          <div class="fragment" style="margin-top: 25px;">
+            <p><strong>Interpretación paso a paso:</strong></p>
+            <ul style="text-align: left; max-width: 700px; margin: 20px auto; font-size: 0.9em;">
+              <li>1️⃣ <code>FROM pelicula</code> → Toma todas las películas</li>
+              <li>2️⃣ <code>GROUP BY categoria_id</code> → Las agrupa por categoría</li>
+              <li>3️⃣ <code>COUNT(*)</code> → Cuenta cuántas hay en cada grupo</li>
+              <li>4️⃣ <code>AS total</code> → Le da nombre a esa columna</li>
+            </ul>
+          </div>
+
           <div class="fragment" style="margin-top: 25px;">
             <p><strong>Resultado:</strong> Cuántas películas hay en cada categoría</p>
             <table style="font-size: 0.8em; margin: 20px auto; max-width: 400px;">
@@ -670,553 +690,15 @@ GROUP BY categoria_id;</code></pre>
               <tr><td>2</td><td>3</td></tr>
               <tr><td>3</td><td>6</td></tr>
             </table>
+            <p style="margin-top: 15px; font-size: 0.9em;">En la categoría 1 hay 5 películas, en la 2 hay 3, y en la 3 hay 6</p>
+          </div>
+
+          <div class="fragment tip-box" style="margin-top: 30px;">
+            <p><strong>💡 Regla importante:</strong> Si usas GROUP BY, todas las columnas en el SELECT que NO sean funciones de agregación DEBEN estar en el GROUP BY</p>
           </div>
         </section>
 
-        <!-- Slide 23 — JOINs Introducción -->
-        <section>
-          <h2><span class="icon">🔗</span>JOINs: Unir Tablas</h2>
-          <div class="definition-box">
-            <p><strong>JOIN</strong> permite combinar datos de múltiples tablas relacionadas</p>
-          </div>
-          <div class="fragment" style="margin-top: 30px;">
-            <h3>Tipos principales:</h3>
-            <div class="two-col" style="margin-top: 20px;">
-              <div class="join-box">
-                <h4>INNER JOIN</h4>
-                <p style="font-size: 0.85em;">Solo registros que coinciden en ambas tablas</p>
-                <div style="font-size: 2em; margin: 10px 0;">⭕ ∩ ⭕</div>
-              </div>
-              <div class="join-box">
-                <h4>LEFT JOIN</h4>
-                <p style="font-size: 0.85em;">Todos los de la izquierda + coincidencias</p>
-                <div style="font-size: 2em; margin: 10px 0;">⭕ ⊃ ⭕</div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- Slide 24 — INNER JOIN Ejemplo -->
-        <section>
-          <h2><span class="icon">🔗</span>INNER JOIN en Acción</h2>
-          <div class="code-example">
-            <pre><code class="sql">SELECT p.titulo, c.nombre AS categoria 
-FROM pelicula p
-INNER JOIN categoria c ON p.categoria_id = c.categoria_id;</code></pre>
-          </div>
-          <div class="fragment" style="margin-top: 25px;">
-            <p><strong>Resultado:</strong> Lista de películas con el nombre de su categoría</p>
-            <table style="font-size: 0.8em; margin: 20px auto; max-width: 500px;">
-              <tr style="background: #667eea; color: white;">
-                <th>titulo</th>
-                <th>categoria</th>
-              </tr>
-              <tr><td>Matrix</td><td>Ciencia Ficción</td></tr>
-              <tr><td>Toy Story</td><td>Animación</td></tr>
-              <tr><td>Titanic</td><td>Romance</td></tr>
-            </table>
-          </div>
-          <p class="fragment tip-box" style="margin-top: 20px;">
-            <strong>Nota:</strong> Usamos alias <code>p</code> y <code>c</code> para abreviar
-          </p>
-        </section>
-
-        <!-- Slide 25 — Integridad Referencial -->
-        <section>
-          <h2><span class="icon">🛡️</span>Integridad Referencial</h2>
-          <div class="definition-box">
-            <p>Asegura que las <strong>relaciones entre tablas</strong> sean válidas</p>
-          </div>
-          <div class="fragment" style="margin-top: 30px;">
-            <h3>Reglas:</h3>
-            <ul style="text-align: left; max-width: 800px; margin: 20px auto;">
-              <li class="fragment">✅ No puedes insertar un alquiler con <code>cliente_id = 999</code> si el cliente 999 no existe</li>
-              <li class="fragment">✅ No puedes borrar un cliente si tiene alquileres asociados (sin antes borrar los alquileres)</li>
-              <li class="fragment">✅ La base de datos garantiza consistencia de datos</li>
-            </ul>
-          </div>
-          <div class="fragment success-box" style="margin-top: 25px;">
-            <p><strong>Ventaja:</strong> La base de datos protege tus datos automáticamente</p>
-          </div>
-        </section>
-
-        <!-- Slide 26 — Normalización Introducción -->
-        <section>
-          <h2><span class="icon">🎯</span>Normalización de Bases de Datos</h2>
-          <div class="definition-box">
-            <p><strong>Normalización:</strong> Proceso de organizar datos para <strong>evitar redundancia</strong> y <strong>mejorar la integridad</strong></p>
-          </div>
-          <div class="fragment" style="margin-top: 30px;">
-            <h3>Formas Normales (FN):</h3>
-            <ul style="text-align: left; max-width: 700px; margin: 20px auto; font-size: 0.9em;">
-              <li class="fragment"><strong>1FN:</strong> Sin grupos repetitivos, valores atómicos</li>
-              <li class="fragment"><strong>2FN:</strong> Cumple 1FN + sin dependencias parciales</li>
-              <li class="fragment"><strong>3FN:</strong> Cumple 2FN + sin dependencias transitivas</li>
-            </ul>
-          </div>
-          <p class="fragment tip-box" style="margin-top: 25px;">
-            La mayoría de las bases de datos bien diseñadas están en 3FN
-          </p>
-        </section>
-
-        <!-- Slide 27 — Ejemplo de Normalización -->
-        <section>
-          <h2><span class="icon">❌</span>Tabla NO Normalizada</h2>
-          <table style="font-size: 0.7em; margin: 20px auto;">
-            <tr style="background: #e53935; color: white;">
-              <th>pedido_id</th>
-              <th>cliente</th>
-              <th>email</th>
-              <th>producto</th>
-              <th>precio</th>
-            </tr>
-            <tr><td>1</td><td>Juan Pérez</td><td>juan@email.com</td><td>Laptop, Mouse</td><td>800, 20</td></tr>
-            <tr><td>2</td><td>Juan Pérez</td><td>juan@email.com</td><td>Teclado</td><td>50</td></tr>
-          </table>
-          <div class="fragment" style="margin-top: 20px;">
-            <h3>❌ Problemas:</h3>
-            <ul style="text-align: left; max-width: 700px; margin: 20px auto; font-size: 0.85em;">
-              <li>Datos de Juan repetidos (redundancia)</li>
-              <li>Si Juan cambia su email, hay que actualizar en varios sitios</li>
-              <li>Columnas con múltiples valores (Laptop, Mouse)</li>
-            </ul>
-          </div>
-        </section>
-
-        <!-- Slide 28 — Tabla Normalizada -->
-        <section>
-          <h2><span class="icon">✅</span>Tablas Normalizadas</h2>
-          <div class="grid-3" style="font-size: 0.65em;">
-            <div>
-              <h4>Tabla: cliente</h4>
-              <table>
-                <tr style="background: #667eea; color: white;">
-                  <th>cliente_id</th>
-                  <th>nombre</th>
-                  <th>email</th>
-                </tr>
-                <tr><td>1</td><td>Juan Pérez</td><td>juan@email.com</td></tr>
-              </table>
-            </div>
-            <div>
-              <h4>Tabla: pedido</h4>
-              <table>
-                <tr style="background: #764ba2; color: white;">
-                  <th>pedido_id</th>
-                  <th>cliente_id</th>
-                  <th>fecha</th>
-                </tr>
-                <tr><td>1</td><td>1</td><td>2024-01-15</td></tr>
-                <tr><td>2</td><td>1</td><td>2024-01-20</td></tr>
-              </table>
-            </div>
-            <div>
-              <h4>Tabla: detalle_pedido</h4>
-              <table>
-                <tr style="background: #ffa726; color: white;">
-                  <th>pedido_id</th>
-                  <th>producto</th>
-                  <th>precio</th>
-                </tr>
-                <tr><td>1</td><td>Laptop</td><td>800</td></tr>
-                <tr><td>1</td><td>Mouse</td><td>20</td></tr>
-                <tr><td>2</td><td>Teclado</td><td>50</td></tr>
-              </table>
-            </div>
-          </div>
-          <p class="fragment success-box" style="margin-top: 25px;">
-            ✅ Sin redundancia · ✅ Fácil de actualizar · ✅ Estructura clara
-          </p>
-        </section>
-
-        <!-- Slide 29 — Diseño de BD: Pasos -->
-        <section>
-          <h2><span class="icon">📐</span>Diseño de Bases de Datos</h2>
-          <div class="steps-container">
-            <div class="step fragment">
-              <div class="step-number">1</div>
-              <div class="step-content">
-                <h4>Análisis de Requisitos</h4>
-                <p>¿Qué datos necesitamos guardar?</p>
-              </div>
-            </div>
-            <div class="step fragment">
-              <div class="step-number">2</div>
-              <div class="step-content">
-                <h4>Modelo Entidad-Relación (ER)</h4>
-                <p>Diagramar entidades y relaciones</p>
-              </div>
-            </div>
-            <div class="step fragment">
-              <div class="step-number">3</div>
-              <div class="step-content">
-                <h4>Modelo Relacional</h4>
-                <p>Convertir a tablas y claves</p>
-              </div>
-            </div>
-            <div class="step fragment">
-              <div class="step-number">4</div>
-              <div class="step-content">
-                <h4>Normalización</h4>
-                <p>Optimizar estructura (evitar redundancia)</p>
-              </div>
-            </div>
-            <div class="step fragment">
-              <div class="step-number">5</div>
-              <div class="step-content">
-                <h4>Implementación SQL</h4>
-                <p>CREATE TABLE, INSERT, etc.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- Slide 30 — Ventajas del Modelo Relacional -->
-        <section>
-          <h2><span class="icon">⭐</span>Ventajas de las Bases de Datos Relacionales</h2>
-          <div class="grid-2" style="margin-top: 30px;">
-            <div class="advantage-card fragment">
-              <div style="font-size: 2.5em;">🎯</div>
-              <h4>Estructura Clara</h4>
-              <p>Datos organizados en tablas fáciles de entender</p>
-            </div>
-            <div class="advantage-card fragment">
-              <div style="font-size: 2.5em;">🔒</div>
-              <h4>Integridad</h4>
-              <p>Reglas que aseguran datos consistentes</p>
-            </div>
-            <div class="advantage-card fragment">
-              <div style="font-size: 2.5em;">⚡</div>
-              <h4>Rendimiento</h4>
-              <p>Consultas optimizadas con índices</p>
-            </div>
-            <div class="advantage-card fragment">
-              <div style="font-size: 2.5em;">🔐</div>
-              <h4>Seguridad</h4>
-              <p>Control de acceso por usuario</p>
-            </div>
-            <div class="advantage-card fragment">
-              <div style="font-size: 2.5em;">📊</div>
-              <h4>ACID</h4>
-              <p>Transacciones confiables</p>
-            </div>
-            <div class="advantage-card fragment">
-              <div style="font-size: 2.5em;">🌍</div>
-              <h4>Estándar SQL</h4>
-              <p>Mismo lenguaje en todas las BBDD</p>
-            </div>
-          </div>
-        </section>
-
-        <!-- Slide 31 — ACID -->
-        <section>
-          <h2><span class="icon">🔬</span>Propiedades ACID</h2>
-          <p>Garantías de las transacciones en bases de datos relacionales</p>
-          <div class="grid-2 fragment" style="margin-top: 30px;">
-            <div class="acid-box">
-              <h3>A - Atomicidad</h3>
-              <p>Todo o nada. Si una parte falla, se revierte todo</p>
-              <p class="ejemplo-text">Ejemplo: Transferencia bancaria</p>
-            </div>
-            <div class="acid-box">
-              <h3>C - Consistencia</h3>
-              <p>Los datos siempre cumplen las reglas</p>
-              <p class="ejemplo-text">Ejemplo: Claves foráneas válidas</p>
-            </div>
-            <div class="acid-box">
-              <h3>I - Aislamiento</h3>
-              <p>Las transacciones no se interfieren entre sí</p>
-              <p class="ejemplo-text">Ejemplo: Dos usuarios simultáneos</p>
-            </div>
-            <div class="acid-box">
-              <h3>D - Durabilidad</h3>
-              <p>Una vez confirmada, la transacción es permanente</p>
-              <p class="ejemplo-text">Ejemplo: Aunque caiga el servidor</p>
-            </div>
-          </div>
-        </section>
-
-        <!-- Slide 32 — Tipos de Datos SQL -->
-        <section>
-          <h2><span class="icon">🏷️</span>Tipos de Datos en SQL</h2>
-          <div class="grid-3" style="font-size: 0.8em; margin-top: 30px;">
-            <div class="datatype-box fragment">
-              <h4>📊 Numéricos</h4>
-              <ul style="text-align: left; font-size: 0.9em;">
-                <li><code>INTEGER</code></li>
-                <li><code>DECIMAL(10,2)</code></li>
-                <li><code>FLOAT</code></li>
-                <li><code>SERIAL</code> (auto-incremento)</li>
-              </ul>
-            </div>
-            <div class="datatype-box fragment">
-              <h4>📝 Texto</h4>
-              <ul style="text-align: left; font-size: 0.9em;">
-                <li><code>VARCHAR(255)</code></li>
-                <li><code>TEXT</code></li>
-                <li><code>CHAR(10)</code></li>
-              </ul>
-            </div>
-            <div class="datatype-box fragment">
-              <h4>📅 Fecha y Hora</h4>
-              <ul style="text-align: left; font-size: 0.9em;">
-                <li><code>DATE</code></li>
-                <li><code>TIME</code></li>
-                <li><code>TIMESTAMP</code></li>
-              </ul>
-            </div>
-            <div class="datatype-box fragment">
-              <h4>✅ Booleano</h4>
-              <ul style="text-align: left; font-size: 0.9em;">
-                <li><code>BOOLEAN</code></li>
-                <li>true / false</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        <!-- Slide 33 — CREATE TABLE -->
-        <section>
-          <h2><span class="icon">🏗️</span>CREATE TABLE: Crear Tablas</h2>
-          <div class="code-example fragment">
-            <pre><code class="sql">CREATE TABLE cliente (
-    cliente_id SERIAL PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    apellido VARCHAR(100) NOT NULL,
-    email VARCHAR(150) UNIQUE NOT NULL,
-    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    activo BOOLEAN DEFAULT true
-);</code></pre>
-          </div>
-          <div class="fragment" style="margin-top: 25px;">
-            <h3>Restricciones (Constraints):</h3>
-            <ul style="text-align: left; max-width: 700px; margin: 15px auto; font-size: 0.85em;">
-              <li><code>PRIMARY KEY</code> → Clave primaria</li>
-              <li><code>NOT NULL</code> → No puede ser nulo</li>
-              <li><code>UNIQUE</code> → No puede repetirse</li>
-              <li><code>DEFAULT</code> → Valor por defecto</li>
-            </ul>
-          </div>
-        </section>
-
-        <!-- Slide 34 — INSERT -->
-        <section>
-          <h2><span class="icon">➕</span>INSERT: Insertar Datos</h2>
-          <div class="code-example fragment">
-            <pre><code class="sql">INSERT INTO cliente (nombre, apellido, email) 
-VALUES ('Juan', 'Pérez', 'juan@email.com');</code></pre>
-          </div>
-          <div class="fragment code-example" style="margin-top: 25px;">
-            <h4>Insertar múltiples filas:</h4>
-            <pre><code class="sql">INSERT INTO cliente (nombre, apellido, email) 
-VALUES 
-    ('María', 'García', 'maria@email.com'),
-    ('Carlos', 'López', 'carlos@email.com'),
-    ('Ana', 'Martínez', 'ana@email.com');</code></pre>
-          </div>
-          <p class="fragment tip-box" style="margin-top: 20px;">
-            No necesitas especificar <code>cliente_id</code> porque es SERIAL (auto-incremento)
-          </p>
-        </section>
-
-        <!-- Slide 35 — UPDATE -->
-        <section>
-          <h2><span class="icon">✏️</span>UPDATE: Modificar Datos</h2>
-          <div class="code-example fragment">
-            <pre><code class="sql">UPDATE cliente 
-SET email = 'nuevo_email@email.com' 
-WHERE cliente_id = 1;</code></pre>
-          </div>
-          <div class="fragment warning-box" style="margin-top: 30px;">
-            <h3>⚠️ ¡CUIDADO!</h3>
-            <p>Si olvidas el <code>WHERE</code>, actualizarás TODAS las filas</p>
-            <pre style="background: #fff3cd; color: #856404; padding: 15px; border-radius: 8px; margin-top: 10px;"><code class="sql">-- ❌ ESTO CAMBIA TODOS LOS EMAILS
-UPDATE cliente SET email = 'mismo@email.com';</code></pre>
-          </div>
-        </section>
-
-        <!-- Slide 36 — DELETE -->
-        <section>
-          <h2><span class="icon">🗑️</span>DELETE: Eliminar Datos</h2>
-          <div class="code-example fragment">
-            <pre><code class="sql">DELETE FROM cliente 
-WHERE cliente_id = 3;</code></pre>
-          </div>
-          <div class="fragment warning-box" style="margin-top: 30px;">
-            <h3>⚠️ ¡MÁS CUIDADO AÚN!</h3>
-            <p>Si olvidas el <code>WHERE</code>, borrarás TODA la tabla</p>
-            <pre style="background: #f8d7da; color: #721c24; padding: 15px; border-radius: 8px; margin-top: 10px;"><code class="sql">-- ❌ ESTO BORRA TODOS LOS CLIENTES
-DELETE FROM cliente;</code></pre>
-          </div>
-          <p class="fragment tip-box" style="margin-top: 20px;">
-            <strong>Consejo:</strong> Primero haz un SELECT con el WHERE para verificar qué vas a eliminar
-          </p>
-        </section>
-
-        <!-- Slide 37 — Índices -->
-        <section>
-          <h2><span class="icon">⚡</span>Índices: Acelerar Consultas</h2>
-          <div class="definition-box">
-            <p><strong>Índice:</strong> Estructura de datos que mejora la velocidad de búsqueda</p>
-            <p style="font-size: 0.9em; margin-top: 10px;">Similar al índice de un libro 📖</p>
-          </div>
-          <div class="fragment comparison-box" style="margin-top: 30px;">
-            <div class="two-col">
-              <div>
-                <h4>Sin Índice</h4>
-                <p style="font-size: 0.85em;">Busca fila por fila</p>
-                <p style="font-size: 2em;">🐌</p>
-                <p style="font-size: 0.8em; color: #999;">1,000,000 filas = lento</p>
-              </div>
-              <div>
-                <h4>Con Índice</h4>
-                <p style="font-size: 0.85em;">Acceso directo</p>
-                <p style="font-size: 2em;">🚀</p>
-                <p style="font-size: 0.8em; color: #999;">1,000,000 filas = rápido</p>
-              </div>
-            </div>
-          </div>
-          <div class="code-example fragment" style="margin-top: 25px;">
-            <pre><code class="sql">CREATE INDEX idx_cliente_email ON cliente(email);</code></pre>
-          </div>
-        </section>
-
-        <!-- Slide 38 — Vistas (Views) -->
-        <section>
-          <h2><span class="icon">👁️</span>Vistas (Views)</h2>
-          <div class="definition-box">
-            <p><strong>Vista:</strong> Consulta SQL guardada como si fuera una tabla virtual</p>
-          </div>
-          <div class="code-example fragment" style="margin-top: 30px;">
-            <pre><code class="sql">CREATE VIEW v_peliculas_completas AS
-SELECT 
-    p.titulo,
-    p.año_lanzamiento,
-    c.nombre AS categoria,
-    p.duracion
-FROM pelicula p
-JOIN categoria c ON p.categoria_id = c.categoria_id;</code></pre>
-          </div>
-          <div class="fragment" style="margin-top: 25px;">
-            <p>Luego puedes consultarla como una tabla normal:</p>
-            <pre><code class="sql">SELECT * FROM v_peliculas_completas WHERE categoria = 'Acción';</code></pre>
-          </div>
-        </section>
-
-        <!-- Slide 39 — Transacciones -->
-        <section>
-          <h2><span class="icon">💳</span>Transacciones</h2>
-          <div class="definition-box">
-            <p><strong>Transacción:</strong> Conjunto de operaciones que se ejecutan como una unidad</p>
-            <p style="font-size: 0.9em;">Todo se completa o nada se completa</p>
-          </div>
-          <div class="code-example fragment" style="margin-top: 30px;">
-            <pre><code class="sql">BEGIN; -- Iniciar transacción
-
-UPDATE cuenta SET saldo = saldo - 100 WHERE cliente_id = 1;
-UPDATE cuenta SET saldo = saldo + 100 WHERE cliente_id = 2;
-
-COMMIT; -- Confirmar cambios</code></pre>
-          </div>
-          <div class="fragment" style="margin-top: 25px;">
-            <p><strong>Si algo falla:</strong></p>
-            <pre><code class="sql">ROLLBACK; -- Deshacer todos los cambios</code></pre>
-          </div>
-        </section>
-
-        <!-- Slide 40 — Buenas Prácticas -->
-        <section>
-          <h2><span class="icon">✨</span>Buenas Prácticas de Diseño</h2>
-          <ul style="text-align: left; max-width: 800px; margin: 30px auto;">
-            <li class="fragment">✅ Usa nombres descriptivos en inglés: <code>customer</code>, <code>order_id</code></li>
-            <li class="fragment">✅ Siempre define una clave primaria</li>
-            <li class="fragment">✅ Normaliza hasta 3FN (generalmente)</li>
-            <li class="fragment">✅ Usa tipos de datos apropiados</li>
-            <li class="fragment">✅ Define restricciones (NOT NULL, UNIQUE, etc.)</li>
-            <li class="fragment">✅ Documenta tu esquema</li>
-            <li class="fragment">✅ Crea índices en columnas que se consultan frecuentemente</li>
-            <li class="fragment">✅ Usa transacciones para operaciones críticas</li>
-          </ul>
-        </section>
-
-        <!-- Slide 41 — Herramientas -->
-        <section>
-          <h2><span class="icon">🛠️</span>Herramientas para Trabajar con BBDD</h2>
-          <div class="grid-3" style="margin-top: 30px; font-size: 0.85em;">
-            <div class="tool-card fragment">
-              <h4>pgAdmin</h4>
-              <p>Cliente gráfico para PostgreSQL</p>
-            </div>
-            <div class="tool-card fragment">
-              <h4>DBeaver</h4>
-              <p>Cliente universal (cualquier BD)</p>
-            </div>
-            <div class="tool-card fragment">
-              <h4>MySQL Workbench</h4>
-              <p>Para MySQL específicamente</p>
-            </div>
-            <div class="tool-card fragment">
-              <h4>TablePlus</h4>
-              <p>Cliente moderno multi-plataforma</p>
-            </div>
-            <div class="tool-card fragment">
-              <h4>SQL Playground</h4>
-              <p>¡El que vamos a usar! 🚀</p>
-            </div>
-            <div class="tool-card fragment">
-              <h4>Terminal (psql)</h4>
-              <p>Cliente de línea de comandos</p>
-            </div>
-          </div>
-        </section>
-
-        <!-- Slide 42 — Diagrama ER -->
-        <section>
-          <h2><span class="icon">📊</span>Diagrama Entidad-Relación (ER)</h2>
-          <p>Representación visual del diseño de la base de datos</p>
-          <div class="er-diagram fragment" style="margin-top: 30px; background: white; padding: 30px; border-radius: 15px;">
-            <svg viewBox="0 0 800 400" style="max-width: 100%; height: auto;">
-              <!-- Entidad Cliente -->
-              <rect x="50" y="100" width="150" height="200" fill="#667eea" rx="10"/>
-              <text x="125" y="130" text-anchor="middle" fill="white" font-weight="bold">CLIENTE</text>
-              <line x1="50" y1="140" x2="200" y2="140" stroke="white" stroke-width="2"/>
-              <text x="125" y="165" text-anchor="middle" fill="white" font-size="14">🔑 cliente_id</text>
-              <text x="125" y="190" text-anchor="middle" fill="white" font-size="14">nombre</text>
-              <text x="125" y="215" text-anchor="middle" fill="white" font-size="14">apellido</text>
-              <text x="125" y="240" text-anchor="middle" fill="white" font-size="14">email</text>
-              <text x="125" y="265" text-anchor="middle" fill="white" font-size="14">activo</text>
-              
-              <!-- Entidad Alquiler -->
-              <rect x="325" y="100" width="150" height="200" fill="#764ba2" rx="10"/>
-              <text x="400" y="130" text-anchor="middle" fill="white" font-weight="bold">ALQUILER</text>
-              <line x1="325" y1="140" x2="475" y2="140" stroke="white" stroke-width="2"/>
-              <text x="400" y="165" text-anchor="middle" fill="white" font-size="14">🔑 alquiler_id</text>
-              <text x="400" y="190" text-anchor="middle" fill="white" font-size="14">🔗 cliente_id</text>
-              <text x="400" y="215" text-anchor="middle" fill="white" font-size="14">🔗 pelicula_id</text>
-              <text x="400" y="240" text-anchor="middle" fill="white" font-size="14">fecha_alquiler</text>
-              <text x="400" y="265" text-anchor="middle" fill="white" font-size="14">precio_pagado</text>
-              
-              <!-- Entidad Película -->
-              <rect x="600" y="100" width="150" height="200" fill="#667eea" rx="10"/>
-              <text x="675" y="130" text-anchor="middle" fill="white" font-weight="bold">PELÍCULA</text>
-              <line x1="600" y1="140" x2="750" y2="140" stroke="white" stroke-width="2"/>
-              <text x="675" y="165" text-anchor="middle" fill="white" font-size="14">🔑 pelicula_id</text>
-              <text x="675" y="190" text-anchor="middle" fill="white" font-size="14">titulo</text>
-              <text x="675" y="215" text-anchor="middle" fill="white" font-size="14">año_lanzamiento</text>
-              <text x="675" y="240" text-anchor="middle" fill="white" font-size="14">duracion</text>
-              <text x="675" y="265" text-anchor="middle" fill="white" font-size="14">precio_alquiler</text>
-              
-              <!-- Relaciones -->
-              <line x1="200" y1="200" x2="325" y2="200" stroke="#333" stroke-width="3"/>
-              <text x="262" y="190" text-anchor="middle" font-size="16">1:N</text>
-              
-              <line x1="475" y1="200" x2="600" y2="200" stroke="#333" stroke-width="3"/>
-              <text x="537" y="190" text-anchor="middle" font-size="16">N:1</text>
-            </svg>
-          </div>
-        </section>
-
-        <!-- Slide 43 — Recursos y SQL Playground -->
+        <!-- Slide 23 — Recursos y SQL Playground -->
         <section data-background-gradient="linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
           <h2 style="color: white;">🚀 ¡Ahora a Practicar!</h2>
           <div style="background: rgba(255,255,255,0.95); padding: 40px; border-radius: 20px; max-width: 700px; margin: 30px auto;">
@@ -1228,7 +710,7 @@ COMMIT; -- Confirmar cambios</code></pre>
           </div>
         </section>
 
-        <!-- Slide 44 — Resumen -->
+        <!-- Slide 24 — Resumen -->
         <section>
           <h2><span class="icon">📚</span>Resumen de la Clase</h2>
           <div class="two-col">
@@ -1239,56 +721,58 @@ COMMIT; -- Confirmar cambios</code></pre>
                 <li>✅ Modelo relacional</li>
                 <li>✅ Tablas, filas, columnas</li>
                 <li>✅ Claves primarias y foráneas</li>
-                <li>✅ Tipos de relaciones</li>
-                <li>✅ Normalización</li>
-                <li>✅ Propiedades ACID</li>
+                <li>✅ Tipos de relaciones (1:1, 1:N, N:M)</li>
               </ul>
             </div>
             <div>
-              <h3 style="color: #764ba2;">SQL Práctico</h3>
+              <h3 style="color: #764ba2;">SQL Básico</h3>
               <ul style="text-align: left; font-size: 0.85em;">
-                <li>✅ SELECT (consultar)</li>
+                <li>✅ SELECT (consultar datos)</li>
                 <li>✅ WHERE (filtrar)</li>
                 <li>✅ ORDER BY (ordenar)</li>
-                <li>✅ LIMIT (limitar)</li>
-                <li>✅ Funciones: COUNT, SUM, AVG</li>
-                <li>✅ GROUP BY (agrupar)</li>
-                <li>✅ JOINs básicos</li>
+                <li>✅ LIMIT (limitar resultados)</li>
+                <li>✅ AND, OR, LIKE (operadores)</li>
+                <li>✅ Funciones: COUNT, SUM, AVG, MAX, MIN</li>
+                <li>✅ GROUP BY (agrupar y agregar)</li>
               </ul>
             </div>
           </div>
         </section>
 
-        <!-- Slide 45 — Próximos Pasos -->
+        <!-- Slide 25 — Próximos Pasos -->
         <section>
           <h2><span class="icon">🔮</span>Próximas Clases</h2>
           <div class="timeline">
             <div class="timeline-item completed">
               <h4>✅ Clase 1 (Hoy)</h4>
-              <p>Fundamentos y Modelo Relacional</p>
+              <p>Fundamentos y SQL Básico</p>
             </div>
             <div class="timeline-item fragment">
               <h4>📋 Clase 2</h4>
-              <p>Diseño avanzado y Diagramas ER</p>
+              <p>JOINs y Consultas Multi-Tabla</p>
             </div>
             <div class="timeline-item fragment">
               <h4>🚀 Clase 3</h4>
-              <p>SQL Avanzado y Subconsultas</p>
+              <p>SQL Avanzado, Subconsultas y Vistas</p>
             </div>
             <div class="timeline-item fragment">
               <h4>⚡ Clase 4</h4>
-              <p>Optimización y Procedimientos Almacenados</p>
+              <p>DDL, Transacciones y Optimización</p>
             </div>
           </div>
         </section>
 
-        <!-- Slide 46 — Fin -->
+        <!-- Slide 26 — Fin -->
         <section data-background-gradient="linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
-          <h1 style="color: white;">¡Gracias!</h1>
-          <p style="color: white; font-size: 1.3em; margin: 30px 0;">¿Preguntas?</p>
+          <h1 style="color: white;">¡Excelente trabajo!</h1>
+          <p style="color: white; font-size: 1.3em; margin: 30px 0;">Has completado la introducción a Bases de Datos Relacionales</p>
+          <div style="background: rgba(255,255,255,0.15); padding: 25px; border-radius: 15px; margin: 30px auto; max-width: 600px;">
+            <p style="color: white; font-size: 1.1em; margin-bottom: 15px;">Ahora practica con el SQL Playground</p>
+            <p style="color: rgba(255,255,255,0.9); font-size: 0.95em;">30 ejercicios guiados esperándote</p>
+          </div>
           <div style="margin-top: 50px;">
             <a href="/sql-playground" style="display: inline-block; background: white; color: #667eea; padding: 18px 40px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 1.1em; margin: 10px;">
-              🚀 Practicar en SQL Playground
+              🚀 Ir al SQL Playground
             </a>
             <a href="../index.html" style="display: inline-block; background: rgba(255,255,255,0.2); color: white; padding: 18px 40px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 1.1em; margin: 10px; border: 2px solid white;">
               ← Volver al Inicio
