@@ -314,7 +314,8 @@
       
       list.innerHTML = respuestas.map(resp => {
         const fecha = new Date(resp.fecha_envio).toLocaleString('es-ES');
-        const esAprobado = resp.nota >= 10;
+        const nota = resp.nota !== null ? parseFloat(resp.nota) : null;
+        const esAprobado = nota !== null && nota >= 10;
         
         return `
           <div class="calificacion-item ${resp.revisado ? 'revisado' : 'pendiente'}">
@@ -335,7 +336,7 @@
 
             ${resp.revisado ? `
               <div class="nota-display ${esAprobado ? 'aprobado' : 'reprobado'}">
-                ${resp.nota !== null ? resp.nota.toFixed(2) : 'Sin calificar'} / 20
+                ${nota !== null ? nota.toFixed(2) : 'Sin calificar'} / 20
               </div>
 
               ${resp.comentarios ? `
