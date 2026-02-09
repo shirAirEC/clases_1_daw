@@ -1236,6 +1236,9 @@
       <a id="panel-profesor-btn" href="profesor/revisar-cuestionarios.html" style="display: none; background: #28a745; color: white; padding: 8px 16px; border-radius: 15px; text-decoration: none; font-weight: 600; font-size: 0.9em;">
         📊 Panel Profesor
       </a>
+      <a id="mis-calificaciones-btn" href="clases/mis-calificaciones.html" style="display: none; background: #667eea; color: white; padding: 8px 16px; border-radius: 15px; text-decoration: none; font-weight: 600; font-size: 0.9em;">
+        📋 Mis Calificaciones
+      </a>
       <button id="logout-btn" class="logout-btn" onclick="logout()">Cerrar Sesión</button>
     </div>
   </div>
@@ -1437,10 +1440,14 @@
         
         // Mostrar botón de panel del profesor solo para profesores
         const panelProfesorBtn = document.getElementById('panel-profesor-btn');
+        const misCalificacionesBtn = document.getElementById('mis-calificaciones-btn');
+        
         if (user.rol === 'profesor') {
           panelProfesorBtn.style.display = 'inline-block';
+          misCalificacionesBtn.style.display = 'none';
         } else {
           panelProfesorBtn.style.display = 'none';
+          misCalificacionesBtn.style.display = 'inline-block';
         }
         
         // Mostrar todo el contenido

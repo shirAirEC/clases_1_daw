@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis Calificaciones - Bases de Datos</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .header h1 {
+      color: #667eea;
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      color: #666;
+      font-size: 1.1em;
+    }
+
+    .btn-back {
+      display: inline-block;
+      padding: 12px 30px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: transform 0.2s;
+      margin-bottom: 20px;
+    }
+
+    .btn-back:hover {
+      transform: translateY(-2px);
+    }
+
+    .card {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      padding: 30px;
+      margin-bottom: 20px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #999;
+    }
+
+    .empty-state svg {
+      width: 100px;
+      height: 100px;
+      margin-bottom: 20px;
+      opacity: 0.3;
+    }
+
+    .empty-state h3 {
+      font-size: 1.5em;
+      margin-bottom: 10px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #667eea;
+      font-size: 1.2em;
+    }
+
+    .calificacion-item {
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 20px;
+      transition: all 0.3s;
+    }
+
+    .calificacion-item:hover {
+      border-color: #667eea;
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+    }
+
+    .calificacion-item.revisado {
+      border-color: #4caf50;
+      background: #f1f8f4;
+    }
+
+    .calificacion-item.pendiente {
+      border-color: #ff9800;
+      background: #fff8f0;
+    }
+
+    .calificacion-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .calificacion-titulo {
+      font-size: 1.3em;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .estado {
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.9em;
+      font-weight: 600;
+    }
+
+    .estado.revisado {
+      background: #4caf50;
+      color: white;
+    }
+
+    .estado.pendiente {
+      background: #ff9800;
+      color: white;
+    }
+
+    .calificacion-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #666;
+    }
+
+    .info-item strong {
+      color: #333;
+    }
+
+    .nota-display {
+      font-size: 3em;
+      font-weight: bold;
+      text-align: center;
+      padding: 20px;
+      border-radius: 12px;
+      margin: 20px 0;
+    }
+
+    .nota-display.aprobado {
+      background: linear-gradient(135deg, #4caf50 0%, #81c784 100%);
+      color: white;
+    }
+
+    .nota-display.reprobado {
+      background: linear-gradient(135deg, #f44336 0%, #e57373 100%);
+      color: white;
+    }
+
+    .comentarios {
+      background: #f5f5f5;
+      padding: 20px;
+      border-radius: 8px;
+      border-left: 4px solid #667eea;
+      margin-top: 15px;
+    }
+
+    .comentarios h4 {
+      color: #667eea;
+      margin-bottom: 10px;
+    }
+
+    .comentarios p {
+      color: #555;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    .btn-ver-respuestas {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.3s;
+    }
+
+    .btn-ver-respuestas:hover {
+      background: #5568d3;
+    }
+
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 2em;
+      }
+
+      .calificacion-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .nota-display {
+        font-size: 2em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="../index.html" class="btn-back">← Volver al Inicio</a>
+
+    <div class="header">
+      <h1>📊 Mis Calificaciones</h1>
+      <p>Revisa tus resultados y comentarios del profesor</p>
+    </div>
+
+    <div class="card">
+      <div id="loading" class="loading">
+        Cargando tus calificaciones...
+      </div>
+
+      <div id="calificaciones-list" style="display: none;"></div>
+
+      <div id="empty-state" class="empty-state" style="display: none;">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm0 4c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm6 12H6v-1.4c0-2 4-3.1 6-3.1s6 1.1 6 3.1V19z"/>
+        </svg>
+        <h3>No tienes calificaciones aún</h3>
+        <p>Tus respuestas serán revisadas próximamente</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = window.location.hostname === 'localhost' 
+      ? 'http://localhost:3000'
+      : 'https://clases1daw-production.up.railway.app';
+
+    async function cargarCalificaciones() {
+      const loading = document.getElementById('loading');
+      const list = document.getElementById('calificaciones-list');
+      const emptyState = document.getElementById('empty-state');
+
+      try {
+        const token = localStorage.getItem('authToken');
+        const headers = {};
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        const response = await fetch(`${API_URL}/api/cuestionario/mis-respuestas`, {
+          headers: headers,
+          credentials: 'include'
+        });
+
+        if (!response.ok) {
+          throw new Error('Error al cargar calificaciones');
+        }
+
+        const data = await response.json();
+        loading.style.display = 'none';
+
+        if (data.respuestas && data.respuestas.length > 0) {
+          list.style.display = 'block';
+          renderCalificaciones(data.respuestas);
+        } else {
+          emptyState.style.display = 'block';
+        }
+
+      } catch (error) {
+        console.error('Error:', error);
+        loading.style.display = 'none';
+        emptyState.style.display = 'block';
+        emptyState.innerHTML = `
+          <h3>Error al cargar calificaciones</h3>
+          <p>Por favor, intenta más tarde o contacta al profesor</p>
+        `;
+      }
+    }
+
+    function renderCalificaciones(respuestas) {
+      const list = document.getElementById('calificaciones-list');
+      
+      list.innerHTML = respuestas.map(resp => {
+        const fecha = new Date(resp.fecha_envio).toLocaleString('es-ES');
+        const esAprobado = resp.nota >= 10;
+        
+        return `
+          <div class="calificacion-item ${resp.revisado ? 'revisado' : 'pendiente'}">
+            <div class="calificacion-header">
+              <div class="calificacion-titulo">
+                ${resp.cuestionario_id === 'BD-CLASE1' ? 'Cuestionario: Fundamentos de Bases de Datos' : resp.cuestionario_id}
+              </div>
+              <span class="estado ${resp.revisado ? 'revisado' : 'pendiente'}">
+                ${resp.revisado ? '✓ Revisado' : '⏳ Pendiente de Revisión'}
+              </span>
+            </div>
+
+            <div class="calificacion-info">
+              <div class="info-item">
+                <strong>📅 Enviado:</strong> ${fecha}
+              </div>
+            </div>
+
+            ${resp.revisado ? `
+              <div class="nota-display ${esAprobado ? 'aprobado' : 'reprobado'}">
+                ${resp.nota !== null ? resp.nota.toFixed(2) : 'Sin calificar'} / 20
+              </div>
+
+              ${resp.comentarios ? `
+                <div class="comentarios">
+                  <h4>💬 Comentarios del Profesor</h4>
+                  <p>${resp.comentarios}</p>
+                </div>
+              ` : ''}
+            ` : `
+              <div style="text-align: center; padding: 30px; color: #999;">
+                <p>Tu cuestionario está siendo revisado por el profesor.</p>
+                <p>Recibirás tu calificación próximamente.</p>
+              </div>
+            `}
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Cargar al iniciar
+    document.addEventListener('DOMContentLoaded', cargarCalificaciones);
+  </script>
+</body>
+</html>

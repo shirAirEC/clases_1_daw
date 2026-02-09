@@ -980,6 +980,51 @@ app.post('/api/cuestionario/calificar', requireAuth, async (req, res) => {
   }
 });
 
+// Endpoint para que el alumno vea sus propias calificaciones
+app.get('/api/cuestionario/mis-respuestas', requireAuth, async (req, res) => {
+  const user = getCurrentUser(req);
+  
+  if (!user || !user.usuario_id) {
+    return res.status(401).json({ 
+      success: false, 
+      message: 'Usuario no autenticado' 
+    });
+  }
+
+  const client = await pool.connect();
+  
+  try {
+    const query = `
+      SELECT 
+        respuesta_id,
+        cuestionario_id,
+        fecha_envio,
+        revisado,
+        nota,
+        comentarios
+      FROM respuestas_cuestionario
+      WHERE usuario_id = $1
+      ORDER BY fecha_envio DESC
+    `;
+    
+    const result = await client.query(query, [user.usuario_id]);
+    
+    res.json({ 
+      success: true, 
+      respuestas: result.rows 
+    });
+    
+  } catch (error) {
+    console.error('Error obteniendo mis respuestas:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Error al cargar tus calificaciones' 
+    });
+  } finally {
+    client.release();
+  }
+});
+
 // Manejador de errores global
 app.use((err, req, res, next) => {
   console.error('Error global:', err);
