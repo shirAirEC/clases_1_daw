@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cuestionario XML Clase 2 - Lenguaje de Marcas</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .header h1 {
+      color: #f5576c;
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      color: #666;
+      font-size: 1.1em;
+    }
+
+    .btn-back {
+      display: inline-block;
+      padding: 12px 30px;
+      background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: transform 0.2s;
+      margin-bottom: 20px;
+    }
+
+    .btn-back:hover {
+      transform: translateY(-2px);
+    }
+
+    .form-container {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      padding: 40px;
+    }
+
+    .instructions {
+      background: #ffe0e7;
+      border-left: 5px solid #f5576c;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+    }
+
+    .instructions h3 {
+      color: #c41944;
+      margin-bottom: 10px;
+    }
+
+    .instructions ul {
+      margin-left: 20px;
+      color: #555;
+    }
+
+    .question-group {
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 25px;
+      background: #fafafa;
+      transition: all 0.3s;
+    }
+
+    .question-group:hover {
+      border-color: #f5576c;
+      box-shadow: 0 4px 12px rgba(245, 87, 108, 0.2);
+    }
+
+    .question-group label {
+      display: block;
+      font-size: 1.1em;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 15px;
+    }
+
+    .question-number {
+      color: #f5576c;
+      font-weight: bold;
+      margin-right: 8px;
+    }
+
+    .options {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .option-btn {
+      flex: 1;
+      min-width: 150px;
+      padding: 12px 20px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      background: white;
+      cursor: pointer;
+      font-size: 1em;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+
+    .option-btn:hover {
+      border-color: #f5576c;
+      background: #fff5f7;
+    }
+
+    .option-btn.selected {
+      border-color: #f5576c;
+      background: #f5576c;
+      color: white;
+    }
+
+    .submit-section {
+      margin-top: 40px;
+      text-align: center;
+      padding-top: 30px;
+      border-top: 2px solid #e0e0e0;
+    }
+
+    .submit-btn {
+      padding: 15px 50px;
+      font-size: 1.2em;
+      font-weight: 600;
+      color: white;
+      background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(245, 87, 108, 0.4);
+    }
+
+    .submit-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 20px;
+      color: #f5576c;
+    }
+
+    .loading.show {
+      display: block;
+    }
+
+    .message {
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+      font-weight: 600;
+    }
+
+    .message.success {
+      background: #d4edda;
+      border: 2px solid #28a745;
+      color: #155724;
+    }
+
+    .message.error {
+      background: #f8d7da;
+      border: 2px solid #dc3545;
+      color: #721c24;
+    }
+
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 2em;
+      }
+
+      .form-container {
+        padding: 25px;
+      }
+
+      .options {
+        flex-direction: column;
+      }
+
+      .option-btn {
+        min-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="../index.html" class="btn-back">← Volver al Inicio</a>
+
+    <div class="header">
+      <h1>📝 Cuestionario XML - Clase 2</h1>
+      <p>DTD y XML Schema (XSD)</p>
+    </div>
+
+    <div class="form-container">
+      <div class="instructions">
+        <h3>📋 Instrucciones</h3>
+        <ul>
+          <li>Este cuestionario contiene <strong>18 preguntas de Verdadero/Falso</strong></li>
+          <li>Cada pregunta vale <strong>1 punto</strong> (Total: 18 puntos)</li>
+          <li>Debes responder todas las preguntas para enviar</li>
+          <li>Una vez enviado, tu profesor revisará las respuestas</li>
+        </ul>
+      </div>
+
+      <form id="cuestionarioForm">
+        <!-- Pregunta 1 -->
+        <div class="question-group">
+          <label>
+            <span class="question-number">1.</span>
+            DTD significa "Document Type Definition".
+          </label>
+          <div class="options">
+            <button type="button" class="option-btn" data-question="q1" data-value="v">
+              ✓ Verdadero
+            </button>
+            <button type="button" class="option-btn" data-question="q1" data-value="f">
+              ✗ Falso
+            </button>
+          </div>
+          <input type="hidden" name="q1" required>
+        </div>
+
+        <!-- Pregunta 2 -->
+        <div class="question-group">
+          <label>
+            <span class="question-number">2.</span>
+            Un XML bien formado es automáticamente un XML válido.
+          </label>
+          <div class="options">
+            <button type="button" class="option-btn" data-question="q2" data-value="v">
+              ✓ Verdadero
+            </button>
+            <button type="button" class="option-btn" data-question="q2" data-value="f">
+              ✗ Falso
+            </button>
+          </div>
+          <input type="hidden" name="q2" required>
+        </div>
+
+        <!-- Pregunta 3 -->
+        <div class="question-group">
+          <label>
+            <span class="question-number">3.</span>
+            Los DTD internos se escriben dentro del archivo XML.
+          </label>
+          <div class="options">
+            <button type="button" class="option-btn" data-question="q3" data-value="v">
+              ✓ Verdadero
+            </button>
+            <button type="button" class="option-btn" data-question="q3" data-value="f">
+              ✗ Falso
+            </button>
+          </div>
+          <input type="hidden" name="q3" required>
+        </div>
+
+        <!-- Pregunta 4 -->
+        <div class="question-group">
+          <label>
+            <span class="question-number">4.</span>
+            #PCDATA significa "Parsed Character Data" (datos de caracteres procesados).
+          </label>
+          <div class="options">
+            <button type="button" class="option-btn" data-question="q4" data-value="v">
+              ✓ Verdadero
+            </button>
+            <button type="button" class="option-btn" data-question="q4" data-value="f">
+              ✗ Falso
+            </button>
+          </div>
+          <input type="hidden" name="q4" required>
+        </div>
+
+        <!-- Pregunta 5 -->
+        <div class="question-group">
+          <label>
+            <span class="question-number">5.</span>
+            El operador + en DTD significa "una o más veces".
+          </label>
+          <div class="options">
+            <button type="button" class="option-btn" data-question="q5" data-value="v">
+              ✓ Verdadero
+            </button>
+            <button type="button" class="option-btn" data-question="q5" data-value="f">
+              ✗ Falso
+            </button>
+          </div>
+          <input type="hidden" name="q5" required>
+        </div>
+
+        <!-- Pregunta 6 -->
+        <div class="question-group">
+          <label>
+            <span class="question-number">6.</span>
+            El operador ? en DTD significa "obligatorio".
+          </label>
+          <div class="options">
+            <button type="button" class="option-btn" data-question="q6" data-value="v">
+              ✓ Verdadero
+            </button>
+            <button type="button" class="option-btn" data-question="q6" data-value="f">
+              ✗ Falso
+            </button>
+          </div>
+          <input type="hidden" name="q6" required>
+        </div>
+
+        <!-- Pregunta 7 -->
+        <div class="question-group">
+          <label>
+            <span class="question-number">7.</span>
+            ATTLIST se usa para declarar atributos en DTD.
+          </label>
+          <div class="options">
+            <button type="button" class="option-btn" data-question="q7" data-value="v">
+              ✓ Verdadero
+            </button>
+            <button type="button" class="option-btn" data-question="q7" data-value="f">
+              ✗ Falso
+            </button>
+          </div>
+          <input type="hidden" name="q7" required>
+        </div>
+
+        <!-- Pregunta 8 -->
+        <div class="question-group">
+          <label>
+            <span class="question-number">8.</span>
+            #REQUIRED significa que un atributo es opcional.
+          </label>
+          <div class="options">
+            <button type="button" class="option-btn" data-question="q8" data-value="v">
+              ✓ Verdadero
+            </button>
+            <button type="button" class="option-btn" data-question="q8" data-value="f">
+              ✗ Falso
+            </button>
+          </div>
+          <input type="hidden" name="q8" required>
+        </div>
+
+        <!-- Pregunta 9 -->
+        <div class="question-group">
+          <label>
+            <span class="question-number">9.</span>
+            #IMPLIED significa que un atributo es opcional.
+          </label>
+          <div class="options">
+            <button type="button" class="option-btn" data-question="q9" data-value="v">
+              ✓ Verdadero
+            </button>
+            <button type="button" class="option-btn" data-question="q9" data-value="f">
+              ✗ Falso
+            </button>
+          </div>
+          <input type="hidden" name="q9" required>
+        </div>
+
+        <!-- Pregunta 10 -->
+        <div class="question-group">
+          <label>
+            <span class="question-number">10.</span>
+            Las entidades en DTD permiten definir atajos reutilizables.
+          </label>
+          <div class="options">
+            <button type="button" class="option-btn" data-question="q10" data-value="v">
+              ✓ Verdadero
+            </button>
+            <button type="button" class="option-btn" data-question="q10" data-value="f">
+              ✗ Falso
+            </button>
+          </div>
+          <input type="hidden" name="q10" required>
+        </div>
+
+        <!-- Pregunta 11 -->
+        <div class="question-group">
+          <label>
+            <span class="question-number">11.</span>
+            EMPTY indica que un elemento no puede tener contenido.
+          </label>
+          <div class="options">
+            <button type="button" class="option-btn" data-question="q11" data-value="v">
+              ✓ Verdadero
+            </button>
+            <button type="button" class="option-btn" data-question="q11" data-value="f">
+              ✗ Falso
+            </button>
+          </div>
+          <input type="hidden" name="q11" required>
+        </div>
+
+        <!-- Pregunta 12 -->
+        <div class="question-group">
+          <label>
+            <span class="question-number">12.</span>
+            El tipo de atributo ID debe ser único en todo el documento XML.
+          </label>
+          <div class="options">
+            <button type="button" class="option-btn" data-question="q12" data-value="v">
+              ✓ Verdadero
+            </button>
+            <button type="button" class="option-btn" data-question="q12" data-value="f">
+              ✗ Falso
+            </button>
+          </div>
+          <input type="hidden" name="q12" required>
+        </div>
+
+        <!-- Pregunta 13 -->
+        <div class="question-group">
+          <label>
+            <span class="question-number">13.</span>
+            XSD usa sintaxis XML mientras que DTD no.
+          </label>
+          <div class="options">
+            <button type="button" class="option-btn" data-question="q13" data-value="v">
+              ✓ Verdadero
+            </button>
+            <button type="button" class="option-btn" data-question="q13" data-value="f">
+              ✗ Falso
+            </button>
+          </div>
+          <input type="hidden" name="q13" required>
+        </div>
+
+        <!-- Pregunta 14 -->
+        <div class="question-group">
+          <label>
+            <span class="question-number">14.</span>
+            XSD soporta tipos de datos específicos como integer, date y boolean.
+          </label>
+          <div class="options">
+            <button type="button" class="option-btn" data-question="q14" data-value="v">
+              ✓ Verdadero
+            </button>
+            <button type="button" class="option-btn" data-question="q14" data-value="f">
+              ✗ Falso
+            </button>
+          </div>
+          <input type="hidden" name="q14" required>
+        </div>
+
+        <!-- Pregunta 15 -->
+        <div class="question-group">
+          <label>
+            <span class="question-number">15.</span>
+            DTD soporta tipos de datos específicos como integer y date.
+          </label>
+          <div class="options">
+            <button type="button" class="option-btn" data-question="q15" data-value="v">
+              ✓ Verdadero
+            </button>
+            <button type="button" class="option-btn" data-question="q15" data-value="f">
+              ✗ Falso
+            </button>
+          </div>
+          <input type="hidden" name="q15" required>
+        </div>
+
+        <!-- Pregunta 16 -->
+        <div class="question-group">
+          <label>
+            <span class="question-number">16.</span>
+            XSD es el método recomendado actualmente por el W3C para validar XML.
+          </label>
+          <div class="options">
+            <button type="button" class="option-btn" data-question="q16" data-value="v">
+              ✓ Verdadero
+            </button>
+            <button type="button" class="option-btn" data-question="q16" data-value="f">
+              ✗ Falso
+            </button>
+          </div>
+          <input type="hidden" name="q16" required>
+        </div>
+
+        <!-- Pregunta 17 -->
+        <div class="question-group">
+          <label>
+            <span class="question-number">17.</span>
+            El operador | en DTD indica alternativa (uno u otro elemento).
+          </label>
+          <div class="options">
+            <button type="button" class="option-btn" data-question="q17" data-value="v">
+              ✓ Verdadero
+            </button>
+            <button type="button" class="option-btn" data-question="q17" data-value="f">
+              ✗ Falso
+            </button>
+          </div>
+          <input type="hidden" name="q17" required>
+        </div>
+
+        <!-- Pregunta 18 -->
+        <div class="question-group">
+          <label>
+            <span class="question-number">18.</span>
+            Un documento puede tener tanto DTD interno como externo simultáneamente.
+          </label>
+          <div class="options">
+            <button type="button" class="option-btn" data-question="q18" data-value="v">
+              ✓ Verdadero
+            </button>
+            <button type="button" class="option-btn" data-question="q18" data-value="f">
+              ✗ Falso
+            </button>
+          </div>
+          <input type="hidden" name="q18" required>
+        </div>
+
+        <div class="submit-section">
+          <button type="submit" class="submit-btn" id="submitBtn">
+            📨 Enviar Cuestionario
+          </button>
+          <div class="loading" id="loading">
+            ⏳ Enviando respuestas...
+          </div>
+          <div id="message"></div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = window.location.hostname === 'localhost' 
+      ? 'http://localhost:3000'
+      : 'https://clases1daw-production.up.railway.app';
+
+    // Manejo de selección de respuestas
+    document.querySelectorAll('.option-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const question = this.dataset.question;
+        const value = this.dataset.value;
+        
+        // Quitar selección de otros botones de la misma pregunta
+        document.querySelectorAll(`[data-question="${question}"]`).forEach(b => {
+          b.classList.remove('selected');
+        });
+        
+        // Marcar este botón como seleccionado
+        this.classList.add('selected');
+        
+        // Actualizar el input hidden
+        document.querySelector(`input[name="${question}"]`).value = value;
+      });
+    });
+
+    document.getElementById('cuestionarioForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const form = e.target;
+      const formData = new FormData(form);
+      const submitBtn = document.getElementById('submitBtn');
+      const loading = document.getElementById('loading');
+      const messageDiv = document.getElementById('message');
+      
+      // Validar que todas las preguntas estén respondidas
+      let allAnswered = true;
+      for (let i = 1; i <= 18; i++) {
+        if (!formData.get(`q${i}`)) {
+          allAnswered = false;
+          break;
+        }
+      }
+      
+      if (!allAnswered) {
+        messageDiv.innerHTML = `
+          <div class="message error">
+            ❌ Por favor, responde todas las preguntas antes de enviar.
+          </div>
+        `;
+        return;
+      }
+      
+      // Preparar respuestas
+      const respuestas = {};
+      for (let i = 1; i <= 18; i++) {
+        respuestas[`q${i}`] = formData.get(`q${i}`);
+      }
+      
+      submitBtn.disabled = true;
+      loading.classList.add('show');
+      messageDiv.innerHTML = '';
+      
+      try {
+        const token = localStorage.getItem('authToken');
+        const headers = {
+          'Content-Type': 'application/json'
+        };
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+        
+        const response = await fetch(`${API_URL}/api/cuestionario/submit`, {
+          method: 'POST',
+          headers: headers,
+          credentials: 'include',
+          body: JSON.stringify({
+            cuestionario_id: 'XML-CLASE2',
+            respuestas: respuestas
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          messageDiv.innerHTML = `
+            <div class="message success">
+              ✅ ${data.message}<br>
+              <small>Tu profesor revisará tus respuestas próximamente.</small>
+            </div>
+          `;
+          
+          // Redirigir después de 3 segundos
+          setTimeout(() => {
+            window.location.href = '../index.html';
+          }, 3000);
+        } else {
+          messageDiv.innerHTML = `
+            <div class="message error">
+              ❌ ${data.message || 'Error al enviar el cuestionario'}
+            </div>
+          `;
+          submitBtn.disabled = false;
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        messageDiv.innerHTML = `
+          <div class="message error">
+            ❌ Error de conexión. Por favor, intenta de nuevo.
+          </div>
+        `;
+        submitBtn.disabled = false;
+      } finally {
+        loading.classList.remove('show');
+      }
+    });
+  </script>
+</body>
+</html>
