@@ -638,6 +638,121 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// Endpoint para enviar respuestas de cuestionario (PROTEGIDO)
+app.post('/api/cuestionario/submit', requireAuth, async (req, res) => {
+  const { cuestionario_id, respuestas } = req.body;
+  const usuario_id = req.session.user.usuario_id;
+
+  if (!cuestionario_id || !respuestas) {
+    return res.status(400).json({ 
+      success: false, 
+      message: 'Faltan datos del cuestionario' 
+    });
+  }
+
+  const client = await pool.connect();
+  try {
+    // Verificar si el usuario ya envió este cuestionario
+    const checkQuery = `
+      SELECT respuesta_id FROM respuestas_cuestionario 
+      WHERE usuario_id = $1 AND cuestionario_id = $2
+    `;
+    const checkResult = await client.query(checkQuery, [usuario_id, cuestionario_id]);
+
+    if (checkResult.rows.length > 0) {
+      // Actualizar respuestas existentes
+      const updateQuery = `
+        UPDATE respuestas_cuestionario 
+        SET respuestas = $1, fecha_envio = CURRENT_TIMESTAMP, revisado = false
+        WHERE usuario_id = $2 AND cuestionario_id = $3
+        RETURNING respuesta_id
+      `;
+      await client.query(updateQuery, [JSON.stringify(respuestas), usuario_id, cuestionario_id]);
+      
+      res.json({ 
+        success: true, 
+        message: 'Cuestionario actualizado correctamente' 
+      });
+    } else {
+      // Insertar nuevas respuestas
+      const insertQuery = `
+        INSERT INTO respuestas_cuestionario (usuario_id, cuestionario_id, respuestas)
+        VALUES ($1, $2, $3)
+        RETURNING respuesta_id
+      `;
+      await client.query(insertQuery, [usuario_id, cuestionario_id, JSON.stringify(respuestas)]);
+      
+      res.json({ 
+        success: true, 
+        message: 'Cuestionario enviado correctamente' 
+      });
+    }
+  } catch (error) {
+    console.error('Error guardando cuestionario:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Error al guardar el cuestionario' 
+    });
+  } finally {
+    client.release();
+  }
+});
+
+// Endpoint para que el profesor vea las respuestas (SOLO PROFESOR)
+app.get('/api/cuestionario/respuestas/:cuestionario_id?', requireAuth, async (req, res) => {
+  // Verificar que sea profesor
+  if (req.session.user.rol !== 'profesor') {
+    return res.status(403).json({ 
+      success: false, 
+      message: 'Acceso denegado. Solo profesores.' 
+    });
+  }
+
+  const { cuestionario_id } = req.params;
+  const client = await pool.connect();
+  
+  try {
+    let query = `
+      SELECT 
+        r.respuesta_id,
+        r.cuestionario_id,
+        r.respuestas,
+        r.fecha_envio,
+        r.revisado,
+        r.nota,
+        r.comentarios,
+        u.username,
+        u.nombre,
+        u.rol
+      FROM respuestas_cuestionario r
+      JOIN usuarios u ON r.usuario_id = u.usuario_id
+    `;
+    
+    const params = [];
+    if (cuestionario_id) {
+      query += ' WHERE r.cuestionario_id = $1';
+      params.push(cuestionario_id);
+    }
+    
+    query += ' ORDER BY r.fecha_envio DESC';
+    
+    const result = await client.query(query, params);
+    
+    res.json({ 
+      success: true, 
+      respuestas: result.rows 
+    });
+  } catch (error) {
+    console.error('Error obteniendo respuestas:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Error al obtener las respuestas' 
+    });
+  } finally {
+    client.release();
+  }
+});
+
 // Manejador de errores global
 app.use((err, req, res, next) => {
   console.error('Error global:', err);

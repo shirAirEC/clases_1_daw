@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cuestionario - Bases de Datos Clase 1</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .btn-volver {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: rgba(255,255,255,0.95);
+      color: #667eea;
+      padding: 10px 20px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-weight: 600;
+      z-index: 1000;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+    }
+
+    .btn-volver:hover {
+      background: #667eea;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 60px auto 40px;
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 30px;
+      border-bottom: 3px solid #667eea;
+    }
+
+    .header h1 {
+      color: #667eea;
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      color: #666;
+      font-size: 1.1em;
+    }
+
+    .info-box {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+      padding: 20px;
+      border-radius: 15px;
+      margin-bottom: 30px;
+      border-left: 5px solid #667eea;
+    }
+
+    .info-box h3 {
+      color: #667eea;
+      margin-bottom: 10px;
+    }
+
+    .info-box ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .info-box li {
+      padding: 5px 0;
+      color: #555;
+    }
+
+    .info-box li:before {
+      content: "✓ ";
+      color: #667eea;
+      font-weight: bold;
+      margin-right: 8px;
+    }
+
+    .question-block {
+      background: #f8f9fa;
+      padding: 25px;
+      border-radius: 15px;
+      margin-bottom: 25px;
+      border-left: 4px solid #667eea;
+      transition: all 0.3s ease;
+    }
+
+    .question-block:hover {
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transform: translateX(5px);
+    }
+
+    .question-number {
+      display: inline-block;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      font-size: 0.9em;
+    }
+
+    .question-text {
+      font-size: 1.1em;
+      color: #333;
+      margin-bottom: 15px;
+      font-weight: 500;
+      line-height: 1.6;
+    }
+
+    .code-snippet {
+      background: #2d2d2d;
+      color: #f8f8f2;
+      padding: 15px;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      margin: 10px 0;
+      overflow-x: auto;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .option {
+      display: flex;
+      align-items: center;
+      padding: 12px 15px;
+      background: white;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .option:hover {
+      border-color: #667eea;
+      background: rgba(102, 126, 234, 0.05);
+    }
+
+    .option input[type="radio"] {
+      margin-right: 12px;
+      cursor: pointer;
+      width: 18px;
+      height: 18px;
+      accent-color: #667eea;
+    }
+
+    .option label {
+      cursor: pointer;
+      flex: 1;
+      color: #333;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 1em;
+      resize: vertical;
+      transition: border-color 0.3s ease;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 1em;
+      transition: border-color 0.3s ease;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .submit-section {
+      text-align: center;
+      margin-top: 40px;
+      padding-top: 30px;
+      border-top: 2px solid #e0e0e0;
+    }
+
+    .btn-submit {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 15px 50px;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.2em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(102, 126, 234, 0.6);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .message {
+      padding: 15px 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    .message.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .message.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .loading.show {
+      display: block;
+    }
+
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #667eea;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <a href="../index.html" class="btn-volver">← Volver al Inicio</a>
+
+  <div class="container">
+    <div class="header">
+      <h1>📝 Cuestionario: Bases de Datos Clase 1</h1>
+      <p>Fundamentos y SQL Básico</p>
+    </div>
+
+    <div class="info-box">
+      <h3>📋 Instrucciones</h3>
+      <ul>
+        <li>20 preguntas sobre el contenido de la Clase 1</li>
+        <li>Incluye teoría, sintaxis SQL y análisis de consultas</li>
+        <li>Lee cada pregunta con atención antes de responder</li>
+        <li>Tus respuestas se guardarán para revisión del profesor</li>
+        <li>No recibirás calificación inmediata</li>
+      </ul>
+    </div>
+
+    <form id="cuestionarioForm">
+      <!-- Pregunta 1 -->
+      <div class="question-block">
+        <span class="question-number">Pregunta 1</span>
+        <p class="question-text">¿Qué es una base de datos relacional?</p>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="q1a" name="q1" value="a" required>
+            <label for="q1a">Un sistema de archivos sin estructura</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q1b" name="q1" value="b">
+            <label for="q1b">Un conjunto de datos organizados en tablas relacionadas entre sí</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q1c" name="q1" value="c">
+            <label for="q1c">Una red social para compartir información</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q1d" name="q1" value="d">
+            <label for="q1d">Un programa para hacer presentaciones</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pregunta 2 -->
+      <div class="question-block">
+        <span class="question-number">Pregunta 2</span>
+        <p class="question-text">¿Cuál es la función de una clave primaria (PRIMARY KEY)?</p>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="q2a" name="q2" value="a" required>
+            <label for="q2a">Identificar de forma única cada fila en una tabla</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q2b" name="q2" value="b">
+            <label for="q2b">Ordenar los datos alfabéticamente</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q2c" name="q2" value="c">
+            <label for="q2c">Cifrar la información sensible</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q2d" name="q2" value="d">
+            <label for="q2d">Permitir valores duplicados en la columna</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pregunta 3 -->
+      <div class="question-block">
+        <span class="question-number">Pregunta 3</span>
+        <p class="question-text">¿Qué comando SQL se utiliza para consultar datos de una tabla?</p>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="q3a" name="q3" value="a" required>
+            <label for="q3a">GET</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q3b" name="q3" value="b">
+            <label for="q3b">SELECT</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q3c" name="q3" value="c">
+            <label for="q3c">RETRIEVE</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q3d" name="q3" value="d">
+            <label for="q3d">SHOW</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pregunta 4 -->
+      <div class="question-block">
+        <span class="question-number">Pregunta 4</span>
+        <p class="question-text">Analiza esta consulta SQL. ¿Está correctamente escrita?</p>
+        <div class="code-snippet">SELECT nombre, apellido FROM cliente WHERE activo = true;</div>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="q4a" name="q4" value="a" required>
+            <label for="q4a">Sí, está correcta</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q4b" name="q4" value="b">
+            <label for="q4b">No, falta el punto y coma al principio</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q4c" name="q4" value="c">
+            <label for="q4c">No, WHERE debe ir antes de FROM</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q4d" name="q4" value="d">
+            <label for="q4d">No, true debe ir entre comillas</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pregunta 5 -->
+      <div class="question-block">
+        <span class="question-number">Pregunta 5</span>
+        <p class="question-text">¿Qué hace la cláusula ORDER BY en SQL?</p>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="q5a" name="q5" value="a" required>
+            <label for="q5a">Ordena los resultados según una o más columnas</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q5b" name="q5" value="b">
+            <label for="q5b">Filtra los datos según una condición</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q5c" name="q5" value="c">
+            <label for="q5c">Elimina filas duplicadas</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q5d" name="q5" value="d">
+            <label for="q5d">Agrupa los resultados</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pregunta 6 -->
+      <div class="question-block">
+        <span class="question-number">Pregunta 6</span>
+        <p class="question-text">Escribe una consulta SQL para seleccionar todos los campos de la tabla "pelicula":</p>
+        <input type="text" name="q6" placeholder="Escribe tu consulta aquí" required>
+      </div>
+
+      <!-- Pregunta 7 -->
+      <div class="question-block">
+        <span class="question-number">Pregunta 7</span>
+        <p class="question-text">¿Qué función de agregación usarías para contar el número de filas?</p>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="q7a" name="q7" value="a" required>
+            <label for="q7a">SUM()</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q7b" name="q7" value="b">
+            <label for="q7b">COUNT()</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q7c" name="q7" value="c">
+            <label for="q7c">AVG()</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q7d" name="q7" value="d">
+            <label for="q7d">MAX()</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pregunta 8 -->
+      <div class="question-block">
+        <span class="question-number">Pregunta 8</span>
+        <p class="question-text">En una relación 1:N (uno a muchos), ¿dónde se coloca la clave foránea?</p>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="q8a" name="q8" value="a" required>
+            <label for="q8a">En la tabla del lado "1"</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q8b" name="q8" value="b">
+            <label for="q8b">En la tabla del lado "N"</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q8c" name="q8" value="c">
+            <label for="q8c">En ambas tablas</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q8d" name="q8" value="d">
+            <label for="q8d">En una tabla intermedia</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pregunta 9 -->
+      <div class="question-block">
+        <span class="question-number">Pregunta 9</span>
+        <p class="question-text">¿Qué hace la cláusula LIMIT en SQL?</p>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="q9a" name="q9" value="a" required>
+            <label for="q9a">Limita el número de resultados devueltos</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q9b" name="q9" value="b">
+            <label for="q9b">Establece un límite de tiempo para la consulta</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q9c" name="q9" value="c">
+            <label for="q9c">Restringe qué columnas se pueden ver</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q9d" name="q9" value="d">
+            <label for="q9d">Define el tamaño máximo de la base de datos</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pregunta 10 -->
+      <div class="question-block">
+        <span class="question-number">Pregunta 10</span>
+        <p class="question-text">¿Esta consulta devolverá películas con precio menor a 3 O mayor a 5?</p>
+        <div class="code-snippet">SELECT * FROM pelicula WHERE precio_alquiler < 3 AND precio_alquiler > 5;</div>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="q10a" name="q10" value="a" required>
+            <label for="q10a">Sí, devolverá ambos casos</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q10b" name="q10" value="b">
+            <label for="q10b">No devolverá ninguna fila (condición imposible)</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q10c" name="q10" value="c">
+            <label for="q10c">Solo devolverá películas con precio menor a 3</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q10d" name="q10" value="d">
+            <label for="q10d">Dará un error de sintaxis</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pregunta 11 -->
+      <div class="question-block">
+        <span class="question-number">Pregunta 11</span>
+        <p class="question-text">¿Qué operador se usa en SQL para buscar patrones de texto?</p>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="q11a" name="q11" value="a" required>
+            <label for="q11a">SEARCH</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q11b" name="q11" value="b">
+            <label for="q11b">LIKE</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q11c" name="q11" value="c">
+            <label for="q11c">MATCH</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q11d" name="q11" value="d">
+            <label for="q11d">FIND</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pregunta 12 -->
+      <div class="question-block">
+        <span class="question-number">Pregunta 12</span>
+        <p class="question-text">Escribe la consulta SQL para obtener el precio promedio de alquiler de todas las películas (usa AVG):</p>
+        <input type="text" name="q12" placeholder="SELECT ..." required>
+      </div>
+
+      <!-- Pregunta 13 -->
+      <div class="question-block">
+        <span class="question-number">Pregunta 13</span>
+        <p class="question-text">¿Para qué se utiliza GROUP BY?</p>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="q13a" name="q13" value="a" required>
+            <label for="q13a">Para agrupar filas con el mismo valor y aplicar funciones de agregación</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q13b" name="q13" value="b">
+            <label for="q13b">Para ordenar los resultados</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q13c" name="q13" value="c">
+            <label for="q13c">Para unir dos tablas</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q13d" name="q13" value="d">
+            <label for="q13d">Para filtrar datos</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pregunta 14 -->
+      <div class="question-block">
+        <span class="question-number">Pregunta 14</span>
+        <p class="question-text">En el patrón LIKE '%SQL%', ¿qué representa el símbolo %?</p>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="q14a" name="q14" value="a" required>
+            <label for="q14a">Exactamente un carácter</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q14b" name="q14" value="b">
+            <label for="q14b">Cualquier cantidad de caracteres (incluso cero)</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q14c" name="q14" value="c">
+            <label for="q14c">Un porcentaje literal</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q14d" name="q14" value="d">
+            <label for="q14d">Un espacio en blanco</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pregunta 15 -->
+      <div class="question-block">
+        <span class="question-number">Pregunta 15</span>
+        <p class="question-text">¿Cuál es la diferencia entre AND y OR en SQL?</p>
+        <textarea name="q15" rows="4" placeholder="Explica brevemente la diferencia..." required></textarea>
+      </div>
+
+      <!-- Pregunta 16 -->
+      <div class="question-block">
+        <span class="question-number">Pregunta 16</span>
+        <p class="question-text">¿Qué función SQL usarías para obtener el valor más alto de una columna?</p>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="q16a" name="q16" value="a" required>
+            <label for="q16a">TOP()</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q16b" name="q16" value="b">
+            <label for="q16b">MAX()</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q16c" name="q16" value="c">
+            <label for="q16c">HIGH()</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q16d" name="q16" value="d">
+            <label for="q16d">HIGHEST()</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pregunta 17 -->
+      <div class="question-block">
+        <span class="question-number">Pregunta 17</span>
+        <p class="question-text">Identifica el error en esta consulta:</p>
+        <div class="code-snippet">SELECT titulo FROM pelicula ORDER titulo;</div>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="q17a" name="q17" value="a" required>
+            <label for="q17a">Falta la palabra BY después de ORDER</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q17b" name="q17" value="b">
+            <label for="q17b">titulo debe estar entre comillas</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q17c" name="q17" value="c">
+            <label for="q17c">No se puede usar ORDER con SELECT</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q17d" name="q17" value="d">
+            <label for="q17d">La consulta está correcta</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pregunta 18 -->
+      <div class="question-block">
+        <span class="question-number">Pregunta 18</span>
+        <p class="question-text">¿Qué hace la función SUM() en SQL?</p>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="q18a" name="q18" value="a" required>
+            <label for="q18a">Suma todos los valores de una columna numérica</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q18b" name="q18" value="b">
+            <label for="q18b">Cuenta el número de filas</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q18c" name="q18" value="c">
+            <label for="q18c">Calcula el promedio</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="q18d" name="q18" value="d">
+            <label for="q18d">Concatena textos</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pregunta 19 -->
+      <div class="question-block">
+        <span class="question-number">Pregunta 19</span>
+        <p class="question-text">Escribe una consulta para obtener todas las películas ordenadas por año de lanzamiento de forma descendente:</p>
+        <input type="text" name="q19" placeholder="SELECT ..." required>
+      </div>
+
+      <!-- Pregunta 20 -->
+      <div class="question-block">
+        <span class="question-number">Pregunta 20</span>
+        <p class="question-text">Explica con tus propias palabras qué es una clave foránea (FOREIGN KEY) y para qué sirve:</p>
+        <textarea name="q20" rows="5" placeholder="Tu explicación aquí..." required></textarea>
+      </div>
+
+      <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p style="margin-top: 15px; color: #667eea; font-weight: 600;">Enviando respuestas...</p>
+      </div>
+
+      <div id="message"></div>
+
+      <div class="submit-section">
+        <button type="submit" class="btn-submit" id="submitBtn">
+          📤 Enviar Cuestionario
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    const API_URL = window.location.hostname === 'localhost' 
+      ? 'http://localhost:3000'
+      : 'https://clases-1-daw.up.railway.app';
+
+    document.getElementById('cuestionarioForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const submitBtn = document.getElementById('submitBtn');
+      const loading = document.getElementById('loading');
+      const messageDiv = document.getElementById('message');
+      
+      // Recopilar todas las respuestas
+      const formData = new FormData(e.target);
+      const respuestas = {};
+      
+      for (let [key, value] of formData.entries()) {
+        respuestas[key] = value;
+      }
+      
+      // Validar que todas las preguntas estén respondidas
+      const totalPreguntas = 20;
+      if (Object.keys(respuestas).length < totalPreguntas) {
+        messageDiv.innerHTML = '<div class="message error">⚠️ Por favor, responde todas las preguntas antes de enviar.</div>';
+        return;
+      }
+      
+      // Deshabilitar botón y mostrar loading
+      submitBtn.disabled = true;
+      loading.classList.add('show');
+      messageDiv.innerHTML = '';
+      
+      try {
+        const response = await fetch(`${API_URL}/api/cuestionario/submit`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            cuestionario_id: 'BD-CLASE1',
+            respuestas: respuestas
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          messageDiv.innerHTML = `
+            <div class="message success">
+              ✅ ${data.message}<br>
+              <small>Tu profesor revisará tus respuestas próximamente.</small>
+            </div>
+          `;
+          
+          // Opcional: limpiar formulario o redirigir
+          setTimeout(() => {
+            window.location.href = '../index.html';
+          }, 3000);
+        } else {
+          messageDiv.innerHTML = `<div class="message error">❌ ${data.message || 'Error al enviar el cuestionario'}</div>`;
+          submitBtn.disabled = false;
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        messageDiv.innerHTML = '<div class="message error">❌ Error de conexión. Por favor, intenta de nuevo.</div>';
+        submitBtn.disabled = false;
+      } finally {
+        loading.classList.remove('show');
+      }
+    });
+  </script>
+</body>
+</html>
