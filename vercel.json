@@ -2,11 +2,11 @@
   "rewrites": [
     {
       "source": "/sql-playground",
-      "destination": "https://clases-1-daw.up.railway.app"
+      "destination": "https://clases1daw-production.up.railway.app"
     },
     {
       "source": "/sql-playground/:path*",
-      "destination": "https://clases-1-daw.up.railway.app/:path*"
+      "destination": "https://clases1daw-production.up.railway.app/:path*"
     }
   ]
 }
