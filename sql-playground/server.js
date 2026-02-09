@@ -2,6 +2,7 @@ const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
 const helmet = require('helmet');
+const session = require('express-session');
 require('dotenv').config();
 
 const app = express();
@@ -11,8 +12,27 @@ const PORT = process.env.PORT || 3000;
 app.use(helmet({
   contentSecurityPolicy: false, // Permitir estilos inline
 }));
-app.use(cors());
+
+// Configurar CORS con credenciales
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
+
 app.use(express.json());
+
+// Configurar sesiones
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'clases1daw-secret-key-2024',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000 // 24 horas
+  }
+}));
+
 app.use(express.static('public'));
 
 // Pool de conexiones a PostgreSQL (usuario de solo lectura)
@@ -49,6 +69,115 @@ function validateQuery(query) {
   
   return { valid: true };
 }
+
+// Middleware para verificar autenticación
+function requireAuth(req, res, next) {
+  if (!req.session || !req.session.user) {
+    return res.status(401).json({ 
+      success: false, 
+      error: 'Debes iniciar sesión para acceder' 
+    });
+  }
+  next();
+}
+
+// ===== ENDPOINTS DE AUTENTICACIÓN =====
+
+// Login
+app.post('/api/login', async (req, res) => {
+  const { username, password } = req.body;
+  
+  if (!username || !password) {
+    return res.status(400).json({ 
+      success: false, 
+      error: 'Usuario y contraseña son requeridos' 
+    });
+  }
+  
+  try {
+    // Buscar usuario en la base de datos
+    const query = 'SELECT * FROM usuarios WHERE username = $1 AND activo = true';
+    const result = await pool.query(query, [username]);
+    
+    if (result.rows.length === 0) {
+      return res.status(401).json({ 
+        success: false, 
+        error: 'Usuario o contraseña incorrectos' 
+      });
+    }
+    
+    const user = result.rows[0];
+    
+    // Verificar contraseña (sin hash por simplicidad)
+    if (password !== user.password) {
+      return res.status(401).json({ 
+        success: false, 
+        error: 'Usuario o contraseña incorrectos' 
+      });
+    }
+    
+    // Actualizar última conexión
+    await pool.query(
+      'UPDATE usuarios SET ultima_conexion = NOW() WHERE usuario_id = $1',
+      [user.usuario_id]
+    );
+    
+    // Crear sesión
+    req.session.user = {
+      id: user.usuario_id,
+      username: user.username,
+      nombre: user.nombre_completo,
+      rol: user.rol,
+      email: user.email
+    };
+    
+    res.json({
+      success: true,
+      user: {
+        username: user.username,
+        nombre: user.nombre_completo,
+        rol: user.rol
+      }
+    });
+    
+  } catch (error) {
+    console.error('Error en login:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Error al iniciar sesión' 
+    });
+  }
+});
+
+// Logout
+app.post('/api/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ 
+        success: false, 
+        error: 'Error al cerrar sesión' 
+      });
+    }
+    res.clearCookie('connect.sid');
+    res.json({ success: true });
+  });
+});
+
+// Verificar sesión
+app.get('/api/session', (req, res) => {
+  if (req.session && req.session.user) {
+    res.json({
+      success: true,
+      authenticated: true,
+      user: req.session.user
+    });
+  } else {
+    res.json({
+      success: true,
+      authenticated: false
+    });
+  }
+});
 
 // Endpoint para ejecutar queries
 app.post('/api/execute', async (req, res) => {

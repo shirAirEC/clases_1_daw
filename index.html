@@ -594,6 +594,216 @@
       20%, 60% { transform: rotate(-25deg); }
       40%, 80% { transform: rotate(10deg); }
     }
+
+    /* ===== SISTEMA DE AUTENTICACIÓN ===== */
+    
+    #auth-widget {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 10000;
+    }
+
+    .auth-btn {
+      background: rgba(255, 255, 255, 0.95);
+      border: 2px solid rgba(59, 130, 246, 0.5);
+      color: #1e40af;
+      padding: 12px 24px;
+      border-radius: 25px;
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .auth-btn:hover {
+      background: white;
+      border-color: #3b82f6;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 12px 20px;
+      border-radius: 25px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .user-info #user-name {
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    .role-badge {
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.85em;
+      font-weight: 600;
+    }
+
+    .role-profesor {
+      background: linear-gradient(135deg, #f59e0b, #ef4444);
+      color: white;
+    }
+
+    .role-alumno {
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      color: white;
+    }
+
+    .logout-btn {
+      background: #ef4444;
+      color: white;
+      border: none;
+      padding: 6px 16px;
+      border-radius: 15px;
+      font-size: 0.9em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .logout-btn:hover {
+      background: #dc2626;
+      transform: scale(1.05);
+    }
+
+    /* Modal de Login */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 10001;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(5px);
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 40px;
+      border-radius: 25px;
+      width: 90%;
+      max-width: 450px;
+      position: relative;
+      box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .close-modal {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      font-size: 30px;
+      font-weight: bold;
+      color: #aaa;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+
+    .close-modal:hover {
+      color: #000;
+    }
+
+    .modal-content h2 {
+      color: #1e40af;
+      margin-bottom: 10px;
+      font-size: 2em;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #334155;
+      font-weight: 600;
+      font-size: 1em;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 1em;
+      transition: all 0.3s;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .login-submit-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      color: white;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1em;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .login-submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+    }
+
+    .login-help {
+      margin-top: 25px;
+      padding: 20px;
+      background: #f1f5f9;
+      border-radius: 12px;
+      font-size: 0.9em;
+      color: #475569;
+    }
+
+    .login-help code {
+      background: white;
+      padding: 3px 8px;
+      border-radius: 5px;
+      color: #3b82f6;
+      font-weight: 600;
+    }
+
+    .error-message {
+      background: #fee2e2;
+      border: 2px solid #ef4444;
+      color: #991b1b;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      font-weight: 500;
+    }
   </style>
 </head>
 <body>
@@ -975,6 +1185,49 @@
     </footer>
   </div>
 
+  <!-- Botón de Login/Usuario (fijo en esquina) -->
+  <div id="auth-widget">
+    <button id="login-btn" class="auth-btn" onclick="showLoginModal()">
+      👤 Iniciar Sesión
+    </button>
+    <div id="user-info" class="user-info" style="display: none;">
+      <span id="user-name"></span>
+      <span id="user-role" class="role-badge"></span>
+      <button id="logout-btn" class="logout-btn" onclick="logout()">Cerrar Sesión</button>
+    </div>
+  </div>
+
+  <!-- Modal de Login -->
+  <div id="login-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <span class="close-modal" onclick="hideLoginModal()">&times;</span>
+      <h2>🔐 Iniciar Sesión</h2>
+      <p style="color: #666; margin-bottom: 30px;">Accede con tu cuenta de alumno o profesor</p>
+      
+      <form id="login-form" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label for="username">👤 Usuario</label>
+          <input type="text" id="username" name="username" required placeholder="alumno1 o profesor">
+        </div>
+        
+        <div class="form-group">
+          <label for="password">🔑 Contraseña</label>
+          <input type="password" id="password" name="password" required placeholder="alumno123 o profesor123">
+        </div>
+        
+        <div id="login-error" class="error-message" style="display: none;"></div>
+        
+        <button type="submit" class="login-submit-btn">Iniciar Sesión</button>
+      </form>
+      
+      <div class="login-help">
+        <p><strong>Credenciales de ejemplo:</strong></p>
+        <p>• Alumno: usuario <code>alumno1</code> - contraseña <code>alumno123</code></p>
+        <p>• Profesor: usuario <code>profesor</code> - contraseña <code>profesor123</code></p>
+      </div>
+    </div>
+  </div>
+
   <script>
     // Navegación entre secciones
     function showSection(sectionId) {
@@ -1000,6 +1253,8 @@
       if (hash === 'lenguaje-marcas' || hash === 'bases-datos') {
         showSection(hash);
       }
+      // Verificar sesión al cargar
+      checkSession();
     });
 
     // Actualizar hash en la URL
@@ -1011,6 +1266,124 @@
         showHome();
       }
     });
+
+    // ===== SISTEMA DE AUTENTICACIÓN =====
+
+    function showLoginModal() {
+      document.getElementById('login-modal').style.display = 'flex';
+      document.getElementById('username').focus();
+    }
+
+    function hideLoginModal() {
+      document.getElementById('login-modal').style.display = 'none';
+      document.getElementById('login-form').reset();
+      document.getElementById('login-error').style.display = 'none';
+    }
+
+    async function handleLogin(event) {
+      event.preventDefault();
+      
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const errorDiv = document.getElementById('login-error');
+      
+      try {
+        const response = await fetch('https://clases1daw-production.up.railway.app/api/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({ username, password })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          hideLoginModal();
+          updateUserInterface(data.user);
+          // Guardar en localStorage también
+          localStorage.setItem('user', JSON.stringify(data.user));
+        } else {
+          errorDiv.textContent = data.error || 'Error al iniciar sesión';
+          errorDiv.style.display = 'block';
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        errorDiv.textContent = 'Error de conexión. Intenta de nuevo.';
+        errorDiv.style.display = 'block';
+      }
+    }
+
+    async function logout() {
+      try {
+        await fetch('https://clases1daw-production.up.railway.app/api/logout', {
+          method: 'POST',
+          credentials: 'include'
+        });
+        
+        localStorage.removeItem('user');
+        updateUserInterface(null);
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+
+    async function checkSession() {
+      try {
+        const response = await fetch('https://clases1daw-production.up.railway.app/api/session', {
+          credentials: 'include'
+        });
+        
+        const data = await response.json();
+        
+        if (data.authenticated && data.user) {
+          updateUserInterface(data.user);
+          localStorage.setItem('user', JSON.stringify(data.user));
+        } else {
+          // Verificar localStorage como fallback
+          const storedUser = localStorage.getItem('user');
+          if (storedUser) {
+            updateUserInterface(JSON.parse(storedUser));
+          } else {
+            updateUserInterface(null);
+          }
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        // Intentar con localStorage
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+          updateUserInterface(JSON.parse(storedUser));
+        }
+      }
+    }
+
+    function updateUserInterface(user) {
+      const loginBtn = document.getElementById('login-btn');
+      const userInfo = document.getElementById('user-info');
+      const userName = document.getElementById('user-name');
+      const userRole = document.getElementById('user-role');
+      
+      if (user) {
+        loginBtn.style.display = 'none';
+        userInfo.style.display = 'flex';
+        userName.textContent = user.nombre || user.username;
+        userRole.textContent = user.rol === 'profesor' ? '👨‍🏫 Profesor' : '👨‍🎓 Alumno';
+        userRole.className = 'role-badge ' + (user.rol === 'profesor' ? 'role-profesor' : 'role-alumno');
+      } else {
+        loginBtn.style.display = 'block';
+        userInfo.style.display = 'none';
+      }
+    }
+
+    // Cerrar modal al hacer clic fuera
+    window.onclick = function(event) {
+      const modal = document.getElementById('login-modal');
+      if (event.target === modal) {
+        hideLoginModal();
+      }
+    }
   </script>
 
 </body>
