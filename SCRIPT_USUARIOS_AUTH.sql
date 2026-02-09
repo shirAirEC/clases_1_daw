@@ -57,6 +57,13 @@ INSERT INTO usuarios (username, password, nombre_completo, rol) VALUES
 CREATE INDEX idx_usuarios_username ON usuarios(username);
 CREATE INDEX idx_usuarios_rol ON usuarios(rol);
 
+-- ================================================
+-- SEGURIDAD: Revocar acceso al usuario 'estudiante'
+-- (usuario de solo lectura del SQL Playground)
+-- ================================================
+REVOKE ALL PRIVILEGES ON TABLE usuarios FROM estudiante;
+REVOKE ALL PRIVILEGES ON SEQUENCE usuarios_usuario_id_seq FROM estudiante;
+
 -- Verificar que se crearon correctamente
 SELECT 
     rol,
