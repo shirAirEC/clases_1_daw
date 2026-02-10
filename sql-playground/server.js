@@ -163,52 +163,84 @@ app.use((req, res, next) => {
 
 // Middleware para verificar autenticación (sesión O token)
 async function requireAuth(req, res, next) {
+  const endpoint = req.originalUrl || req.url;
+  
   // Intentar 1: Verificar sesión
   if (req.session && req.session.user) {
-    console.log('requireAuth: OK (sesión) -', req.session.user.username);
+    console.log(`✅ requireAuth: OK (sesión) - ${req.session.user.username} → ${endpoint}`);
     return next();
   }
 
   // Intentar 2: Verificar token en header Authorization
   const authHeader = req.headers.authorization;
-  if (authHeader && authHeader.startsWith('Bearer ')) {
-    const token = authHeader.substring(7);
-    
-    try {
-      const result = await pool.query(
-        `SELECT u.* FROM usuarios u 
-         JOIN auth_tokens t ON u.usuario_id = t.usuario_id 
-         WHERE t.token = $1 AND t.expires_at > NOW()`,
-        [token]
-      );
-
-      if (result.rows.length > 0) {
-        const user = result.rows[0];
-        // Actualizar last_used
-        await pool.query('UPDATE auth_tokens SET last_used = NOW() WHERE token = $1', [token]);
-        
-        // Adjuntar usuario a la request
-        req.user = {
-          usuario_id: user.usuario_id,
-          username: user.username,
-          nombre: user.nombre_completo,
-          rol: user.rol,
-          email: user.email
-        };
-        
-        console.log('requireAuth: OK (token) -', user.username);
-        return next();
-      }
-    } catch (error) {
-      console.error('Error validando token:', error);
-    }
+  if (!authHeader) {
+    console.log(`❌ requireAuth: Sin header Authorization → ${endpoint}`);
+    return res.status(401).json({ 
+      success: false, 
+      error: 'Debes iniciar sesión para acceder' 
+    });
   }
+  
+  if (!authHeader.startsWith('Bearer ')) {
+    console.log(`❌ requireAuth: Authorization header sin Bearer → ${endpoint}`);
+    return res.status(401).json({ 
+      success: false, 
+      error: 'Formato de token inválido' 
+    });
+  }
+  
+  const token = authHeader.substring(7);
+  console.log(`🔍 requireAuth: Verificando token (primeros 8 chars: ${token.substring(0, 8)}...) → ${endpoint}`);
+  
+  try {
+    const result = await pool.query(
+      `SELECT u.*, t.expires_at FROM usuarios u 
+       JOIN auth_tokens t ON u.usuario_id = t.usuario_id 
+       WHERE t.token = $1`,
+      [token]
+    );
 
-  console.log('requireAuth: No autenticado');
-  return res.status(401).json({ 
-    success: false, 
-    error: 'Debes iniciar sesión para acceder' 
-  });
+    if (result.rows.length === 0) {
+      console.log(`❌ requireAuth: Token no encontrado en BD → ${endpoint}`);
+      return res.status(401).json({ 
+        success: false, 
+        error: 'Token inválido' 
+      });
+    }
+    
+    const user = result.rows[0];
+    const tokenExpired = new Date(user.expires_at) < new Date();
+    
+    if (tokenExpired) {
+      console.log(`⏰ requireAuth: Token expirado (${user.expires_at}) para ${user.username} → ${endpoint}`);
+      return res.status(401).json({ 
+        success: false, 
+        error: 'Token expirado, por favor inicia sesión nuevamente' 
+      });
+    }
+    
+    // Actualizar last_used
+    await pool.query('UPDATE auth_tokens SET last_used = NOW() WHERE token = $1', [token]);
+    
+    // Adjuntar usuario a la request
+    req.user = {
+      usuario_id: user.usuario_id,
+      username: user.username,
+      nombre: user.nombre_completo,
+      rol: user.rol,
+      email: user.email
+    };
+    
+    console.log(`✅ requireAuth: OK (token) - ${user.username} (${user.rol}) → ${endpoint}`);
+    return next();
+    
+  } catch (error) {
+    console.error(`❌ requireAuth: Error de BD al validar token → ${endpoint}:`, error);
+    return res.status(500).json({ 
+      success: false, 
+      error: 'Error interno del servidor' 
+    });
+  }
 }
 
 // Helper para obtener usuario actual (desde sesión o token)
@@ -312,10 +344,10 @@ app.post('/api/login', async (req, res) => {
     const token = crypto.randomBytes(32).toString('hex');
     const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 días
     
-    // Eliminar tokens antiguos del usuario
-    await pool.query('DELETE FROM auth_tokens WHERE usuario_id = $1', [user.usuario_id]);
+    // Limpiar solo tokens EXPIRADOS del usuario (no todos)
+    await pool.query('DELETE FROM auth_tokens WHERE usuario_id = $1 AND expires_at < NOW()', [user.usuario_id]);
     
-    // Guardar nuevo token
+    // Guardar nuevo token (permite múltiples sesiones simultáneas)
     await pool.query(
       'INSERT INTO auth_tokens (usuario_id, token, expires_at) VALUES ($1, $2, $3)',
       [user.usuario_id, token, expiresAt]
@@ -368,6 +400,11 @@ app.post('/api/logout', (req, res) => {
 // Verificar sesión
 app.get('/api/session', (req, res) => {
   const user = getCurrentUser(req);
+  const authHeader = req.headers.authorization;
+  const hasSession = !!req.session?.user;
+  
+  console.log(`🔍 Verificación de sesión - Usuario: ${user ? user.username : 'ninguno'}, Token: ${authHeader ? 'presente' : 'ausente'}, Session: ${hasSession ? 'sí' : 'no'}`);
+  
   if (user) {
     res.json({
       success: true,
@@ -375,6 +412,7 @@ app.get('/api/session', (req, res) => {
       user: user
     });
   } else {
+    console.log('⚠️ Verificación fallida - Sin usuario autenticado');
     res.json({
       success: true,
       authenticated: false
@@ -1091,6 +1129,16 @@ pool.query('SELECT NOW()', (err, res) => {
     console.log('✅ Conexión a PostgreSQL verificada:', res.rows[0].now);
   }
 });
+
+// Limpieza automática de tokens expirados cada 24 horas
+setInterval(async () => {
+  try {
+    const result = await pool.query('DELETE FROM auth_tokens WHERE expires_at < NOW()');
+    console.log(`🧹 Limpieza automática: ${result.rowCount} tokens expirados eliminados`);
+  } catch (error) {
+    console.error('❌ Error en limpieza de tokens:', error);
+  }
+}, 24 * 60 * 60 * 1000); // 24 horas
 
 // Iniciar servidor - escuchar en 0.0.0.0 para Railway
 const HOST = '0.0.0.0';
