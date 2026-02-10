@@ -33,6 +33,11 @@ function renderExercises(exercises) {
     const statusIcon = isCompleted ? '✅' : '⭕';
     const completedClass = isCompleted ? 'completed' : '';
     
+    // Formatear el texto de dificultad
+    const difficultyText = exercise.difficulty === 'clase1' ? 'Clase 1' : 
+                           exercise.difficulty === 'clase2' ? 'Clase 2' : 
+                           exercise.difficulty.toUpperCase();
+    
     return `
       <div class="exercise-item ${completedClass}" onclick="loadExercise(${index})">
         <div class="exercise-header">
@@ -42,7 +47,7 @@ function renderExercises(exercises) {
         <div class="exercise-title">${exercise.title}</div>
         <div class="exercise-description">${exercise.description}</div>
         <span class="exercise-difficulty difficulty-${exercise.difficulty}">
-          ${exercise.difficulty.toUpperCase()}
+          📚 ${difficultyText}
         </span>
       </div>
     `;

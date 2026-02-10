@@ -253,19 +253,16 @@ body {
   font-weight: 600;
 }
 
-.difficulty-facil {
-  background: #d4edda;
-  color: #155724;
+.difficulty-clase1 {
+  background: #d1ecf1;
+  color: #0c5460;
+  font-weight: 600;
 }
 
-.difficulty-medio {
-  background: #fff3cd;
-  color: #856404;
-}
-
-.difficulty-dificil {
-  background: #f8d7da;
-  color: #721c24;
+.difficulty-clase2 {
+  background: #e7d4f5;
+  color: #6a1b9a;
+  font-weight: 600;
 }
 
 .exercise-hint {
