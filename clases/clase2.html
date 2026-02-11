@@ -1128,7 +1128,7 @@
         <!-- BLOQUE 4: CUESTIONARIO        -->
         <!--================================-->
 
-        <!-- Slide 29 — Inicio cuestionario -->
+        <!-- Slide 29 — Cuestionario (enlace externo) -->
         <section data-background-gradient="linear-gradient(135deg, #f5576c 0%, #f093fb 100%)">
           <h2 style="color: #0d47a1 !important; text-shadow: 2px 2px 4px rgba(255,255,255,0.8);">
             <span class="icon">📝</span>Cuestionario de Evaluación
@@ -1138,211 +1138,22 @@
             <ul style="font-size: 1em;">
               <li>📝 18 preguntas verdadero/falso</li>
               <li>🎯 Cubre DTD y conceptos de XSD</li>
-              <li>📊 Tu puntuación se muestra en tiempo real</li>
+              <li>📊 Tu puntuación se registra automáticamente</li>
             </ul>
           </div>
           
-          <aside class="notes">
-            INICIO DEL CUESTIONARIO.
-            18 preguntas que cubren todos los conceptos de DTD y la introducción a XSD.
-            Las respuestas se guardan automáticamente en LocalStorage.
-          </aside>
-        </section>
-
-        <!-- Slide 30 — Cuestionario (18 preguntas) -->
-        <section data-background-color="#f3f9ff">
-          <h2><span class="icon">✍️</span>Cuestionario (18 preguntas)</h2>
-          <div class="preguntas-box" style="max-height: 550px; overflow-y: auto; padding: 20px;">
-            
-            <!-- Pregunta 1 -->
-            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-              <p style="font-weight: 600; margin-bottom: 12px;">1. DTD significa "Document Type Definition".</p>
-              <div style="display: flex; gap: 10px;">
-                <button class="vf-btn" data-question="q1" data-answer="v">✓ Verdadero</button>
-                <button class="vf-btn" data-question="q1" data-answer="f">✗ Falso</button>
-              </div>
-              <div class="feedback" id="feedback-q1"></div>
-            </div>
-
-            <!-- Pregunta 2 -->
-            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-              <p style="font-weight: 600; margin-bottom: 12px;">2. Un XML bien formado es automáticamente un XML válido.</p>
-              <div style="display: flex; gap: 10px;">
-                <button class="vf-btn" data-question="q2" data-answer="v">✓ Verdadero</button>
-                <button class="vf-btn" data-question="q2" data-answer="f">✗ Falso</button>
-              </div>
-              <div class="feedback" id="feedback-q2"></div>
-            </div>
-
-            <!-- Pregunta 3 -->
-            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-              <p style="font-weight: 600; margin-bottom: 12px;">3. Los DTD internos se escriben dentro del archivo XML.</p>
-              <div style="display: flex; gap: 10px;">
-                <button class="vf-btn" data-question="q3" data-answer="v">✓ Verdadero</button>
-                <button class="vf-btn" data-question="q3" data-answer="f">✗ Falso</button>
-              </div>
-              <div class="feedback" id="feedback-q3"></div>
-            </div>
-
-            <!-- Pregunta 4 -->
-            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-              <p style="font-weight: 600; margin-bottom: 12px;">4. #PCDATA significa "Parsed Character Data" (datos de caracteres procesados).</p>
-              <div style="display: flex; gap: 10px;">
-                <button class="vf-btn" data-question="q4" data-answer="v">✓ Verdadero</button>
-                <button class="vf-btn" data-question="q4" data-answer="f">✗ Falso</button>
-              </div>
-              <div class="feedback" id="feedback-q4"></div>
-            </div>
-
-            <!-- Pregunta 5 -->
-            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-              <p style="font-weight: 600; margin-bottom: 12px;">5. El operador + en DTD significa "una o más veces".</p>
-              <div style="display: flex; gap: 10px;">
-                <button class="vf-btn" data-question="q5" data-answer="v">✓ Verdadero</button>
-                <button class="vf-btn" data-question="q5" data-answer="f">✗ Falso</button>
-              </div>
-              <div class="feedback" id="feedback-q5"></div>
-            </div>
-
-            <!-- Pregunta 6 -->
-            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-              <p style="font-weight: 600; margin-bottom: 12px;">6. El operador ? en DTD significa "obligatorio".</p>
-              <div style="display: flex; gap: 10px;">
-                <button class="vf-btn" data-question="q6" data-answer="v">✓ Verdadero</button>
-                <button class="vf-btn" data-question="q6" data-answer="f">✗ Falso</button>
-              </div>
-              <div class="feedback" id="feedback-q6"></div>
-            </div>
-
-            <!-- Pregunta 7 -->
-            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-              <p style="font-weight: 600; margin-bottom: 12px;">7. ATTLIST se usa para declarar atributos en DTD.</p>
-              <div style="display: flex; gap: 10px;">
-                <button class="vf-btn" data-question="q7" data-answer="v">✓ Verdadero</button>
-                <button class="vf-btn" data-question="q7" data-answer="f">✗ Falso</button>
-              </div>
-              <div class="feedback" id="feedback-q7"></div>
-            </div>
-
-            <!-- Pregunta 8 -->
-            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-              <p style="font-weight: 600; margin-bottom: 12px;">8. #REQUIRED significa que un atributo es opcional.</p>
-              <div style="display: flex; gap: 10px;">
-                <button class="vf-btn" data-question="q8" data-answer="v">✓ Verdadero</button>
-                <button class="vf-btn" data-question="q8" data-answer="f">✗ Falso</button>
-              </div>
-              <div class="feedback" id="feedback-q8"></div>
-            </div>
-
-            <!-- Pregunta 9 -->
-            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-              <p style="font-weight: 600; margin-bottom: 12px;">9. #IMPLIED significa que un atributo es opcional.</p>
-              <div style="display: flex; gap: 10px;">
-                <button class="vf-btn" data-question="q9" data-answer="v">✓ Verdadero</button>
-                <button class="vf-btn" data-question="q9" data-answer="f">✗ Falso</button>
-              </div>
-              <div class="feedback" id="feedback-q9"></div>
-            </div>
-
-            <!-- Pregunta 10 -->
-            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-              <p style="font-weight: 600; margin-bottom: 12px;">10. Las entidades en DTD permiten definir atajos reutilizables.</p>
-              <div style="display: flex; gap: 10px;">
-                <button class="vf-btn" data-question="q10" data-answer="v">✓ Verdadero</button>
-                <button class="vf-btn" data-question="q10" data-answer="f">✗ Falso</button>
-              </div>
-              <div class="feedback" id="feedback-q10"></div>
-            </div>
-
-            <!-- Pregunta 11 -->
-            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-              <p style="font-weight: 600; margin-bottom: 12px;">11. EMPTY indica que un elemento no puede tener contenido.</p>
-              <div style="display: flex; gap: 10px;">
-                <button class="vf-btn" data-question="q11" data-answer="v">✓ Verdadero</button>
-                <button class="vf-btn" data-question="q11" data-answer="f">✗ Falso</button>
-              </div>
-              <div class="feedback" id="feedback-q11"></div>
-            </div>
-
-            <!-- Pregunta 12 -->
-            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-              <p style="font-weight: 600; margin-bottom: 12px;">12. El tipo de atributo ID debe ser único en todo el documento XML.</p>
-              <div style="display: flex; gap: 10px;">
-                <button class="vf-btn" data-question="q12" data-answer="v">✓ Verdadero</button>
-                <button class="vf-btn" data-question="q12" data-answer="f">✗ Falso</button>
-              </div>
-              <div class="feedback" id="feedback-q12"></div>
-            </div>
-
-            <!-- Pregunta 13 -->
-            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-              <p style="font-weight: 600; margin-bottom: 12px;">13. XSD usa sintaxis XML mientras que DTD no.</p>
-              <div style="display: flex; gap: 10px;">
-                <button class="vf-btn" data-question="q13" data-answer="v">✓ Verdadero</button>
-                <button class="vf-btn" data-question="q13" data-answer="f">✗ Falso</button>
-              </div>
-              <div class="feedback" id="feedback-q13"></div>
-            </div>
-
-            <!-- Pregunta 14 -->
-            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-              <p style="font-weight: 600; margin-bottom: 12px;">14. XSD soporta tipos de datos específicos como integer, date y boolean.</p>
-              <div style="display: flex; gap: 10px;">
-                <button class="vf-btn" data-question="q14" data-answer="v">✓ Verdadero</button>
-                <button class="vf-btn" data-question="q14" data-answer="f">✗ Falso</button>
-              </div>
-              <div class="feedback" id="feedback-q14"></div>
-            </div>
-
-            <!-- Pregunta 15 -->
-            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-              <p style="font-weight: 600; margin-bottom: 12px;">15. DTD soporta tipos de datos específicos como integer y date.</p>
-              <div style="display: flex; gap: 10px;">
-                <button class="vf-btn" data-question="q15" data-answer="v">✓ Verdadero</button>
-                <button class="vf-btn" data-question="q15" data-answer="f">✗ Falso</button>
-              </div>
-              <div class="feedback" id="feedback-q15"></div>
-            </div>
-
-            <!-- Pregunta 16 -->
-            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-              <p style="font-weight: 600; margin-bottom: 12px;">16. XSD es el método recomendado actualmente por el W3C para validar XML.</p>
-              <div style="display: flex; gap: 10px;">
-                <button class="vf-btn" data-question="q16" data-answer="v">✓ Verdadero</button>
-                <button class="vf-btn" data-question="q16" data-answer="f">✗ Falso</button>
-              </div>
-              <div class="feedback" id="feedback-q16"></div>
-            </div>
-
-            <!-- Pregunta 17 -->
-            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-              <p style="font-weight: 600; margin-bottom: 12px;">17. El operador | en DTD indica alternativa (uno u otro elemento).</p>
-              <div style="display: flex; gap: 10px;">
-                <button class="vf-btn" data-question="q17" data-answer="v">✓ Verdadero</button>
-                <button class="vf-btn" data-question="q17" data-answer="f">✗ Falso</button>
-              </div>
-              <div class="feedback" id="feedback-q17"></div>
-            </div>
-
-            <!-- Pregunta 18 -->
-            <div class="quiz-vf-item" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-              <p style="font-weight: 600; margin-bottom: 12px;">18. Un documento puede tener tanto DTD interno como externo simultáneamente.</p>
-              <div style="display: flex; gap: 10px;">
-                <button class="vf-btn" data-question="q18" data-answer="v">✓ Verdadero</button>
-                <button class="vf-btn" data-question="q18" data-answer="f">✗ Falso</button>
-              </div>
-              <div class="feedback" id="feedback-q18"></div>
-            </div>
-
+          <div style="margin-top: 40px;">
+            <a href="cuestionario-xml2.html" class="btn-volver" style="display: inline-block; background: white; color: #f5576c; padding: 18px 40px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 1.1em; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+              📝 Ir al Cuestionario
+            </a>
           </div>
           
           <aside class="notes">
-            Cuestionario de 18 preguntas sobre DTD y XSD.
-            Las respuestas están en el archivo clase2_script.js.
+            Cuestionario disponible de forma externa. Los estudiantes pueden acceder desde el índice o desde este botón.
           </aside>
         </section>
 
-        <!-- Slide 31 — Cierre y próxima clase -->
+        <!-- Slide 30 — Cierre y próxima clase -->
         <section data-background-gradient="linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
           <h2 style="color: #0d47a1 !important; text-shadow: 2px 2px 4px rgba(255,255,255,0.8);">🎉 ¡Fin de la Clase 2!</h2>
           
