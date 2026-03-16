@@ -178,6 +178,18 @@
         vertical-align: middle;
         margin-left: 4px;
       }
+
+      /* ─── Texto blanco legible sobre fondos degradados oscuros ─── */
+      .white-title {
+        color: white !important;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.5) !important;
+        background: transparent !important;
+        padding: 10px 20px !important;
+      }
+      .white-text {
+        color: white !important;
+        text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+      }
     </style>
   </head>
   <body>
@@ -191,11 +203,11 @@
 
         <!-- ══ SLIDE 1 — Portada ══ -->
         <section data-background-gradient="linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
-          <h1 class="grad-text">DML en SQL</h1>
-          <p class="subtitle" style="color: #0d47a1; font-size: 1.3em; background: transparent; padding: 15px 30px; border-radius: 0; display: inline-block; margin-top: 20px; text-shadow: 2px 2px 4px rgba(255,255,255,0.8);">
+          <h1 class="white-title">DML en SQL</h1>
+          <p class="white-text" style="font-size: 1.3em; margin-top: 20px; display: inline-block; padding: 10px 20px;">
             Clase 3: INSERT · DELETE · UPDATE
           </p>
-          <p style="color: #0d47a1; margin-top: 30px; background: transparent; padding: 10px 20px; display: inline-block;">
+          <p style="margin-top: 20px;">
             <span class="pill xml">Teoría</span>
             <span class="pill xml">Ejemplos paso a paso</span>
             <span class="pill xml">Buenas prácticas</span>
@@ -286,7 +298,7 @@ VALUES (valor1, valor2, valor_n);</code></pre>
 
           <div class="fragment" style="margin-top: 20px;">
             <div class="code-example">
-              <h4>Ejemplo del video — "Perico de los Palotes" (emp. 207)</h4>
+              <h4>Ejemplo — inserción nombrando columnas (emp. 207)</h4>
               <pre><code class="sql">INSERT INTO employees (employee_id, last_name, email, hire_date, job_id)
 VALUES (207, 'de los Palotes', 'PPALOTES', SYSDATE, 'SA_REP');</code></pre>
             </div>
@@ -323,7 +335,7 @@ VALUES (valor1, valor2, ..., valor_n);</code></pre>
           </div>
 
           <div class="code-example fragment">
-            <h4>Ejemplo del video — "Luz Cuesta" con NULL explícito</h4>
+            <h4>Ejemplo — sintaxis directa con NULL explícito</h4>
             <pre><code class="sql">-- Si no tenemos el first_name ni la comisión, escribimos NULL
 INSERT INTO employees
 VALUES (211, 'Cuesta', 'Luz', 'LCUESTA', NULL, SYSDATE, 'SA_REP', 3200, NULL, 145, 80);</code></pre>
@@ -351,7 +363,7 @@ WHERE  condicion;</code></pre>
           </div>
 
           <div class="code-example fragment">
-            <h4>Ejemplo del video — 4 "departamentos basura" de un solo golpe</h4>
+            <h4>Ejemplo — inserción masiva desde SELECT</h4>
             <pre><code class="sql">-- Extrae representantes de ventas y los inserta en departments
 INSERT INTO departments
 SELECT employee_id, last_name, manager_id, department_id
@@ -366,50 +378,50 @@ WHERE  job_id = 'SA_REP';   -- inserta 4 filas a la vez</code></pre>
 
         <!-- ══ SLIDE 7 — INSERT Práctica paso a paso ══ -->
         <section>
-          <h2><span class="icon">💻</span>INSERT — Los 6 pasos del video</h2>
-          <p style="font-size: 0.85em; color: #666; margin-bottom: 20px;">El profesor inserta empleados ficticios a partir del número 207 para demostrar las tres formas de INSERT.</p>
+          <h2><span class="icon">💻</span>INSERT — Ejemplos prácticos</h2>
+          <p style="font-size: 0.85em; color: #666; margin-bottom: 20px;">A continuación se muestran seis casos de inserción progresivos, partiendo del empleado número 207, que cubren todas las variantes de INSERT.</p>
 
           <div class="steps-container">
             <div class="step step-insert fragment">
               <div class="step-number">1</div>
               <div class="step-content">
-                <h4>Inserción nombrando columnas — "Perico de los Palotes"</h4>
-                <p>Usa <code>SYSDATE</code> para asignar la fecha de hoy automáticamente en la columna de fecha de contratación.</p>
+                <h4>Inserción nombrando columnas</h4>
+                <p>Se especifican las columnas que se van a rellenar. Se puede usar <code>SYSDATE</code> para insertar automáticamente la fecha actual.</p>
               </div>
             </div>
             <div class="step step-insert fragment">
               <div class="step-number">2</div>
               <div class="step-content">
-                <h4>Conversión de fecha — "Juan sin Miedo"</h4>
-                <p>Inserta una fecha convirtiendo un texto (String) con una función de formateo: <code>TO_DATE('15/03/2024', 'DD/MM/YYYY')</code>.</p>
+                <h4>Inserción con conversión de fecha</h4>
+                <p>Cuando la fecha viene como texto, se convierte con la función <code>TO_DATE('15/03/2024', 'DD/MM/YYYY')</code> antes de insertarla.</p>
               </div>
             </div>
             <div class="step step-insert fragment">
               <div class="step-number">3</div>
               <div class="step-content">
-                <h4>Columnas en distinto orden — "María Castaña"</h4>
-                <p>El orden de las columnas en el INSERT no tiene que ser el mismo que en la tabla. También incluye horas, minutos y segundos en la fecha.</p>
+                <h4>Columnas en distinto orden</h4>
+                <p>El orden de las columnas en el INSERT no tiene que coincidir con el de la tabla, siempre que cada columna tenga su valor emparejado. También se puede incluir la hora exacta en la fecha.</p>
               </div>
             </div>
             <div class="step step-insert fragment">
               <div class="step-number">4</div>
               <div class="step-content">
-                <h4>Sin nombrar columnas — "Paca Prendas"</h4>
-                <p>Se deben poner <strong>todos</strong> los valores en el orden exacto de creación de la tabla. Verificar con <code>DESCRIBE employees</code>.</p>
+                <h4>Sin nombrar columnas (sintaxis directa)</h4>
+                <p>Se omiten los nombres de columna y se listan todos los valores en el orden exacto de creación de la tabla. Consulta el orden con <code>DESCRIBE employees</code>.</p>
               </div>
             </div>
             <div class="step step-insert fragment">
               <div class="step-number">5</div>
               <div class="step-content">
-                <h4>Con NULL explícito — "Luz Cuesta"</h4>
-                <p>Si falta un dato al usar sintaxis directa, se escribe <strong>obligatoriamente</strong> la palabra <code>NULL</code>.</p>
+                <h4>Sintaxis directa con valores NULL</h4>
+                <p>Cuando un campo no tiene dato y la columna lo permite, hay que escribir <strong>obligatoriamente</strong> la palabra <code>NULL</code> en su posición.</p>
               </div>
             </div>
             <div class="step step-insert fragment">
               <div class="step-number">6</div>
               <div class="step-content">
-                <h4>Inserción desde SELECT — "Departamentos basura"</h4>
-                <p>Extrae 4 representantes de ventas con un SELECT e inserta sus datos en la tabla <code>departments</code> de una sola vez.</p>
+                <h4>Inserción masiva desde SELECT</h4>
+                <p>Se extraen filas de otra tabla con un SELECT y se insertan directamente en la tabla destino, todo en una sola instrucción.</p>
               </div>
             </div>
           </div>
@@ -445,7 +457,7 @@ DELETE FROM employees;</pre>
         <!-- ══ SLIDE 9 — DELETE Práctica ══ -->
         <section>
           <h2><span class="icon">💻</span>DELETE — Práctica: limpiar lo que insertamos</h2>
-          <p style="font-size: 0.9em; color: #666; margin-bottom: 25px;">El profesor elimina los empleados y departamentos ficticios del ejercicio anterior usando dos estrategias.</p>
+          <p style="font-size: 0.9em; color: #666; margin-bottom: 25px;">Tras practicar con INSERT, es necesario limpiar los datos de prueba. Veremos dos estrategias de borrado según el tipo de condición.</p>
 
           <div class="two-col">
             <div>
@@ -529,7 +541,7 @@ WHERE  employee_id   = 143;</code></pre>
               <div class="step-number">2</div>
               <div class="step-content">
                 <h4>Update múltiple con condición compuesta</h4>
-                <p>Afecta a los empleados que son ST_CLERK y cobran más de 3000. Modifica 4 columnas a la vez en 2 empleados. El profesor usa <code>ROLLBACK</code> para deshacer el cambio.</p>
+                <p>Afecta a los empleados que son ST_CLERK y cobran más de 3000. Modifica 4 columnas a la vez en 2 empleados. Después se usa <code>ROLLBACK</code> para deshacer el cambio y comprobar cómo funciona.</p>
                 <div class="code-example" style="margin-top: 8px;">
                   <pre><code class="sql">UPDATE employees
 SET    salary         = 2700,
@@ -549,13 +561,13 @@ ROLLBACK;  -- deshace el cambio → vuelven a cobrar 3000</code></pre>
         <!-- ══ SLIDE 12 — UPDATE Avanzado ══ -->
         <section>
           <h2><span class="icon">🔬</span>UPDATE — Transformaciones avanzadas (II)</h2>
-          <p style="font-size: 0.9em; color: #666; margin-bottom: 15px;">El <code>SET</code> no solo asigna valores fijos — admite expresiones, funciones y subconsultas.</p>
+          <p style="font-size: 0.9em; color: #666; margin-bottom: 15px;"><code>SET</code> no solo asigna valores fijos — también admite expresiones matemáticas, funciones de texto y subconsultas.</p>
 
           <div class="steps-container">
             <div class="step step-update">
               <div class="step-number">3</div>
               <div class="step-content">
-                <h4>Update complejo — empleados contratados en la 1ª mitad del año 99 <span class="ts">26:05</span></h4>
+                <h4>UPDATE complejo — empleados contratados en la 1ª mitad del año 99 <span class="ts">26:05</span></h4>
                 <p>Se modifican salario, email, jefe y fecha de contratación de una sola instrucción.</p>
               </div>
             </div>
@@ -676,17 +688,17 @@ WHERE  job_id  = 'ST_CLERK'
 
         <!-- ══ SLIDE 15 — Fin ══ -->
         <section data-background-gradient="linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
-          <h1 style="color: white;">¡Excelente trabajo!</h1>
-          <p style="color: white; font-size: 1.2em; margin: 25px 0;">Has completado Clase 3 — DML: INSERT, DELETE, UPDATE</p>
-          <div style="background: rgba(255,255,255,0.15); padding: 25px; border-radius: 15px; margin: 25px auto; max-width: 620px;">
-            <p style="color: white; font-size: 1em; margin-bottom: 10px;">¿Te sientes preparado? Practica con el SQL Playground</p>
-            <p style="color: rgba(255,255,255,0.85); font-size: 0.9em;">30 ejercicios con base de datos real de PostgreSQL</p>
+          <h1 class="white-title">¡Bien hecho!</h1>
+          <p class="white-text" style="font-size: 1.2em; margin: 20px 0;">Has completado la Clase 3 — DML: INSERT, DELETE y UPDATE</p>
+          <div style="background: rgba(255,255,255,0.15); padding: 25px; border-radius: 15px; margin: 25px auto; max-width: 620px; border: 1px solid rgba(255,255,255,0.3);">
+            <p class="white-text" style="font-size: 1em; margin-bottom: 10px;">Ahora practica lo aprendido en el SQL Playground</p>
+            <p class="white-text" style="font-size: 0.9em; opacity: 0.85;">30 ejercicios con base de datos real de PostgreSQL</p>
           </div>
-          <div style="margin-top: 40px;">
-            <a href="/sql-playground" style="display: inline-block; background: white; color: #667eea; padding: 16px 36px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 1.05em; margin: 8px;">
+          <div style="margin-top: 35px;">
+            <a href="/sql-playground" style="display: inline-block; background: white; color: #667eea; padding: 16px 36px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 1.05em; margin: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
               🚀 Ir al SQL Playground
             </a>
-            <a href="../index.html" style="display: inline-block; background: rgba(255,255,255,0.2); color: white; padding: 16px 36px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 1.05em; margin: 8px; border: 2px solid white;">
+            <a href="../index.html" style="display: inline-block; background: rgba(255,255,255,0.2); color: white; padding: 16px 36px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 1.05em; margin: 8px; border: 2px solid rgba(255,255,255,0.6);">
               ← Volver al Inicio
             </a>
           </div>
