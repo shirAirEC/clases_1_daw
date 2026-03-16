@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Soluciones Clase 2 SQL — Playground</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f5f7fa;
+      color: #1e293b;
+      padding: 40px;
+      font-size: 14px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 3px solid #667eea;
+    }
+
+    header h1 {
+      font-size: 2em;
+      color: #667eea;
+      margin-bottom: 8px;
+    }
+
+    header p {
+      color: #64748b;
+      font-size: 1em;
+    }
+
+    .ejercicio {
+      background: white;
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      border-left: 5px solid #667eea;
+      page-break-inside: avoid;
+    }
+
+    .ejercicio-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .ejercicio-id {
+      background: #667eea;
+      color: white;
+      font-weight: 700;
+      font-size: 0.85em;
+      padding: 4px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    .ejercicio-titulo {
+      font-size: 1.05em;
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    .ejercicio-desc {
+      color: #64748b;
+      margin-bottom: 12px;
+      font-size: 0.92em;
+    }
+
+    pre {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 14px 18px;
+      border-radius: 8px;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 0.9em;
+      line-height: 1.6;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+
+    .keyword  { color: #93c5fd; font-weight: bold; }
+    .function { color: #fcd34d; }
+    .string   { color: #86efac; }
+    .comment  { color: #94a3b8; font-style: italic; }
+    .number   { color: #f9a8d4; }
+
+    .seccion-titulo {
+      font-size: 1.1em;
+      font-weight: 700;
+      color: #667eea;
+      margin: 32px 0 12px 0;
+      padding-bottom: 6px;
+      border-bottom: 2px solid #e2e8f0;
+      page-break-after: avoid;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      color: #94a3b8;
+      font-size: 0.85em;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 16px;
+    }
+
+    @media print {
+      body { background: white; padding: 20px; }
+      .ejercicio { box-shadow: none; border: 1px solid #e2e8f0; }
+      pre { background: #1e293b !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Soluciones — Clase 2 SQL</h1>
+    <p>SQL Playground · Ejercicios que requieren JOINs y consultas avanzadas</p>
+  </header>
+
+  <div class="seccion-titulo">JOINs básicos</div>
+
+  <div class="ejercicio">
+    <div class="ejercicio-header">
+      <span class="ejercicio-id">EJ-12</span>
+      <span class="ejercicio-titulo">Películas de terror</span>
+    </div>
+    <p class="ejercicio-desc">Muestra todas las películas de la categoría Terror.</p>
+    <pre><span class="keyword">SELECT</span> p.titulo
+<span class="keyword">FROM</span> pelicula p
+<span class="keyword">JOIN</span> categoria c <span class="keyword">ON</span> p.categoria_id = c.categoria_id
+<span class="keyword">WHERE</span> c.nombre = <span class="string">'Terror'</span>;</pre>
+  </div>
+
+  <div class="ejercicio">
+    <div class="ejercicio-header">
+      <span class="ejercicio-id">EJ-20</span>
+      <span class="ejercicio-titulo">Películas con categoría</span>
+    </div>
+    <p class="ejercicio-desc">Muestra el título de cada película junto con su categoría.</p>
+    <pre><span class="keyword">SELECT</span> p.titulo, c.nombre <span class="keyword">AS</span> categoria
+<span class="keyword">FROM</span> pelicula p
+<span class="keyword">JOIN</span> categoria c <span class="keyword">ON</span> p.categoria_id = c.categoria_id
+<span class="keyword">ORDER BY</span> c.nombre, p.titulo;</pre>
+  </div>
+
+  <div class="ejercicio">
+    <div class="ejercicio-header">
+      <span class="ejercicio-id">EJ-21</span>
+      <span class="ejercicio-titulo">Alquileres con clientes</span>
+    </div>
+    <p class="ejercicio-desc">Muestra todos los alquileres con el nombre del cliente.</p>
+    <pre><span class="keyword">SELECT</span> a.alquiler_id, c.nombre, c.apellido, a.fecha_alquiler, a.precio_pagado
+<span class="keyword">FROM</span> alquiler a
+<span class="keyword">JOIN</span> cliente c <span class="keyword">ON</span> a.cliente_id = c.cliente_id
+<span class="keyword">ORDER BY</span> a.fecha_alquiler <span class="keyword">DESC</span>;</pre>
+  </div>
+
+  <div class="seccion-titulo">JOINs múltiples y LEFT JOIN</div>
+
+  <div class="ejercicio">
+    <div class="ejercicio-header">
+      <span class="ejercicio-id">EJ-22</span>
+      <span class="ejercicio-titulo">Actores y sus películas</span>
+    </div>
+    <p class="ejercicio-desc">Lista todos los actores con las películas en las que han participado.</p>
+    <pre><span class="keyword">SELECT</span> a.nombre, a.apellido, p.titulo
+<span class="keyword">FROM</span> actor a
+<span class="keyword">JOIN</span> pelicula_actor pa <span class="keyword">ON</span> a.actor_id = pa.actor_id
+<span class="keyword">JOIN</span> pelicula p <span class="keyword">ON</span> pa.pelicula_id = p.pelicula_id
+<span class="keyword">ORDER BY</span> a.apellido, p.titulo;</pre>
+  </div>
+
+  <div class="ejercicio">
+    <div class="ejercicio-header">
+      <span class="ejercicio-id">EJ-23</span>
+      <span class="ejercicio-titulo">Películas nunca alquiladas</span>
+    </div>
+    <p class="ejercicio-desc">Encuentra las películas que nunca han sido alquiladas.</p>
+    <pre><span class="keyword">SELECT</span> p.titulo
+<span class="keyword">FROM</span> pelicula p
+<span class="keyword">LEFT JOIN</span> alquiler a <span class="keyword">ON</span> p.pelicula_id = a.pelicula_id
+<span class="keyword">WHERE</span> a.alquiler_id <span class="keyword">IS NULL</span>
+<span class="keyword">ORDER BY</span> p.titulo;</pre>
+  </div>
+
+  <div class="seccion-titulo">Consultas avanzadas con GROUP BY y JOINs</div>
+
+  <div class="ejercicio">
+    <div class="ejercicio-header">
+      <span class="ejercicio-id">EJ-24</span>
+      <span class="ejercicio-titulo">Top 5 películas más populares</span>
+    </div>
+    <p class="ejercicio-desc">Muestra las 5 películas más alquiladas con su número de alquileres.</p>
+    <pre><span class="keyword">SELECT</span> p.titulo, <span class="function">COUNT</span>(a.alquiler_id) <span class="keyword">AS</span> veces_alquilada
+<span class="keyword">FROM</span> pelicula p
+<span class="keyword">JOIN</span> alquiler a <span class="keyword">ON</span> p.pelicula_id = a.pelicula_id
+<span class="keyword">GROUP BY</span> p.pelicula_id, p.titulo
+<span class="keyword">ORDER BY</span> veces_alquilada <span class="keyword">DESC</span>
+<span class="keyword">LIMIT</span> <span class="number">5</span>;</pre>
+  </div>
+
+  <div class="ejercicio">
+    <div class="ejercicio-header">
+      <span class="ejercicio-id">EJ-25</span>
+      <span class="ejercicio-titulo">Ingresos por categoría</span>
+    </div>
+    <p class="ejercicio-desc">Calcula los ingresos totales generados por cada categoría de películas.</p>
+    <pre><span class="keyword">SELECT</span> c.nombre <span class="keyword">AS</span> categoria, <span class="function">SUM</span>(a.precio_pagado) <span class="keyword">AS</span> ingresos_totales
+<span class="keyword">FROM</span> categoria c
+<span class="keyword">JOIN</span> pelicula p <span class="keyword">ON</span> c.categoria_id = p.categoria_id
+<span class="keyword">JOIN</span> alquiler a <span class="keyword">ON</span> p.pelicula_id = a.pelicula_id
+<span class="keyword">GROUP BY</span> c.categoria_id, c.nombre
+<span class="keyword">ORDER BY</span> ingresos_totales <span class="keyword">DESC</span>;</pre>
+  </div>
+
+  <div class="ejercicio">
+    <div class="ejercicio-header">
+      <span class="ejercicio-id">EJ-26</span>
+      <span class="ejercicio-titulo">Actores más prolíficos</span>
+    </div>
+    <p class="ejercicio-desc">Muestra los 5 actores que han participado en más películas.</p>
+    <pre><span class="keyword">SELECT</span> a.nombre, a.apellido, <span class="function">COUNT</span>(pa.pelicula_id) <span class="keyword">AS</span> total_peliculas
+<span class="keyword">FROM</span> actor a
+<span class="keyword">JOIN</span> pelicula_actor pa <span class="keyword">ON</span> a.actor_id = pa.actor_id
+<span class="keyword">GROUP BY</span> a.actor_id, a.nombre, a.apellido
+<span class="keyword">ORDER BY</span> total_peliculas <span class="keyword">DESC</span>
+<span class="keyword">LIMIT</span> <span class="number">5</span>;</pre>
+  </div>
+
+  <div class="seccion-titulo">Subconsultas</div>
+
+  <div class="ejercicio">
+    <div class="ejercicio-header">
+      <span class="ejercicio-id">EJ-27</span>
+      <span class="ejercicio-titulo">Películas por encima del promedio</span>
+    </div>
+    <p class="ejercicio-desc">Muestra las películas cuya duración es mayor que el promedio.</p>
+    <pre><span class="keyword">SELECT</span> titulo, duracion
+<span class="keyword">FROM</span> pelicula
+<span class="keyword">WHERE</span> duracion > (<span class="keyword">SELECT</span> <span class="function">AVG</span>(duracion) <span class="keyword">FROM</span> pelicula)
+<span class="keyword">ORDER BY</span> duracion <span class="keyword">DESC</span>;</pre>
+  </div>
+
+  <div class="ejercicio">
+    <div class="ejercicio-header">
+      <span class="ejercicio-id">EJ-28</span>
+      <span class="ejercicio-titulo">Clientes sin alquileres recientes</span>
+    </div>
+    <p class="ejercicio-desc">Encuentra clientes que no han alquilado nada en 2024.</p>
+    <pre><span class="keyword">SELECT</span> nombre, apellido, email
+<span class="keyword">FROM</span> cliente
+<span class="keyword">WHERE</span> cliente_id <span class="keyword">NOT IN</span> (
+  <span class="keyword">SELECT DISTINCT</span> cliente_id
+  <span class="keyword">FROM</span> alquiler
+  <span class="keyword">WHERE</span> <span class="function">EXTRACT</span>(<span class="keyword">YEAR FROM</span> fecha_alquiler) = <span class="number">2024</span>
+)
+<span class="keyword">ORDER BY</span> apellido;</pre>
+  </div>
+
+  <div class="ejercicio">
+    <div class="ejercicio-header">
+      <span class="ejercicio-id">EJ-29</span>
+      <span class="ejercicio-titulo">Ranking de categorías</span>
+    </div>
+    <p class="ejercicio-desc">Crea un ranking de categorías por número de alquileres totales.</p>
+    <pre><span class="keyword">SELECT</span> c.nombre <span class="keyword">AS</span> categoria, <span class="function">COUNT</span>(a.alquiler_id) <span class="keyword">AS</span> total_alquileres
+<span class="keyword">FROM</span> categoria c
+<span class="keyword">JOIN</span> pelicula p <span class="keyword">ON</span> c.categoria_id = p.categoria_id
+<span class="keyword">JOIN</span> alquiler a <span class="keyword">ON</span> p.pelicula_id = a.pelicula_id
+<span class="keyword">GROUP BY</span> c.categoria_id, c.nombre
+<span class="keyword">ORDER BY</span> total_alquileres <span class="keyword">DESC</span>;</pre>
+  </div>
+
+  <div class="seccion-titulo">Consulta final</div>
+
+  <div class="ejercicio">
+    <div class="ejercicio-header">
+      <span class="ejercicio-id">EJ-30</span>
+      <span class="ejercicio-titulo">Análisis completo del videoclub</span>
+    </div>
+    <p class="ejercicio-desc">Crea un resumen con: total películas, actores, clientes activos, alquileres pendientes e ingresos totales.</p>
+    <pre><span class="keyword">SELECT</span>
+  (<span class="keyword">SELECT</span> <span class="function">COUNT</span>(*) <span class="keyword">FROM</span> pelicula)                              <span class="keyword">AS</span> total_peliculas,
+  (<span class="keyword">SELECT</span> <span class="function">COUNT</span>(*) <span class="keyword">FROM</span> actor)                                <span class="keyword">AS</span> total_actores,
+  (<span class="keyword">SELECT</span> <span class="function">COUNT</span>(*) <span class="keyword">FROM</span> cliente <span class="keyword">WHERE</span> activo = <span class="keyword">true</span>)          <span class="keyword">AS</span> clientes_activos,
+  (<span class="keyword">SELECT</span> <span class="function">COUNT</span>(*) <span class="keyword">FROM</span> alquiler <span class="keyword">WHERE</span> fecha_devolucion <span class="keyword">IS NULL</span>) <span class="keyword">AS</span> alquileres_pendientes,
+  (<span class="keyword">SELECT</span> <span class="function">SUM</span>(precio_pagado) <span class="keyword">FROM</span> alquiler)                    <span class="keyword">AS</span> ingresos_totales;</pre>
+  </div>
+
+  <footer>
+    SQL Playground · 1º DAW · Bases de Datos — Clase 2
+  </footer>
+
+</body>
+</html>
