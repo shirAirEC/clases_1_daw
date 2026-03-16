@@ -1,985 +1,711 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DML en SQL — INSERT, DELETE, UPDATE</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600&display=swap');
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DML: INSERT, DELETE, UPDATE — Clase 3</title>
 
-  :root {
-    --bg: #0d1117;
-    --surface: #161b22;
-    --surface2: #21262d;
-    --border: #30363d;
-    --text: #e6edf3;
-    --muted: #8b949e;
-    --insert: #3fb950;
-    --insert-dim: #1a3a22;
-    --delete: #f85149;
-    --delete-dim: #3d1a1a;
-    --update: #d29922;
-    --update-dim: #3a2e0a;
-    --accent: #58a6ff;
-    --accent-dim: #0c2044;
-    --keyword: #ff7b72;
-    --string: #a5d6ff;
-    --number: #79c0ff;
-    --comment: #8b949e;
-    --function: #d2a8ff;
-    --tip: #bc8cff;
-  }
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="512x512" href="../favicon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="../favicon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
+    <link rel="apple-touch-icon" href="../favicon.png">
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/white.css" id="theme">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/monokai.css">
+    <link rel="stylesheet" href="styles.css">
 
-  body {
-    font-family: 'Outfit', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    height: 100vh;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
+    <style>
+      .btn-volver {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background: rgba(255,255,255,0.95);
+        color: #667eea;
+        padding: 10px 20px;
+        border-radius: 20px;
+        text-decoration: none;
+        font-weight: 600;
+        z-index: 1000;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+      }
+      .btn-volver:hover { background: #667eea; color: white; }
 
-  /* ─── Barra superior ─── */
-  #topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 28px;
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    flex-shrink: 0;
-    z-index: 10;
-  }
-  #topbar .logo {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: 1.05rem;
-    letter-spacing: -0.5px;
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-  .badge { font-size: 0.65rem; font-weight: 700; padding: 3px 8px; border-radius: 20px; letter-spacing: 1px; text-transform: uppercase; }
-  .badge-sql { background: var(--accent-dim); color: var(--accent); }
+      /* ─── Cajas de contenido ─── */
+      .definition-box {
+        background: #e3f2fd;
+        border-left: 5px solid #667eea;
+        padding: 18px 20px;
+        border-radius: 10px;
+        margin: 15px 0;
+      }
+      .definition-box h3 {
+        color: #0d47a1 !important;
+        margin-top: 0;
+        background: none !important;
+        padding: 0 !important;
+        text-shadow: none !important;
+      }
 
-  #slide-counter {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.8rem;
-    color: var(--muted);
-  }
+      .tip-box {
+        background: #fff8e1;
+        border-left: 5px solid #ffa726;
+        padding: 14px 18px;
+        border-radius: 10px;
+        margin: 12px 0;
+      }
 
-  /* ─── Barra de progreso ─── */
-  #progress-bar-wrap { height: 3px; background: var(--border); flex-shrink: 0; }
-  #progress-bar { height: 100%; background: linear-gradient(90deg, var(--insert), var(--accent)); transition: width 0.4s ease; }
+      .warning-box {
+        background: #fff3e0;
+        border-left: 5px solid #e53935;
+        padding: 14px 18px;
+        border-radius: 10px;
+        margin: 12px 0;
+      }
+      .warning-box h3 {
+        color: #b71c1c !important;
+        margin-top: 0;
+        background: none !important;
+        padding: 0 !important;
+        text-shadow: none !important;
+      }
 
-  /* ─── Área de slides ─── */
-  #slides-viewport {
-    flex: 1;
-    overflow: hidden;
-    position: relative;
-  }
+      .success-box {
+        background: #e8f5e9;
+        border-left: 5px solid #2e7d32;
+        padding: 14px 18px;
+        border-radius: 10px;
+        margin: 12px 0;
+      }
 
-  .slide {
-    position: absolute;
-    inset: 0;
-    padding: 36px 60px 28px;
-    display: flex;
-    flex-direction: column;
-    opacity: 0;
-    pointer-events: none;
-    transform: translateX(60px);
-    transition: opacity 0.35s ease, transform 0.35s ease;
-    overflow-y: auto;
-  }
-  .slide.active {
-    opacity: 1;
-    pointer-events: all;
-    transform: translateX(0);
-  }
-  .slide.exit-left {
-    opacity: 0;
-    transform: translateX(-60px);
-  }
+      .danger-box {
+        background: #ffebee;
+        border-left: 5px solid #c62828;
+        padding: 18px 20px;
+        border-radius: 10px;
+        margin: 12px 0;
+      }
+      .danger-box h3 {
+        color: #b71c1c !important;
+        margin-top: 0;
+        background: none !important;
+        padding: 0 !important;
+        text-shadow: none !important;
+      }
 
-  /* ─── Encabezados de slide ─── */
-  .slide-tag {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.72rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .slide-tag::before { content: ''; display: inline-block; width: 20px; height: 2px; border-radius: 2px; }
-  .tag-intro .slide-tag { color: var(--accent); }
-  .tag-intro .slide-tag::before { background: var(--accent); }
-  .tag-insert .slide-tag { color: var(--insert); }
-  .tag-insert .slide-tag::before { background: var(--insert); }
-  .tag-delete .slide-tag { color: var(--delete); }
-  .tag-delete .slide-tag::before { background: var(--delete); }
-  .tag-update .slide-tag { color: var(--update); }
-  .tag-update .slide-tag::before { background: var(--update); }
-  .tag-tips .slide-tag { color: var(--tip); }
-  .tag-tips .slide-tag::before { background: var(--tip); }
-  .tag-practice .slide-tag { color: var(--muted); }
-  .tag-practice .slide-tag::before { background: var(--muted); }
+      .code-example {
+        background: #263238;
+        border-radius: 10px;
+        padding: 4px;
+        margin: 12px 0;
+      }
+      .code-example h4 {
+        color: #90caf9 !important;
+        background: none !important;
+        padding: 8px 12px !important;
+        margin: 0;
+        font-size: 0.8em;
+        text-shadow: none !important;
+      }
 
-  .slide h1 {
-    font-family: 'Syne', sans-serif;
-    font-size: 2rem;
-    font-weight: 800;
-    line-height: 1.15;
-    margin-bottom: 24px;
-    letter-spacing: -1px;
-  }
-  .slide h2 {
-    font-family: 'Syne', sans-serif;
-    font-size: 1.55rem;
-    font-weight: 700;
-    margin-bottom: 18px;
-    letter-spacing: -0.5px;
-  }
+      .highlight-box {
+        background: rgba(255,255,255,0.95);
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        border-top: 5px solid #667eea;
+      }
+      .highlight-box h3 {
+        color: #0d47a1 !important;
+        margin-top: 0;
+        background: none !important;
+        padding: 0 !important;
+        text-shadow: none !important;
+      }
 
-  /* ─── Tarjetas de comandos (slide 1) ─── */
-  .cmd-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 8px; }
-  .cmd-card {
-    border-radius: 12px;
-    padding: 20px 18px;
-    border: 1px solid var(--border);
-    position: relative;
-    overflow: hidden;
-  }
-  .cmd-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-  }
-  .cmd-card.insert { background: var(--insert-dim); border-color: var(--insert); }
-  .cmd-card.insert::before { background: var(--insert); }
-  .cmd-card.delete { background: var(--delete-dim); border-color: var(--delete); }
-  .cmd-card.delete::before { background: var(--delete); }
-  .cmd-card.update { background: var(--update-dim); border-color: var(--update); }
-  .cmd-card.update::before { background: var(--update); }
-  .cmd-card .cmd-name {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 1.4rem;
-    font-weight: 700;
-    margin-bottom: 8px;
-  }
-  .cmd-card.insert .cmd-name { color: var(--insert); }
-  .cmd-card.delete .cmd-name { color: var(--delete); }
-  .cmd-card.update .cmd-name { color: var(--update); }
-  .cmd-card p { font-size: 0.9rem; color: var(--muted); line-height: 1.5; }
+      /* ─── Cards DML por color ─── */
+      .dml-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin: 20px 0;
+      }
+      .dml-card {
+        padding: 25px 20px;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+      }
+      .dml-card h3 {
+        margin-top: 0;
+        font-size: 1.4em;
+        background: none !important;
+        padding: 0 !important;
+        text-shadow: none !important;
+      }
+      .dml-card p { font-size: 0.88em; margin: 0; }
+      .dml-insert { background: #e8f5e9; border-top: 5px solid #2e7d32; }
+      .dml-insert h3 { color: #1b5e20 !important; }
+      .dml-delete { background: #ffebee; border-top: 5px solid #c62828; }
+      .dml-delete h3 { color: #b71c1c !important; }
+      .dml-update { background: #fff8e1; border-top: 5px solid #f57f17; }
+      .dml-update h3 { color: #e65100 !important; }
 
-  /* ─── Bloques de info ─── */
-  .info-row { display: flex; gap: 16px; margin-top: 16px; flex-wrap: wrap; }
-  .info-box {
-    flex: 1;
-    min-width: 220px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 16px;
-  }
-  .info-box .ib-label {
-    font-size: 0.68rem;
-    font-family: 'JetBrains Mono', monospace;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 8px;
-  }
-  .info-box p, .info-box li { font-size: 0.88rem; line-height: 1.6; color: var(--text); }
-  .info-box ul { padding-left: 16px; }
-  .info-box li { margin-bottom: 4px; }
+      /* ─── Steps numerados ─── */
+      .step-insert .step-number { background: linear-gradient(135deg, #2e7d32, #43a047) !important; }
+      .step-delete .step-number { background: linear-gradient(135deg, #c62828, #e53935) !important; }
+      .step-update .step-number { background: linear-gradient(135deg, #e65100, #ff8f00) !important; }
 
-  /* ─── Código SQL ─── */
-  .code-block {
-    background: #010409;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    overflow: hidden;
-    margin: 16px 0;
-  }
-  .code-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 16px;
-    background: var(--surface2);
-    border-bottom: 1px solid var(--border);
-    font-size: 0.72rem;
-    font-family: 'JetBrains Mono', monospace;
-    color: var(--muted);
-  }
-  .code-header .dots { display: flex; gap: 6px; }
-  .dot { width: 10px; height: 10px; border-radius: 50%; }
-  .dot.r { background: #ff5f57; }
-  .dot.y { background: #febc2e; }
-  .dot.g { background: #28c840; }
-  pre {
-    padding: 16px 20px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.85rem;
-    line-height: 1.75;
-    overflow-x: auto;
-    white-space: pre;
-  }
+      /* ─── Tabla de comparación ─── */
+      .three-col {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin: 15px 0;
+      }
 
-  /* SQL syntax colors */
-  .kw { color: var(--keyword); font-weight: 700; }
-  .fn { color: var(--function); }
-  .str { color: var(--string); }
-  .num { color: var(--number); }
-  .cmt { color: var(--comment); font-style: italic; }
-  .tbl { color: #ffa657; }
-  .col { color: #e6edf3; }
+      /* ─── Etiqueta de timestamp ─── */
+      .ts {
+        font-size: 0.65em;
+        background: #e0e0e0;
+        color: #555;
+        padding: 1px 7px;
+        border-radius: 10px;
+        font-weight: 400;
+        vertical-align: middle;
+        margin-left: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Verificación de autenticación -->
+    <script src="../auth-check.js"></script>
 
-  /* ─── Alertas ─── */
-  .alert {
-    border-radius: 10px;
-    padding: 14px 18px;
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-    margin: 12px 0;
-    font-size: 0.88rem;
-    line-height: 1.6;
-  }
-  .alert-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 1px; }
-  .alert-danger { background: var(--delete-dim); border: 1px solid var(--delete); color: #ffa0a0; }
-  .alert-tip { background: #1a1040; border: 1px solid var(--tip); color: #d8b4ff; }
-  .alert-info { background: var(--accent-dim); border: 1px solid var(--accent); color: #a5c8ff; }
-  .alert-ok { background: var(--insert-dim); border: 1px solid var(--insert); color: #86efac; }
+    <a href="../index.html" class="btn-volver">← Inicio</a>
 
-  /* ─── Listas de puntos ─── */
-  .point-list { list-style: none; padding: 0; margin: 12px 0; }
-  .point-list li {
-    padding: 8px 0 8px 28px;
-    position: relative;
-    font-size: 0.9rem;
-    line-height: 1.6;
-    border-bottom: 1px solid var(--border);
-    color: var(--text);
-  }
-  .point-list li:last-child { border-bottom: none; }
-  .point-list li::before {
-    content: '›';
-    position: absolute;
-    left: 8px;
-    color: var(--accent);
-    font-weight: 700;
-    font-size: 1.1rem;
-  }
-  .point-list.insert li::before { color: var(--insert); }
-  .point-list.delete li::before { color: var(--delete); }
-  .point-list.update li::before { color: var(--update); }
-  .point-list.tips li::before { color: var(--tip); }
+    <div class="reveal">
+      <div class="slides">
 
-  /* ─── Steps / pasos prácticos ─── */
-  .steps { display: flex; flex-direction: column; gap: 12px; }
-  .step {
-    display: flex;
-    gap: 16px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 16px;
-    align-items: flex-start;
-  }
-  .step-num {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    font-family: 'JetBrains Mono', monospace;
-    font-weight: 700;
-    font-size: 0.8rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-  .step-num.insert { background: var(--insert-dim); color: var(--insert); border: 1px solid var(--insert); }
-  .step-num.delete { background: var(--delete-dim); color: var(--delete); border: 1px solid var(--delete); }
-  .step-num.update { background: var(--update-dim); color: var(--update); border: 1px solid var(--update); }
-  .step-content { flex: 1; }
-  .step-title { font-weight: 600; font-size: 0.88rem; margin-bottom: 4px; }
-  .step-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
-  .step-code {
-    margin-top: 8px;
-    background: #010409;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 8px 12px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.78rem;
-    line-height: 1.6;
-    overflow-x: auto;
-  }
+        <!-- ══ SLIDE 1 — Portada ══ -->
+        <section data-background-gradient="linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
+          <h1 class="grad-text">DML en SQL</h1>
+          <p class="subtitle" style="color: #0d47a1; font-size: 1.3em; background: transparent; padding: 15px 30px; border-radius: 0; display: inline-block; margin-top: 20px; text-shadow: 2px 2px 4px rgba(255,255,255,0.8);">
+            Clase 3: INSERT · DELETE · UPDATE
+          </p>
+          <p style="color: #0d47a1; margin-top: 30px; background: transparent; padding: 10px 20px; display: inline-block;">
+            <span class="pill xml">Teoría</span>
+            <span class="pill xml">Ejemplos paso a paso</span>
+            <span class="pill xml">Buenas prácticas</span>
+          </p>
+        </section>
 
-  /* ─── Dos columnas ─── */
-  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 4px; }
-  .col-block { display: flex; flex-direction: column; gap: 12px; }
+        <!-- ══ SLIDE 2 — Objetivos ══ -->
+        <section>
+          <h2><span class="icon">🎯</span>Objetivos de la clase</h2>
+          <ul class="objetivos-lista">
+            <li class="fragment">✅ Entender qué es el DML y cómo diferenciarlo del DDL</li>
+            <li class="fragment">✅ Dominar INSERT en sus tres formas: explícita, directa y desde SELECT</li>
+            <li class="fragment">✅ Usar DELETE de forma segura con la cláusula WHERE</li>
+            <li class="fragment">✅ Actualizar datos con UPDATE: simple, múltiple y con subconsultas</li>
+            <li class="fragment">✅ Conocer el truco del SELECT previo antes de modificar datos</li>
+            <li class="fragment">✅ Usar ROLLBACK como salvavidas ante errores</li>
+          </ul>
+        </section>
 
-  /* ─── Highlight inline ─── */
-  code {
-    font-family: 'JetBrains Mono', monospace;
-    background: var(--surface2);
-    padding: 1px 6px;
-    border-radius: 4px;
-    font-size: 0.82em;
-    color: var(--accent);
-  }
-
-  /* ─── Timestamp ─── */
-  .ts {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--muted);
-    background: var(--surface2);
-    padding: 1px 6px;
-    border-radius: 4px;
-  }
-
-  /* ─── Navegación ─── */
-  #nav {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 16px;
-    padding: 14px 28px;
-    background: var(--surface);
-    border-top: 1px solid var(--border);
-    flex-shrink: 0;
-  }
-  .nav-btn {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    color: var(--text);
-    padding: 8px 22px;
-    border-radius: 8px;
-    font-family: 'Outfit', sans-serif;
-    font-size: 0.88rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .nav-btn:hover:not(:disabled) { background: var(--border); }
-  .nav-btn:disabled { opacity: 0.3; cursor: default; }
-  .nav-btn.primary { background: var(--accent); border-color: var(--accent); color: #000; font-weight: 600; }
-  .nav-btn.primary:hover { background: #79b8ff; }
-
-  .slide-dots {
-    display: flex;
-    gap: 6px;
-    align-items: center;
-  }
-  .sdot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--border);
-    transition: all 0.2s;
-    cursor: pointer;
-  }
-  .sdot.active { width: 20px; border-radius: 3px; background: var(--accent); }
-
-  /* ─── Sección final ─── */
-  .final-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 20px; }
-  .final-card {
-    border-radius: 10px;
-    padding: 18px;
-    text-align: center;
-    border: 1px solid var(--border);
-  }
-  .final-card .fc-icon { font-size: 2rem; margin-bottom: 8px; }
-  .final-card .fc-title { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 1rem; margin-bottom: 6px; }
-  .final-card p { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
-  .final-card.insert { background: var(--insert-dim); border-color: var(--insert); }
-  .final-card.insert .fc-title { color: var(--insert); }
-  .final-card.delete { background: var(--delete-dim); border-color: var(--delete); }
-  .final-card.delete .fc-title { color: var(--delete); }
-  .final-card.update { background: var(--update-dim); border-color: var(--update); }
-  .final-card.update .fc-title { color: var(--update); }
-
-  /* scroll personalizado */
-  .slide::-webkit-scrollbar { width: 5px; }
-  .slide::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
-</style>
-</head>
-<body>
-
-<!-- ══ TOPBAR ══ -->
-<div id="topbar">
-  <div class="logo">
-    <span class="badge badge-sql">SQL</span>
-    Lenguaje de Manipulación de Datos — DML
-  </div>
-  <div id="slide-counter">01 / 11</div>
-</div>
-
-<!-- ══ PROGRESS ══ -->
-<div id="progress-bar-wrap">
-  <div id="progress-bar" style="width: 9.09%"></div>
-</div>
-
-<!-- ══════════════════════════════════════
-     SLIDES
-══════════════════════════════════════ -->
-<div id="slides-viewport">
-
-  <!-- ─── SLIDE 1: Intro ─── -->
-  <div class="slide tag-intro active" data-index="0">
-    <div class="slide-tag">Introducción</div>
-    <h1>¿Qué es el DML?</h1>
-
-    <div class="info-row" style="margin-bottom: 16px;">
-      <div class="info-box" style="border-color: var(--accent);">
-        <div class="ib-label">Definición</div>
-        <p><strong>Data Manipulation Language</strong> — Lenguaje de Manipulación de Datos. Es el subconjunto de SQL que nos permite <strong>gestionar e interactuar con la información</strong> que ya está almacenada en las tablas de la base de datos.</p>
-      </div>
-    </div>
-
-    <div class="cmd-grid">
-      <div class="cmd-card insert">
-        <div class="cmd-name">INSERT</div>
-        <p>Agrega un <strong>nuevo registro</strong> (fila) a una tabla.</p>
-      </div>
-      <div class="cmd-card delete">
-        <div class="cmd-name">DELETE</div>
-        <p>Borra <strong>registros completos</strong> (filas) de una tabla.</p>
-      </div>
-      <div class="cmd-card update">
-        <div class="cmd-name">UPDATE</div>
-        <p>Actualiza o <strong>cambia valores</strong> dentro de registros existentes.</p>
-      </div>
-    </div>
-
-    <div class="alert alert-info" style="margin-top: 18px;">
-      <span class="alert-icon">💡</span>
-      <span>El DML no altera la <strong>estructura</strong> de las tablas (eso es DDL). Solo trabaja con los <strong>datos</strong> que viven dentro de ellas.</span>
-    </div>
-  </div>
-
-  <!-- ─── SLIDE 2: INSERT Sintaxis Explícita ─── -->
-  <div class="slide tag-insert" data-index="1">
-    <div class="slide-tag">INSERT — Sintaxis 1</div>
-    <h2>INSERT con columnas nombradas</h2>
-
-    <div class="code-block">
-      <div class="code-header">
-        <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-        <span>sintaxis explícita</span>
-      </div>
-      <pre><span class="kw">INSERT INTO</span> <span class="tbl">nombre_tabla</span> (<span class="col">columna1</span>, <span class="col">columna2</span>, <span class="col">columna_n</span>)
-<span class="kw">VALUES</span> (<span class="str">valor1</span>, <span class="str">valor2</span>, <span class="str">valor_n</span>);</pre>
-    </div>
-
-    <ul class="point-list insert">
-      <li>
-        <strong>Correspondencia 1 a 1</strong> — cada columna nombrada debe tener su valor correspondiente en la misma posición. <span class="ts">01:06</span>
-      </li>
-      <li>
-        <strong>No es necesario incluir todas las columnas</strong> — solo las <em>obligatorias</em> (NOT NULL) y las que quieras rellenar. <span class="ts">01:29</span>
-      </li>
-      <li>
-        <strong>El orden importa dentro de lo que escribas</strong> — pero no tiene que coincidir con el orden de creación de la tabla, siempre que columna y valor estén alineados.
-      </li>
-    </ul>
-
-    <div class="alert alert-ok">
-      <span class="alert-icon">✅</span>
-      <span>Esta sintaxis es la más segura y recomendada porque queda claro qué valor va en qué columna.</span>
-    </div>
-  </div>
-
-  <!-- ─── SLIDE 3: INSERT Simplificado ─── -->
-  <div class="slide tag-insert" data-index="2">
-    <div class="slide-tag">INSERT — Sintaxis 2</div>
-    <h2>INSERT sin nombres de columna</h2>
-
-    <div class="code-block">
-      <div class="code-header">
-        <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-        <span>sintaxis simplificada</span>
-      </div>
-      <pre><span class="kw">INSERT INTO</span> <span class="tbl">nombre_tabla</span>
-<span class="kw">VALUES</span> (<span class="str">valor1</span>, <span class="str">valor2</span>, ..., <span class="str">valor_n</span>);</pre>
-    </div>
-
-    <ul class="point-list insert">
-      <li>
-        Se omiten los nombres de las columnas. <span class="ts">05:07</span>
-      </li>
-      <li>
-        Los valores <strong>deben ir en el mismo orden</strong> en que se crearon las columnas en la tabla. Puedes verificarlo con <code>DESCRIBE nombre_tabla</code>. <span class="ts">06:18</span>
-      </li>
-      <li>
-        Si una columna no tiene valor, se escribe explícitamente <code>NULL</code> (siempre que la columna lo permita). <span class="ts">05:38</span>
-      </li>
-    </ul>
-
-    <div class="alert alert-info">
-      <span class="alert-icon">💡</span>
-      <span>Usa <code>DESCRIBE nombre_tabla</code> para ver el orden exacto de las columnas antes de usar esta sintaxis.</span>
-    </div>
-
-    <div class="code-block" style="margin-top: 8px;">
-      <div class="code-header">
-        <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-        <span>ejemplo con NULL</span>
-      </div>
-      <pre><span class="kw">INSERT INTO</span> <span class="tbl">employees</span>
-<span class="kw">VALUES</span> (<span class="num">210</span>, <span class="str">'García'</span>, <span class="str">'Luis'</span>, <span class="str">'LGARCIA'</span>, <span class="kw">NULL</span>, <span class="fn">SYSDATE</span>, <span class="str">'SA_REP'</span>, <span class="num">3500</span>, <span class="kw">NULL</span>, <span class="num">145</span>, <span class="num">80</span>);</pre>
-    </div>
-  </div>
-
-  <!-- ─── SLIDE 4: INSERT desde SELECT ─── -->
-  <div class="slide tag-insert" data-index="3">
-    <div class="slide-tag">INSERT — Sintaxis 3</div>
-    <h2>INSERT a partir de un SELECT</h2>
-
-    <div class="code-block">
-      <div class="code-header">
-        <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-        <span>inserción múltiple</span>
-      </div>
-      <pre><span class="kw">INSERT INTO</span> <span class="tbl">nombre_tabla</span>
-<span class="kw">SELECT</span> <span class="col">columna1</span>, <span class="col">columna2</span>, ...
-<span class="kw">FROM</span>   <span class="tbl">otra_tabla</span>
-<span class="kw">WHERE</span>  condicion;</pre>
-    </div>
-
-    <ul class="point-list insert">
-      <li>Permite insertar <strong>múltiples filas de golpe</strong> extrayendo datos de otra tabla.</li>
-      <li>
-        La estructura del <code>SELECT</code> (número de columnas y tipos de datos) debe coincidir perfectamente con la tabla destino. <span class="ts">08:40</span>
-      </li>
-      <li>No se usa la cláusula <code>VALUES</code> — el <code>SELECT</code> la reemplaza.</li>
-    </ul>
-
-    <div class="alert alert-info">
-      <span class="alert-icon">🔄</span>
-      <span>Ejemplo real: El profesor extrae representantes de ventas de <code>employees</code> e inserta sus datos directamente en la tabla <code>departments</code> creando 4 filas de una sola vez.</span>
-    </div>
-
-    <div class="code-block">
-      <div class="code-header">
-        <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-        <span>ejemplo del video</span>
-      </div>
-      <pre><span class="kw">INSERT INTO</span> <span class="tbl">departments</span>
-<span class="kw">SELECT</span> <span class="col">employee_id</span>, <span class="col">last_name</span>, <span class="col">manager_id</span>, <span class="col">department_id</span>
-<span class="kw">FROM</span>   <span class="tbl">employees</span>
-<span class="kw">WHERE</span>  <span class="col">job_id</span> = <span class="str">'SA_REP'</span>;  <span class="cmt">-- inserta 4 filas de golpe</span></pre>
-    </div>
-  </div>
-
-  <!-- ─── SLIDE 5: DELETE ─── -->
-  <div class="slide tag-delete" data-index="4">
-    <div class="slide-tag">DELETE</div>
-    <h2>Borrar registros de una tabla</h2>
-
-    <div class="code-block">
-      <div class="code-header">
-        <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-        <span>sintaxis</span>
-      </div>
-      <pre><span class="kw">DELETE FROM</span> <span class="tbl">nombre_tabla</span>
-<span class="kw">WHERE</span>  condicion;</pre>
-    </div>
-
-    <ul class="point-list delete">
-      <li>Elimina <strong>filas completas</strong> de una tabla — no columnas individuales.</li>
-      <li>
-        La palabra <code>FROM</code> es opcional en algunos gestores, pero es <strong>buena práctica incluirla siempre</strong>. <span class="ts">12:45</span>
-      </li>
-      <li>
-        La cláusula <code>WHERE</code> es <strong>indispensable</strong> para indicar qué filas se borran. <span class="ts">12:56</span>
-      </li>
-    </ul>
-
-    <div class="alert alert-danger">
-      <span class="alert-icon">⚠️</span>
-      <div>
-        <strong>¡CUIDADO!</strong> Si olvidas el <code>WHERE</code>, se borran <strong>TODAS las filas de la tabla</strong> en una sola ejecución, a menos que la integridad referencial lo bloquee. <span class="ts">13:11</span>
-      </div>
-    </div>
-
-    <div class="two-col" style="margin-top: 8px;">
-      <div class="code-block" style="margin: 0;">
-        <div class="code-header">
-          <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-          <span>borrado por rango</span>
-        </div>
-        <pre><span class="kw">DELETE FROM</span> <span class="tbl">employees</span>
-<span class="kw">WHERE</span> <span class="col">employee_id</span> &gt; <span class="num">206</span>;</pre>
-      </div>
-      <div class="code-block" style="margin: 0;">
-        <div class="code-header">
-          <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-          <span>borrado por lista</span>
-        </div>
-        <pre><span class="kw">DELETE FROM</span> <span class="tbl">departments</span>
-<span class="kw">WHERE</span> <span class="col">department_id</span>
-  <span class="kw">IN</span> (<span class="num">174</span>, <span class="num">176</span>, <span class="num">178</span>, <span class="num">202</span>);</pre>
-      </div>
-    </div>
-  </div>
-
-  <!-- ─── SLIDE 6: UPDATE ─── -->
-  <div class="slide tag-update" data-index="5">
-    <div class="slide-tag">UPDATE</div>
-    <h2>Actualizar datos existentes</h2>
-
-    <div class="code-block">
-      <div class="code-header">
-        <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-        <span>sintaxis</span>
-      </div>
-      <pre><span class="kw">UPDATE</span> <span class="tbl">nombre_tabla</span>
-<span class="kw">SET</span>    <span class="col">columna1</span> = <span class="str">valor_nuevo1</span>,
-       <span class="col">columna2</span> = <span class="str">valor_nuevo2</span>
-<span class="kw">WHERE</span>  condicion;</pre>
-    </div>
-
-    <ul class="point-list update">
-      <li>
-        La cláusula <code>SET</code> define <strong>qué columnas cambian y cuál es su nuevo valor</strong>. Se pueden actualizar varias columnas a la vez separando con comas. <span class="ts">18:12</span>
-      </li>
-      <li>
-        La cláusula <code>WHERE</code> selecciona <strong>exactamente qué filas</strong> se van a modificar. Sin ella, se modifican todas. <span class="ts">18:46</span>
-      </li>
-    </ul>
-
-    <div class="code-block">
-      <div class="code-header">
-        <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-        <span>ejemplo del video — update múltiple con condición compuesta</span>
-      </div>
-      <pre><span class="kw">UPDATE</span> <span class="tbl">employees</span>
-<span class="kw">SET</span>    <span class="col">salary</span>        = <span class="num">2700</span>,
-       <span class="col">department_id</span> = <span class="num">80</span>,
-       <span class="col">commission_pct</span> = <span class="num">0.27</span>,
-       <span class="col">manager_id</span>    = <span class="num">149</span>
-<span class="kw">WHERE</span>  <span class="col">job_id</span>  = <span class="str">'ST_CLERK'</span>
-  <span class="kw">AND</span>  <span class="col">salary</span>  &gt; <span class="num">3000</span>;  <span class="cmt">-- afecta a 2 empleados</span></pre>
-    </div>
-  </div>
-
-  <!-- ─── SLIDE 7: UPDATE Avanzado ─── -->
-  <div class="slide tag-update" data-index="6">
-    <div class="slide-tag">UPDATE — Nivel avanzado</div>
-    <h2>Transformaciones en el SET</h2>
-
-    <p style="font-size:0.9rem; color:var(--muted); margin-bottom: 14px;">El <code>SET</code> no solo asigna valores fijos — permite expresiones, funciones y subconsultas.</p>
-
-    <div class="code-block">
-      <div class="code-header">
-        <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-        <span>ejemplo complejo del video — empleados contratados en 1ª mitad del año 99</span>
-      </div>
-      <pre><span class="kw">UPDATE</span> <span class="tbl">employees</span>
-<span class="kw">SET</span>    <span class="col">salary</span>     = <span class="col">salary</span> * <span class="num">1.25</span>,                          <span class="cmt">-- 🔢 operación matemática</span>
-       <span class="col">email</span>      = <span class="fn">SUBSTR</span>(<span class="col">first_name</span>,<span class="num">1</span>,<span class="num">1</span>) || <span class="fn">SUBSTR</span>(<span class="col">last_name</span>,<span class="num">1</span>,<span class="num">7</span>),  <span class="cmt">-- 🔡 función de texto</span>
-       <span class="col">manager_id</span> = (<span class="kw">SELECT</span> <span class="col">manager_id</span>                       <span class="cmt">-- 🔍 subconsulta</span>
-                      <span class="kw">FROM</span>   <span class="tbl">employees</span>
-                      <span class="kw">WHERE</span>  <span class="col">first_name</span> = <span class="str">'Pat'</span>
-                        <span class="kw">AND</span>  <span class="col">last_name</span>  = <span class="str">'Fay'</span>),
-       <span class="col">hire_date</span>  = <span class="col">hire_date</span> + <span class="num">1</span>                             <span class="cmt">-- 📅 suma de días</span>
-<span class="kw">WHERE</span>  <span class="fn">EXTRACT</span>(<span class="kw">YEAR FROM</span> <span class="col">hire_date</span>)  = <span class="num">1999</span>
-  <span class="kw">AND</span>  <span class="fn">EXTRACT</span>(<span class="kw">MONTH FROM</span> <span class="col">hire_date</span>) &lt;= <span class="num">6</span>;</pre>
-    </div>
-
-    <div class="info-row">
-      <div class="info-box">
-        <div class="ib-label">🔢 Matemáticas</div>
-        <p>Aumentar el salario un 25%: <code>salary = salary * 1.25</code></p>
-      </div>
-      <div class="info-box">
-        <div class="ib-label">🔡 Funciones</div>
-        <p>Generar email concatenando partes del nombre con <code>SUBSTR</code>.</p>
-      </div>
-      <div class="info-box">
-        <div class="ib-label">🔍 Subconsulta</div>
-        <p>Asignar el mismo jefe que tiene otro empleado con un <code>SELECT</code> anidado.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- ─── SLIDE 8: Tips ─── -->
-  <div class="slide tag-tips" data-index="7">
-    <div class="slide-tag">Buenas prácticas</div>
-    <h2>Tips y salvavidas</h2>
-
-    <div class="alert alert-tip" style="margin-bottom: 14px;">
-      <span class="alert-icon">🎯</span>
-      <div>
-        <strong>El truco del SELECT previo</strong> <span class="ts">14:06</span><br>
-        Antes de ejecutar un <code>DELETE</code> o un <code>UPDATE</code>, haz primero un <code>SELECT</code> con la misma cláusula <code>WHERE</code>. Así verás exactamente qué registros se van a ver afectados antes de confirmar la operación.
-      </div>
-    </div>
-
-    <div class="two-col">
-      <div>
-        <div class="code-block">
-          <div class="code-header">
-            <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-            <span>paso 1 — verifica primero</span>
+        <!-- ══ SLIDE 3 — ¿Qué es el DML? ══ -->
+        <section>
+          <h2><span class="icon">📖</span>¿Qué es el DML?</h2>
+          <div class="definition-box">
+            <p><strong>DML = Data Manipulation Language</strong> (Lenguaje de Manipulación de Datos)</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">Es el subconjunto de SQL que nos permite <strong>gestionar e interactuar con los datos</strong> que ya están almacenados en las tablas de la base de datos.</p>
           </div>
-          <pre><span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tbl">employees</span>
-<span class="kw">WHERE</span> <span class="col">job_id</span>  = <span class="str">'ST_CLERK'</span>
-  <span class="kw">AND</span> <span class="col">salary</span> &gt; <span class="num">3000</span>;
-<span class="cmt">-- ¿Son los que quiero modificar?</span></pre>
-        </div>
-      </div>
-      <div>
-        <div class="code-block">
-          <div class="code-header">
-            <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-            <span>paso 2 — ejecuta con confianza</span>
+
+          <div class="fragment" style="margin-top: 25px;">
+            <div class="two-col">
+              <div class="highlight-box">
+                <h3>🏗️ DDL — Estructura</h3>
+                <p style="font-size: 0.88em;">Define <strong>cómo son</strong> las tablas</p>
+                <ul style="font-size: 0.85em; text-align: left; margin-top: 10px;">
+                  <li><code>CREATE TABLE</code></li>
+                  <li><code>ALTER TABLE</code></li>
+                  <li><code>DROP TABLE</code></li>
+                </ul>
+              </div>
+              <div class="highlight-box" style="border-top-color: #2e7d32;">
+                <h3 style="color: #1b5e20 !important;">🛠️ DML — Datos</h3>
+                <p style="font-size: 0.88em;">Trabaja con <strong>lo que hay dentro</strong> de las tablas</p>
+                <ul style="font-size: 0.85em; text-align: left; margin-top: 10px;">
+                  <li><code>INSERT</code> → Añadir filas</li>
+                  <li><code>DELETE</code> → Borrar filas</li>
+                  <li><code>UPDATE</code> → Modificar filas</li>
+                </ul>
+              </div>
+            </div>
           </div>
-          <pre><span class="kw">UPDATE</span> <span class="tbl">employees</span>
-<span class="kw">SET</span>    <span class="col">salary</span> = <span class="num">2700</span>
-<span class="kw">WHERE</span>  <span class="col">job_id</span>  = <span class="str">'ST_CLERK'</span>
-  <span class="kw">AND</span>  <span class="col">salary</span> &gt; <span class="num">3000</span>;</pre>
-        </div>
+
+          <div class="fragment" style="margin-top: 20px;">
+            <div class="dml-grid">
+              <div class="dml-card dml-insert">
+                <h3>INSERT</h3>
+                <p>Agrega una nueva fila a una tabla</p>
+              </div>
+              <div class="dml-card dml-delete">
+                <h3>DELETE</h3>
+                <p>Elimina filas enteras de una tabla</p>
+              </div>
+              <div class="dml-card dml-update">
+                <h3>UPDATE</h3>
+                <p>Cambia valores en filas existentes</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 4 — INSERT Sintaxis Explícita ══ -->
+        <section>
+          <h2><span class="icon">➕</span>INSERT — Sintaxis explícita</h2>
+          <div class="definition-box">
+            <p>Se especifican las <strong>columnas que quieres rellenar</strong> y sus valores correspondientes.</p>
+          </div>
+
+          <div class="code-example fragment">
+            <pre><code class="sql">INSERT INTO nombre_tabla (columna1, columna2, columna_n)
+VALUES (valor1, valor2, valor_n);</code></pre>
+          </div>
+
+          <div class="fragment" style="margin-top: 20px;">
+            <ul style="text-align: left; max-width: 860px; margin: 0 auto; font-size: 0.9em;">
+              <li class="fragment">📌 Debe existir <strong>correspondencia 1 a 1</strong> entre columnas y valores en la misma posición. <span class="ts">01:06</span></li>
+              <li class="fragment">📌 <strong>No es obligatorio incluir todas las columnas</strong> — solo las marcadas como NOT NULL y las que quieras rellenar. <span class="ts">01:29</span></li>
+              <li class="fragment">📌 El orden de las columnas puede ser distinto al orden de creación de la tabla, siempre que columna y valor estén alineados.</li>
+            </ul>
+          </div>
+
+          <div class="fragment" style="margin-top: 20px;">
+            <div class="code-example">
+              <h4>Ejemplo del video — "Perico de los Palotes" (emp. 207)</h4>
+              <pre><code class="sql">INSERT INTO employees (employee_id, last_name, email, hire_date, job_id)
+VALUES (207, 'de los Palotes', 'PPALOTES', SYSDATE, 'SA_REP');</code></pre>
+            </div>
+          </div>
+
+          <div class="success-box fragment">
+            <p>✅ <strong>Recomendación:</strong> Esta es la sintaxis más segura y legible porque queda claro qué valor va en qué columna.</p>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 5 — INSERT Sintaxis Directa ══ -->
+        <section>
+          <h2><span class="icon">➕</span>INSERT — Sintaxis directa</h2>
+          <div class="definition-box">
+            <p>Se omiten los nombres de las columnas. Los valores se ponen <strong>en el mismo orden que se definió la tabla</strong>.</p>
+          </div>
+
+          <div class="code-example fragment">
+            <pre><code class="sql">INSERT INTO nombre_tabla
+VALUES (valor1, valor2, ..., valor_n);</code></pre>
+          </div>
+
+          <div class="fragment" style="margin-top: 20px;">
+            <ul style="text-align: left; max-width: 860px; margin: 0 auto; font-size: 0.9em;">
+              <li class="fragment">📌 Los valores deben ir en el <strong>mismo orden exacto</strong> en que se crearon las columnas en la tabla. <span class="ts">06:18</span></li>
+              <li class="fragment">📌 Si una columna no tiene valor, escribe obligatoriamente <code>NULL</code> (siempre que la columna lo permita). <span class="ts">05:38</span></li>
+            </ul>
+          </div>
+
+          <div class="fragment" style="margin-top: 20px;">
+            <div class="tip-box">
+              <p>💡 Usa <code>DESCRIBE nombre_tabla</code> para ver el orden exacto de las columnas antes de usar esta sintaxis. <span class="ts">05:07</span></p>
+            </div>
+          </div>
+
+          <div class="code-example fragment">
+            <h4>Ejemplo del video — "Luz Cuesta" con NULL explícito</h4>
+            <pre><code class="sql">-- Si no tenemos el first_name ni la comisión, escribimos NULL
+INSERT INTO employees
+VALUES (211, 'Cuesta', 'Luz', 'LCUESTA', NULL, SYSDATE, 'SA_REP', 3200, NULL, 145, 80);</code></pre>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 6 — INSERT desde SELECT ══ -->
+        <section>
+          <h2><span class="icon">➕</span>INSERT — Desde una consulta SELECT</h2>
+          <div class="definition-box">
+            <p>Inserta <strong>múltiples filas de golpe</strong> extrayendo datos de otra tabla mediante un SELECT. No se usa la cláusula VALUES.</p>
+          </div>
+
+          <div class="code-example fragment">
+            <pre><code class="sql">INSERT INTO nombre_tabla
+SELECT columna1, columna2, ...
+FROM   otra_tabla
+WHERE  condicion;</code></pre>
+          </div>
+
+          <div class="fragment" style="margin-top: 15px;">
+            <div class="warning-box">
+              <p>⚠️ La estructura del SELECT (número de columnas y tipos de datos) debe <strong>coincidir exactamente</strong> con la tabla destino. <span class="ts">08:40</span></p>
+            </div>
+          </div>
+
+          <div class="code-example fragment">
+            <h4>Ejemplo del video — 4 "departamentos basura" de un solo golpe</h4>
+            <pre><code class="sql">-- Extrae representantes de ventas y los inserta en departments
+INSERT INTO departments
+SELECT employee_id, last_name, manager_id, department_id
+FROM   employees
+WHERE  job_id = 'SA_REP';   -- inserta 4 filas a la vez</code></pre>
+          </div>
+
+          <div class="success-box fragment">
+            <p>✅ Con una sola instrucción se insertaron 4 filas — una por cada representante de ventas encontrado.</p>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 7 — INSERT Práctica paso a paso ══ -->
+        <section>
+          <h2><span class="icon">💻</span>INSERT — Los 6 pasos del video</h2>
+          <p style="font-size: 0.85em; color: #666; margin-bottom: 20px;">El profesor inserta empleados ficticios a partir del número 207 para demostrar las tres formas de INSERT.</p>
+
+          <div class="steps-container">
+            <div class="step step-insert fragment">
+              <div class="step-number">1</div>
+              <div class="step-content">
+                <h4>Inserción nombrando columnas — "Perico de los Palotes"</h4>
+                <p>Usa <code>SYSDATE</code> para asignar la fecha de hoy automáticamente en la columna de fecha de contratación.</p>
+              </div>
+            </div>
+            <div class="step step-insert fragment">
+              <div class="step-number">2</div>
+              <div class="step-content">
+                <h4>Conversión de fecha — "Juan sin Miedo"</h4>
+                <p>Inserta una fecha convirtiendo un texto (String) con una función de formateo: <code>TO_DATE('15/03/2024', 'DD/MM/YYYY')</code>.</p>
+              </div>
+            </div>
+            <div class="step step-insert fragment">
+              <div class="step-number">3</div>
+              <div class="step-content">
+                <h4>Columnas en distinto orden — "María Castaña"</h4>
+                <p>El orden de las columnas en el INSERT no tiene que ser el mismo que en la tabla. También incluye horas, minutos y segundos en la fecha.</p>
+              </div>
+            </div>
+            <div class="step step-insert fragment">
+              <div class="step-number">4</div>
+              <div class="step-content">
+                <h4>Sin nombrar columnas — "Paca Prendas"</h4>
+                <p>Se deben poner <strong>todos</strong> los valores en el orden exacto de creación de la tabla. Verificar con <code>DESCRIBE employees</code>.</p>
+              </div>
+            </div>
+            <div class="step step-insert fragment">
+              <div class="step-number">5</div>
+              <div class="step-content">
+                <h4>Con NULL explícito — "Luz Cuesta"</h4>
+                <p>Si falta un dato al usar sintaxis directa, se escribe <strong>obligatoriamente</strong> la palabra <code>NULL</code>.</p>
+              </div>
+            </div>
+            <div class="step step-insert fragment">
+              <div class="step-number">6</div>
+              <div class="step-content">
+                <h4>Inserción desde SELECT — "Departamentos basura"</h4>
+                <p>Extrae 4 representantes de ventas con un SELECT e inserta sus datos en la tabla <code>departments</code> de una sola vez.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 8 — DELETE ══ -->
+        <section>
+          <h2><span class="icon">🗑️</span>DELETE — Borrar registros</h2>
+          <div class="definition-box">
+            <p>Elimina <strong>filas completas</strong> de una tabla. No borra columnas individuales, sino registros enteros.</p>
+          </div>
+
+          <div class="code-example fragment">
+            <pre><code class="sql">DELETE FROM nombre_tabla
+WHERE  condicion;</code></pre>
+          </div>
+
+          <div class="fragment" style="margin-top: 15px;">
+            <ul style="text-align: left; max-width: 860px; margin: 0 auto; font-size: 0.9em;">
+              <li class="fragment">📌 La palabra <code>FROM</code> es opcional en algunos gestores, pero es <strong>buena práctica incluirla siempre</strong>. <span class="ts">12:45</span></li>
+              <li class="fragment">📌 La cláusula <code>WHERE</code> es <strong>indispensable</strong> para indicar qué filas se borran. <span class="ts">12:56</span></li>
+            </ul>
+          </div>
+
+          <div class="danger-box fragment" style="margin-top: 20px;">
+            <h3>⛔ ¡PELIGRO!</h3>
+            <p>Si olvidas el <code>WHERE</code>, se borran <strong>TODAS las filas de la tabla</strong> de una sola vez, a menos que la integridad referencial lo bloquee. <span class="ts">13:11</span></p>
+            <pre style="background: #ffcdd2; color: #b71c1c; padding: 12px; border-radius: 8px; margin-top: 10px; font-family: monospace; font-size: 0.8em;">-- ❌ ESTO BORRA TODA LA TABLA
+DELETE FROM employees;</pre>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 9 — DELETE Práctica ══ -->
+        <section>
+          <h2><span class="icon">💻</span>DELETE — Práctica: limpiar lo que insertamos</h2>
+          <p style="font-size: 0.9em; color: #666; margin-bottom: 25px;">El profesor elimina los empleados y departamentos ficticios del ejercicio anterior usando dos estrategias.</p>
+
+          <div class="two-col">
+            <div>
+              <h3 style="color: #0d47a1 !important; background: none !important; padding: 0 !important; text-shadow: none !important; font-size: 1em;">Paso 1 — Borrado por rango</h3>
+              <p style="font-size: 0.85em; margin: 10px 0;">Como el último empleado real era el 206, usamos una condición de rango para eliminar todos los ficticios.</p>
+              <div class="code-example">
+                <pre><code class="sql">DELETE FROM employees
+WHERE  employee_id > 206;</code></pre>
+              </div>
+              <div class="success-box" style="font-size: 0.85em;">
+                <p>✅ Elimina todos los empleados añadidos de una vez.</p>
+              </div>
+            </div>
+            <div>
+              <h3 style="color: #0d47a1 !important; background: none !important; padding: 0 !important; text-shadow: none !important; font-size: 1em;">Paso 2 — Borrado por lista (IN)</h3>
+              <p style="font-size: 0.85em; margin: 10px 0;">No podemos usar "mayor que" porque borraría departamentos reales. Buscamos los IDs exactos.</p>
+              <div class="code-example">
+                <pre><code class="sql">DELETE FROM departments
+WHERE  department_id
+       IN (174, 176, 178, 202);</code></pre>
+              </div>
+              <div class="success-box" style="font-size: 0.85em;">
+                <p>✅ Precisión quirúrgica: solo los 4 "basura".</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="tip-box fragment" style="margin-top: 25px;">
+            <p>💡 <strong>Elige el filtro correcto:</strong> Usa <strong>rangos</strong> (<code>&gt;</code>, <code>BETWEEN</code>) cuando los IDs son consecutivos sin riesgo. Usa <strong>listas</strong> (<code>IN</code>) cuando necesitas precisión con IDs concretos.</p>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 10 — UPDATE ══ -->
+        <section>
+          <h2><span class="icon">✏️</span>UPDATE — Actualizar datos</h2>
+          <div class="definition-box">
+            <p>Modifica y cambia <strong>valores específicos</strong> en registros que ya existen en nuestra tabla.</p>
+          </div>
+
+          <div class="code-example fragment">
+            <pre><code class="sql">UPDATE nombre_tabla
+SET    columna1 = valor_nuevo1,
+       columna2 = valor_nuevo2
+WHERE  condicion;</code></pre>
+          </div>
+
+          <div class="fragment" style="margin-top: 15px;">
+            <ul style="text-align: left; max-width: 860px; margin: 0 auto; font-size: 0.9em;">
+              <li class="fragment">📌 <code>SET</code> define <strong>qué columnas cambian y cuál es su nuevo valor</strong>. Se pueden actualizar varias columnas a la vez separando con comas. <span class="ts">18:12</span></li>
+              <li class="fragment">📌 <code>WHERE</code> selecciona <strong>exactamente qué filas se modifican</strong>. Sin ella, se modifican TODAS. <span class="ts">18:46</span></li>
+            </ul>
+          </div>
+
+          <div class="danger-box fragment" style="margin-top: 15px;">
+            <h3>⛔ ¡MISMO PELIGRO QUE DELETE!</h3>
+            <p>Si olvidas el <code>WHERE</code>, actualizarás <strong>TODAS las filas</strong> de la tabla.</p>
+            <pre style="background: #ffcdd2; color: #b71c1c; padding: 12px; border-radius: 8px; margin-top: 10px; font-family: monospace; font-size: 0.8em;">-- ❌ ESTO CAMBIA EL DEPARTAMENTO DE TODOS LOS EMPLEADOS
+UPDATE employees SET department_id = 80;</pre>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 11 — UPDATE Práctica Paso 1 y 2 ══ -->
+        <section>
+          <h2><span class="icon">💻</span>UPDATE — De sencillo a complejo (I)</h2>
+
+          <div class="steps-container">
+            <div class="step step-update fragment">
+              <div class="step-number">1</div>
+              <div class="step-content">
+                <h4>Update sencillo — Randall Matos (emp. 143)</h4>
+                <p>Cambia el departamento del empleado 143 del depto. 50 al 70. Solo afecta a una columna y una fila.</p>
+                <div class="code-example" style="margin-top: 8px;">
+                  <pre><code class="sql">UPDATE employees
+SET    department_id = 70
+WHERE  employee_id   = 143;</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <div class="step step-update fragment">
+              <div class="step-number">2</div>
+              <div class="step-content">
+                <h4>Update múltiple con condición compuesta</h4>
+                <p>Afecta a los empleados que son ST_CLERK y cobran más de 3000. Modifica 4 columnas a la vez en 2 empleados. El profesor usa <code>ROLLBACK</code> para deshacer el cambio.</p>
+                <div class="code-example" style="margin-top: 8px;">
+                  <pre><code class="sql">UPDATE employees
+SET    salary         = 2700,
+       department_id  = 80,
+       commission_pct = 0.27,
+       manager_id     = 149
+WHERE  job_id  = 'ST_CLERK'
+  AND  salary  > 3000;      -- afecta a 2 empleados
+
+ROLLBACK;  -- deshace el cambio → vuelven a cobrar 3000</code></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 12 — UPDATE Avanzado ══ -->
+        <section>
+          <h2><span class="icon">🔬</span>UPDATE — Transformaciones avanzadas (II)</h2>
+          <p style="font-size: 0.9em; color: #666; margin-bottom: 15px;">El <code>SET</code> no solo asigna valores fijos — admite expresiones, funciones y subconsultas.</p>
+
+          <div class="steps-container">
+            <div class="step step-update">
+              <div class="step-number">3</div>
+              <div class="step-content">
+                <h4>Update complejo — empleados contratados en la 1ª mitad del año 99 <span class="ts">26:05</span></h4>
+                <p>Se modifican salario, email, jefe y fecha de contratación de una sola instrucción.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="code-example fragment" style="margin-top: 15px;">
+            <pre><code class="sql">UPDATE employees
+SET    salary     = salary * 1.25,                              -- 🔢 operación matemática
+       email      = SUBSTR(first_name,1,1) || SUBSTR(last_name,1,7), -- 🔡 función de texto
+       manager_id = (SELECT manager_id                          -- 🔍 subconsulta
+                     FROM   employees
+                     WHERE  first_name = 'Pat'
+                       AND  last_name  = 'Fay'),
+       hire_date  = hire_date + 1                               -- 📅 suma de días
+WHERE  EXTRACT(YEAR  FROM hire_date) = 1999
+  AND  EXTRACT(MONTH FROM hire_date) <= 6;</code></pre>
+          </div>
+
+          <div class="fragment" style="margin-top: 15px;">
+            <div class="three-col">
+              <div class="concepto-box" style="text-align: center;">
+                <div style="font-size: 1.8em;">🔢</div>
+                <h4>Matemáticas</h4>
+                <p style="font-size: 0.82em;"><code>salary * 1.25</code><br>Sube el sueldo un 25%</p>
+              </div>
+              <div class="concepto-box" style="text-align: center;">
+                <div style="font-size: 1.8em;">🔡</div>
+                <h4>Funciones</h4>
+                <p style="font-size: 0.82em;"><code>SUBSTR()</code><br>Genera email con partes del nombre</p>
+              </div>
+              <div class="concepto-box" style="text-align: center;">
+                <div style="font-size: 1.8em;">🔍</div>
+                <h4>Subconsulta</h4>
+                <p style="font-size: 0.82em;"><code>SELECT</code> anidado<br>Asigna el mismo jefe que Pat Fay</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 13 — Buenas Prácticas ══ -->
+        <section>
+          <h2><span class="icon">✨</span>Buenas prácticas</h2>
+
+          <div class="tip-box" style="margin-bottom: 25px;">
+            <h3 style="color: #e65100 !important; margin-top: 0; background: none !important; padding: 0 !important; text-shadow: none !important;">🎯 El truco del SELECT previo <span class="ts">14:06</span></h3>
+            <p>Antes de ejecutar un <code>DELETE</code> o un <code>UPDATE</code>, haz primero un <code>SELECT</code> con la misma cláusula <code>WHERE</code>. Así ves exactamente qué registros se van a ver afectados antes de confirmar.</p>
+          </div>
+
+          <div class="two-col fragment">
+            <div>
+              <div class="code-example">
+                <h4>Paso 1 — Verifica primero</h4>
+                <pre><code class="sql">-- ¿Son los que quiero modificar?
+SELECT * FROM employees
+WHERE  job_id  = 'ST_CLERK'
+  AND  salary  > 3000;</code></pre>
+              </div>
+            </div>
+            <div>
+              <div class="code-example">
+                <h4>Paso 2 — Ejecuta con confianza</h4>
+                <pre><code class="sql">UPDATE employees
+SET    salary = 2700
+WHERE  job_id  = 'ST_CLERK'
+  AND  salary  > 3000;</code></pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="danger-box fragment" style="margin-top: 25px;">
+            <h3>🛟 ROLLBACK — El salvavidas <span class="ts">23:06</span></h3>
+            <p>Si ejecutas un <code>UPDATE</code> o <code>DELETE</code> equivocado, <code>ROLLBACK</code> deshace todos los cambios y devuelve la base de datos al estado anterior — <strong>siempre que no hayas ejecutado COMMIT aún</strong>.</p>
+            <div class="code-example" style="margin-top: 10px;">
+              <pre><code class="sql">ROLLBACK;   -- vuelve al último estado confirmado con COMMIT</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 14 — Resumen ══ -->
+        <section>
+          <h2><span class="icon">📚</span>Resumen — Clase 3</h2>
+          <div class="two-col">
+            <div>
+              <h3 style="color: #0d47a1 !important; background: none !important; padding: 0 0 10px 0 !important; text-shadow: none !important;">➕ INSERT</h3>
+              <ul style="text-align: left; font-size: 0.85em;">
+                <li>✅ Sintaxis explícita (con columnas)</li>
+                <li>✅ Sintaxis directa (sin columnas + NULL)</li>
+                <li>✅ Inserción desde SELECT</li>
+                <li>✅ SYSDATE y TO_DATE para fechas</li>
+              </ul>
+
+              <h3 style="color: #0d47a1 !important; background: none !important; padding: 10px 0 !important; text-shadow: none !important;">🗑️ DELETE</h3>
+              <ul style="text-align: left; font-size: 0.85em;">
+                <li>✅ Borrado por rango (<code>&gt;</code>, <code>&lt;</code>)</li>
+                <li>✅ Borrado por lista (<code>IN</code>)</li>
+                <li>⛔ Siempre con <code>WHERE</code></li>
+              </ul>
+            </div>
+            <div>
+              <h3 style="color: #0d47a1 !important; background: none !important; padding: 0 0 10px 0 !important; text-shadow: none !important;">✏️ UPDATE</h3>
+              <ul style="text-align: left; font-size: 0.85em;">
+                <li>✅ Actualización simple</li>
+                <li>✅ Múltiples columnas a la vez</li>
+                <li>✅ Operaciones matemáticas en SET</li>
+                <li>✅ Funciones de texto (SUBSTR)</li>
+                <li>✅ Subconsultas en SET</li>
+              </ul>
+
+              <h3 style="color: #0d47a1 !important; background: none !important; padding: 10px 0 !important; text-shadow: none !important;">⚠️ Seguridad</h3>
+              <ul style="text-align: left; font-size: 0.85em;">
+                <li>✅ SELECT previo para verificar</li>
+                <li>✅ ROLLBACK ante errores</li>
+                <li>⛔ Nunca olvidar el WHERE</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 15 — Fin ══ -->
+        <section data-background-gradient="linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
+          <h1 style="color: white;">¡Excelente trabajo!</h1>
+          <p style="color: white; font-size: 1.2em; margin: 25px 0;">Has completado Clase 3 — DML: INSERT, DELETE, UPDATE</p>
+          <div style="background: rgba(255,255,255,0.15); padding: 25px; border-radius: 15px; margin: 25px auto; max-width: 620px;">
+            <p style="color: white; font-size: 1em; margin-bottom: 10px;">¿Te sientes preparado? Practica con el SQL Playground</p>
+            <p style="color: rgba(255,255,255,0.85); font-size: 0.9em;">30 ejercicios con base de datos real de PostgreSQL</p>
+          </div>
+          <div style="margin-top: 40px;">
+            <a href="/sql-playground" style="display: inline-block; background: white; color: #667eea; padding: 16px 36px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 1.05em; margin: 8px;">
+              🚀 Ir al SQL Playground
+            </a>
+            <a href="../index.html" style="display: inline-block; background: rgba(255,255,255,0.2); color: white; padding: 16px 36px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 1.05em; margin: 8px; border: 2px solid white;">
+              ← Volver al Inicio
+            </a>
+          </div>
+        </section>
+
       </div>
     </div>
 
-    <div class="alert alert-tip" style="margin-top: 14px;">
-      <span class="alert-icon">🛟</span>
-      <div>
-        <strong>ROLLBACK — el salvavidas</strong> <span class="ts">23:06</span><br>
-        Si ejecutas un <code>UPDATE</code> o <code>DELETE</code> equivocado, <code>ROLLBACK</code> deshace todos los cambios y devuelve la base de datos al estado anterior — siempre que no hayas ejecutado <code>COMMIT</code> aún.
-      </div>
-    </div>
-
-    <div class="code-block" style="margin-top: 8px;">
-      <div class="code-header">
-        <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-        <span>deshacer cambios</span>
-      </div>
-      <pre><span class="kw">ROLLBACK</span>;  <span class="cmt">-- vuelve al último estado confirmado con COMMIT</span></pre>
-    </div>
-  </div>
-
-  <!-- ─── SLIDE 9: Práctica INSERT ─── -->
-  <div class="slide tag-practice" data-index="8">
-    <div class="slide-tag">Ejemplos prácticos</div>
-    <h2>INSERT — Paso a paso</h2>
-
-    <div class="steps">
-      <div class="step">
-        <div class="step-num insert">1</div>
-        <div class="step-content">
-          <div class="step-title">Inserción nombrando columnas — "Perico de los Palotes"</div>
-          <div class="step-desc">Usa <code>SYSDATE</code> para asignar la fecha de hoy automáticamente.</div>
-          <div class="step-code"><span class="kw">INSERT INTO</span> <span class="tbl">employees</span> (<span class="col">employee_id</span>, <span class="col">last_name</span>, <span class="col">email</span>, <span class="col">hire_date</span>, <span class="col">job_id</span>)
-<span class="kw">VALUES</span> (<span class="num">207</span>, <span class="str">'de los Palotes'</span>, <span class="str">'PPALOTES'</span>, <span class="fn">SYSDATE</span>, <span class="str">'SA_REP'</span>);</div>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num insert">2</div>
-        <div class="step-content">
-          <div class="step-title">Conversión de fecha — "Juan sin Miedo"</div>
-          <div class="step-desc">Inserta una fecha convirtiendo un texto con función de formateo.</div>
-          <div class="step-code"><span class="kw">INSERT INTO</span> <span class="tbl">employees</span> (<span class="col">employee_id</span>, <span class="col">last_name</span>, <span class="col">email</span>, <span class="col">hire_date</span>, <span class="col">job_id</span>)
-<span class="kw">VALUES</span> (<span class="num">208</span>, <span class="str">'sin Miedo'</span>, <span class="str">'JMIEDO'</span>, <span class="fn">TO_DATE</span>(<span class="str">'15/03/2024'</span>,<span class="str">'DD/MM/YYYY'</span>), <span class="str">'SA_REP'</span>);</div>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num insert">3</div>
-        <div class="step-content">
-          <div class="step-title">Columnas en distinto orden — "María Castaña"</div>
-          <div class="step-desc">El orden de columnas en el INSERT no importa, siempre que los valores coincidan. También incluye horas, minutos y segundos.</div>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num insert">4</div>
-        <div class="step-content">
-          <div class="step-title">Sin nombres de columna — "Paca Prendas"</div>
-          <div class="step-desc">Se deben poner todos los valores en el orden exacto de la tabla. Verifica el orden con <code>DESCRIBE employees</code>.</div>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num insert">5</div>
-        <div class="step-content">
-          <div class="step-title">Con valores NULL — "Luz Cuesta"</div>
-          <div class="step-desc">Sintaxis directa. Si falta un dato, se escribe obligatoriamente la palabra <code>NULL</code>.</div>
-          <div class="step-code"><span class="kw">INSERT INTO</span> <span class="tbl">employees</span>
-<span class="kw">VALUES</span> (<span class="num">211</span>, <span class="str">'Cuesta'</span>, <span class="str">'Luz'</span>, <span class="str">'LCUESTA'</span>, <span class="kw">NULL</span>, <span class="fn">SYSDATE</span>, <span class="str">'SA_REP'</span>, <span class="num">3200</span>, <span class="kw">NULL</span>, <span class="num">145</span>, <span class="num">80</span>);</div>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num insert">6</div>
-        <div class="step-content">
-          <div class="step-title">Inserción desde SELECT — "Departamentos basura"</div>
-          <div class="step-desc">Extrae representantes de ventas e inserta sus datos directamente en <code>departments</code> creando 4 filas de golpe.</div>
-          <div class="step-code"><span class="kw">INSERT INTO</span> <span class="tbl">departments</span>
-<span class="kw">SELECT</span> <span class="col">employee_id</span>, <span class="col">last_name</span>, <span class="col">manager_id</span>, <span class="col">department_id</span>
-<span class="kw">FROM</span>   <span class="tbl">employees</span>
-<span class="kw">WHERE</span>  <span class="col">job_id</span> = <span class="str">'SA_REP'</span>;</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ─── SLIDE 10: Práctica DELETE ─── -->
-  <div class="slide tag-practice" data-index="9">
-    <div class="slide-tag">Ejemplos prácticos</div>
-    <h2>DELETE — Limpiando la base de datos</h2>
-
-    <p style="font-size:0.9rem; color:var(--muted); margin-bottom: 16px;">El profesor elimina todo lo que insertó en los pasos anteriores usando dos estrategias diferentes.</p>
-
-    <div class="steps">
-      <div class="step">
-        <div class="step-num delete">1</div>
-        <div class="step-content">
-          <div class="step-title">Borrado por rango — empleados ficticios</div>
-          <div class="step-desc">Como el último empleado real era el 206, se usa una condición de rango para borrar todos los que se añadieron después.</div>
-          <div class="step-code"><span class="kw">DELETE FROM</span> <span class="tbl">employees</span>
-<span class="kw">WHERE</span> <span class="col">employee_id</span> &gt; <span class="num">206</span>;  <span class="cmt">-- borra todos los ficticios de una vez</span></div>
-        </div>
-      </div>
-
-      <div class="step">
-        <div class="step-num delete">2</div>
-        <div class="step-content">
-          <div class="step-title">Borrado por lista de IDs — departamentos basura</div>
-          <div class="step-desc">No se puede usar "mayor que" porque borraría departamentos reales. Se buscan los IDs exactos y se usa <code>IN</code>.</div>
-          <div class="step-code"><span class="kw">DELETE FROM</span> <span class="tbl">departments</span>
-<span class="kw">WHERE</span> <span class="col">department_id</span> <span class="kw">IN</span> (<span class="num">174</span>, <span class="num">176</span>, <span class="num">178</span>, <span class="num">202</span>);</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="alert alert-tip" style="margin-top: 20px;">
-      <span class="alert-icon">💡</span>
-      <div>
-        <strong>Elige el filtro correcto para cada caso:</strong>
-        <ul style="margin-top: 6px; padding-left: 16px; font-size:0.85rem; line-height: 1.7;">
-          <li>Usa <strong>rangos</strong> (<code>&gt;</code>, <code>&lt;</code>, <code>BETWEEN</code>) cuando los IDs son consecutivos y no hay riesgo de borrar datos reales.</li>
-          <li>Usa <strong>listas</strong> (<code>IN</code>) cuando necesitas precisión quirúrgica con IDs concretos.</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- ─── SLIDE 11: Práctica UPDATE ─── -->
-  <div class="slide tag-practice" data-index="10">
-    <div class="slide-tag">Ejemplos prácticos</div>
-    <h2>UPDATE — De sencillo a complejo</h2>
-
-    <div class="steps">
-      <div class="step">
-        <div class="step-num update">1</div>
-        <div class="step-content">
-          <div class="step-title">Update sencillo — Randall Matos (emp. 143)</div>
-          <div class="step-desc">Cambia el departamento del empleado 143 del depto. 50 al 70.</div>
-          <div class="step-code"><span class="kw">UPDATE</span> <span class="tbl">employees</span>
-<span class="kw">SET</span>   <span class="col">department_id</span> = <span class="num">70</span>
-<span class="kw">WHERE</span> <span class="col">employee_id</span>   = <span class="num">143</span>;</div>
-        </div>
-      </div>
-
-      <div class="step">
-        <div class="step-num update">2</div>
-        <div class="step-content">
-          <div class="step-title">Update múltiple con condición compuesta</div>
-          <div class="step-desc">Afecta a 2 empleados que son ST_CLERK y cobran más de 3000. Modifica 4 columnas a la vez. El profesor usa <code>ROLLBACK</code> para deshacer el cambio y volver a los datos originales.</div>
-          <div class="step-code"><span class="kw">UPDATE</span> <span class="tbl">employees</span>
-<span class="kw">SET</span>    <span class="col">salary</span> = <span class="num">2700</span>, <span class="col">department_id</span> = <span class="num">80</span>, <span class="col">commission_pct</span> = <span class="num">0.27</span>, <span class="col">manager_id</span> = <span class="num">149</span>
-<span class="kw">WHERE</span>  <span class="col">job_id</span> = <span class="str">'ST_CLERK'</span> <span class="kw">AND</span> <span class="col">salary</span> &gt; <span class="num">3000</span>;
-
-<span class="kw">ROLLBACK</span>;  <span class="cmt">-- deshace el cambio → vuelven a cobrar 3000</span></div>
-        </div>
-      </div>
-
-      <div class="step">
-        <div class="step-num update">3</div>
-        <div class="step-content">
-          <div class="step-title">Update muy complejo — funciones + subconsulta</div>
-          <div class="step-desc">Empleados contratados en la 1ª mitad del año 99. Se modifican salario, email, jefe y fecha de contratación de una sola vez.</div>
-          <div class="step-code"><span class="kw">UPDATE</span> <span class="tbl">employees</span>
-<span class="kw">SET</span>    <span class="col">salary</span>     = <span class="col">salary</span> * <span class="num">1.25</span>,
-       <span class="col">email</span>      = <span class="fn">SUBSTR</span>(<span class="col">first_name</span>,<span class="num">1</span>,<span class="num">1</span>) || <span class="fn">SUBSTR</span>(<span class="col">last_name</span>,<span class="num">1</span>,<span class="num">7</span>),
-       <span class="col">manager_id</span> = (<span class="kw">SELECT</span> <span class="col">manager_id</span> <span class="kw">FROM</span> <span class="tbl">employees</span>
-                      <span class="kw">WHERE</span> <span class="col">first_name</span>=<span class="str">'Pat'</span> <span class="kw">AND</span> <span class="col">last_name</span>=<span class="str">'Fay'</span>),
-       <span class="col">hire_date</span>  = <span class="col">hire_date</span> + <span class="num">1</span>
-<span class="kw">WHERE</span>  <span class="fn">EXTRACT</span>(<span class="kw">YEAR FROM</span> <span class="col">hire_date</span>) = <span class="num">1999</span>
-  <span class="kw">AND</span>  <span class="fn">EXTRACT</span>(<span class="kw">MONTH FROM</span> <span class="col">hire_date</span>) &lt;= <span class="num">6</span>;</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="alert alert-info" style="margin-top: 14px;">
-      <span class="alert-icon">📌</span>
-      <span>El profesor menciona <strong>3 ejercicios adicionales</strong> con subconsultas correlacionadas y actualizaciones por tramos — disponibles en el video extendido del curso.</span>
-    </div>
-  </div>
-
-</div><!-- /slides-viewport -->
-
-<!-- ══ NAV ══ -->
-<div id="nav">
-  <button class="nav-btn" id="btn-prev" onclick="changeSlide(-1)" disabled>← Anterior</button>
-  <div class="slide-dots" id="dots"></div>
-  <button class="nav-btn primary" id="btn-next" onclick="changeSlide(1)">Siguiente →</button>
-</div>
-
-<script>
-  const slides = document.querySelectorAll('.slide');
-  const counter = document.getElementById('slide-counter');
-  const progressBar = document.getElementById('progress-bar');
-  const dotsContainer = document.getElementById('dots');
-  const btnPrev = document.getElementById('btn-prev');
-  const btnNext = document.getElementById('btn-next');
-  let current = 0;
-  const total = slides.length;
-
-  // Build dots
-  slides.forEach((_, i) => {
-    const d = document.createElement('div');
-    d.className = 'sdot' + (i === 0 ? ' active' : '');
-    d.onclick = () => goTo(i);
-    dotsContainer.appendChild(d);
-  });
-
-  function goTo(index) {
-    if (index < 0 || index >= total) return;
-    slides[current].classList.remove('active');
-    slides[current].classList.add('exit-left');
-    setTimeout(() => slides[current].classList.remove('exit-left'), 400);
-    current = index;
-    slides[current].classList.add('active');
-    slides[current].scrollTop = 0;
-    update();
-  }
-
-  function changeSlide(dir) { goTo(current + dir); }
-
-  function update() {
-    counter.textContent = String(current + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
-    progressBar.style.width = ((current + 1) / total * 100) + '%';
-    btnPrev.disabled = current === 0;
-    btnNext.disabled = current === total - 1;
-    btnNext.textContent = current === total - 1 ? '✓ Fin' : 'Siguiente →';
-    document.querySelectorAll('.sdot').forEach((d, i) => d.classList.toggle('active', i === current));
-  }
-
-  document.addEventListener('keydown', e => {
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') changeSlide(1);
-    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   changeSlide(-1);
-  });
-</script>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/highlight.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/notes/notes.js"></script>
+    <script>
+      Reveal.initialize({
+        hash: true,
+        slideNumber: 'c/t',
+        showSlideNumber: 'all',
+        transition: 'slide',
+        plugins: [ RevealHighlight, RevealNotes ]
+      });
+    </script>
+  </body>
 </html>
