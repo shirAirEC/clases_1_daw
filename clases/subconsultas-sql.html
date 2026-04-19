@@ -342,7 +342,7 @@
 
         <!-- ══ SLIDE 1 — Portada ══ -->
         <section data-background-gradient="linear-gradient(135deg, #004d40 0%, #00897b 50%, #26a69a 100%)">
-          <h1 class="white-title">[9] Subconsultas</h1>
+          <h1 class="white-title">Subconsultas</h1>
           <p style="color: #e0f2f1; font-size: 1.25em; margin-top: 16px; font-weight: 600; text-align: center;">Consultas dentro de consultas</p>
           <p style="color: rgba(255,255,255,0.75); margin-top: 30px; text-align: center;">
             <span class="pill xml">Teoría</span>
@@ -350,7 +350,7 @@
             <span class="pill xml">Ejemplos</span>
             <span class="pill xml">MySQL</span>
           </p>
-          <p style="color: rgba(255,255,255,0.55); font-size: 0.82em; margin-top: 26px; text-align: center;">Manual de SQL — Capítulos 9.1 a 9.6</p>
+          <p style="color: rgba(255,255,255,0.55); font-size: 0.82em; margin-top: 26px; text-align: center;">Manual de SQL — Jorge Sánchez</p>
         </section>
 
         <!-- ══ SLIDE 2 — Índice ══ -->
@@ -358,27 +358,27 @@
           <h2><span class="icon">📑</span>Índice del tema</h2>
           <div class="index-grid">
             <div>
-              <h4>9.1 Introducción</h4>
+              <h4>Introducción</h4>
               <p>¿Qué es una subconsulta?</p>
             </div>
             <div>
-              <h4>9.2 En SELECT</h4>
+              <h4>En SELECT</h4>
               <p>Simples, múltiples filas, correlacionadas, EXISTS</p>
             </div>
             <div>
-              <h4>9.3 En DML y DDL</h4>
+              <h4>En DML y DDL</h4>
               <p>INSERT, UPDATE, DELETE con subconsultas</p>
             </div>
             <div>
-              <h4>9.4 En FROM y JOIN</h4>
+              <h4>En FROM y JOIN</h4>
               <p>Vistas en línea</p>
             </div>
             <div>
-              <h4>9.5 Escalares</h4>
+              <h4>Escalares</h4>
               <p>Subconsultas que devuelven un valor</p>
             </div>
             <div>
-              <h4>9.6 CREATE TABLE</h4>
+              <h4>CREATE TABLE</h4>
               <p>Crear tablas a partir de un SELECT</p>
             </div>
           </div>
@@ -391,14 +391,13 @@
         <section data-background-gradient="linear-gradient(135deg, #004d40 0%, #00897b 100%)">
           <div style="text-align: center;">
             <div style="font-size: 3.6em; margin-bottom: 10px;">📖</div>
-            <h2 class="white-title" style="font-size: 1.9em;">[9.1]</h2>
-            <h3 class="white-title" style="font-weight: 400; opacity: 0.9;">Introducción a las subconsultas</h3>
+            <h2 class="white-title" style="font-size: 1.9em;">Introducción a las subconsultas</h2>
           </div>
         </section>
 
         <!-- ══ SLIDE — 9.1 Introducción ══ -->
         <section>
-          <span class="capitulo-pill">[9.1] Introducción</span>
+          <span class="capitulo-pill">Introducción</span>
           <h2>Introducción a las subconsultas</h2>
           <div class="definition-box">
             <p>El uso de <strong>subconsultas</strong> es una técnica que permite utilizar el resultado de una <em>tabla SELECT</em> en otra consulta SELECT. Permite solucionar consultas complejas mediante el uso de resultados previos conseguidos a través de otra consulta.</p>
@@ -427,14 +426,13 @@ WHERE  columna operador (SELECT columna FROM otra_tabla);</code></pre>
         <section data-background-gradient="linear-gradient(135deg, #004d40 0%, #00897b 100%)">
           <div style="text-align: center;">
             <div style="font-size: 3.6em; margin-bottom: 10px;">🔍</div>
-            <h2 class="white-title" style="font-size: 1.9em;">[9.2]</h2>
-            <h3 class="white-title" style="font-weight: 400; opacity: 0.9;">Uso de subconsultas en instrucciones SELECT</h3>
+            <h2 class="white-title" style="font-size: 1.9em;">Uso de subconsultas en instrucciones SELECT</h2>
           </div>
         </section>
 
         <!-- ══ 9.2.1 — Subconsultas simples (sintaxis + ejemplo Martina) ══ -->
         <section>
-          <span class="capitulo-pill">[9.2.1] Subconsultas simples</span>
+          <span class="capitulo-pill">Subconsultas simples</span>
           <h2>Subconsultas simples (escalares)</h2>
           <p>Devuelven <strong>una única fila</strong>. Si además devuelven una única columna, se llaman <strong>subconsultas escalares</strong> (devuelven un único valor).</p>
           <div class="two-col sintaxis-ejemplo">
@@ -464,7 +462,7 @@ WHERE  paga &lt;
 
         <!-- ══ 9.2.1 — Varias subconsultas en la misma consulta ══ -->
         <section>
-          <span class="capitulo-pill">[9.2.1] Subconsultas simples</span>
+          <span class="capitulo-pill">Subconsultas simples</span>
           <h2>Varias subconsultas en la misma consulta</h2>
           <p>Se pueden usar subconsultas las veces que haga falta:</p>
           <div class="code-ejemplo">
@@ -501,7 +499,7 @@ WHERE  paga &lt;
 
         <!-- ══ 9.2.1 — Reglas ══ -->
         <section>
-          <span class="capitulo-pill">[9.2.1] Subconsultas simples</span>
+          <span class="capitulo-pill">Subconsultas simples</span>
           <h2>Reglas importantes</h2>
           <div class="warning-box">
             <h3>⚠️ Regla 1 — valor único</h3>
@@ -522,7 +520,7 @@ WHERE paga = (SELECT paga FROM empleados WHERE seccion = 10);
 
         <!-- ══ 9.2.2 — Subconsultas de múltiples filas: intro + tabla ══ -->
         <section>
-          <span class="capitulo-pill">[9.2.2] Subconsultas de múltiples filas</span>
+          <span class="capitulo-pill">Subconsultas de múltiples filas</span>
           <h2>Subconsultas de múltiples filas</h2>
           <p>A veces se necesitan consultas del tipo: <em>«mostrar el sueldo y nombre de los empleados cuyo sueldo supera al de cualquier empleado del departamento de ventas»</em>. La subconsulta devolverá <strong>todos</strong> los sueldos del departamento de ventas, por tanto no podremos usar un operador de comparación directamente.</p>
           <p>La solución es usar <strong>instrucciones especiales</strong> entre el operador y la consulta:</p>
@@ -553,7 +551,7 @@ WHERE paga = (SELECT paga FROM empleados WHERE seccion = 10);
 
         <!-- ══ 9.2.2 — ALL (empleado que más cobra) ══ -->
         <section>
-          <span class="capitulo-pill">[9.2.2] Subconsultas de múltiples filas</span>
+          <span class="capitulo-pill">Subconsultas de múltiples filas</span>
           <h2>Operador ALL</h2>
           <div class="two-col sintaxis-ejemplo">
             <div class="code-sintaxis">
@@ -583,7 +581,7 @@ WHERE  sueldo &gt;= ALL
 
         <!-- ══ 9.2.2 — IN (directivos) ══ -->
         <section>
-          <span class="capitulo-pill">[9.2.2] Subconsultas de múltiples filas</span>
+          <span class="capitulo-pill">Subconsultas de múltiples filas</span>
           <h2>Operador IN</h2>
           <div class="two-col sintaxis-ejemplo">
             <div class="code-sintaxis">
@@ -613,7 +611,7 @@ WHERE  dni IN
 
         <!-- ══ 9.2.2 — IN con múltiples columnas ══ -->
         <section>
-          <span class="capitulo-pill">[9.2.2] Subconsultas de múltiples filas</span>
+          <span class="capitulo-pill">Subconsultas de múltiples filas</span>
           <h2>IN comparando varias columnas</h2>
           <p>Si se necesita comparar <strong>dos columnas</strong> en una consulta IN, se escribe así:</p>
           <div class="code-ejemplo">
@@ -634,7 +632,7 @@ WHERE  (cod1, cod2) IN
 
         <!-- ══ 9.2.3 — Consultas correlacionadas ══ -->
         <section>
-          <span class="capitulo-pill">[9.2.3] Consultas correlacionadas</span>
+          <span class="capitulo-pill">Consultas correlacionadas</span>
           <h2>Consultas correlacionadas</h2>
           <p>En las subconsultas a veces se puede desear utilizar <strong>datos procedentes de la consulta principal</strong>. Eso es posible usando el <em>alias</em> de la tabla de la consulta principal dentro de la subconsulta.</p>
           <p class="sub-note">Supongamos que deseamos obtener, de una base de datos geográfica, <strong>el nombre y la población de las localidades que son las más pobladas de su provincia</strong>.</p>
@@ -657,7 +655,7 @@ WHERE  l.poblacion =
 
         <!-- ══ 9.2.4 — EXISTS ══ -->
         <section>
-          <span class="capitulo-pill">[9.2.4] Consultas EXISTS</span>
+          <span class="capitulo-pill">Consultas EXISTS</span>
           <h2>Operador EXISTS</h2>
           <div class="definition-box">
             <p>El operador <code>EXISTS</code> devuelve <strong>verdadero si la consulta que le sigue devuelve algún valor</strong>. Si no, devuelve falso. Se utiliza normalmente mediante consultas correlacionadas.</p>
@@ -680,7 +678,7 @@ WHERE  EXISTS (
 
         <!-- ══ 9.2.4 — NOT EXISTS ══ -->
         <section>
-          <span class="capitulo-pill">[9.2.4] Consultas EXISTS</span>
+          <span class="capitulo-pill">Consultas EXISTS</span>
           <h2>Operador NOT EXISTS</h2>
           <p>La consulta contraria al EXISTS es:</p>
           <div class="code-ejemplo">
@@ -706,30 +704,29 @@ WHERE  NOT EXISTS (
         <section data-background-gradient="linear-gradient(135deg, #bf360c 0%, #e64a19 50%, #ff7043 100%)">
           <div style="text-align: center;">
             <div style="font-size: 3.6em; margin-bottom: 10px;">🛠️</div>
-            <h2 class="white-title" style="font-size: 1.9em;">[9.3]</h2>
-            <h3 class="white-title" style="font-weight: 400; opacity: 0.9;">Uso de subconsultas SELECT en DML y DDL</h3>
+            <h2 class="white-title" style="font-size: 1.9em;">Uso de subconsultas SELECT en DML y DDL</h2>
             <p style="color: rgba(255,255,255,0.7); margin-top: 14px;">INSERT · UPDATE · DELETE</p>
           </div>
         </section>
 
         <!-- ══ 9.3 — intro DML/DDL ══ -->
         <section>
-          <span class="capitulo-pill">[9.3] Subconsultas en DML y DDL</span>
+          <span class="capitulo-pill">Subconsultas en DML y DDL</span>
           <h2>¿De qué va este apartado?</h2>
           <div class="definition-box">
             <p>La idea es sencilla: utilizar instrucciones <code>SELECT</code> <strong>dentro</strong> de las instrucciones DML (<code>INSERT</code>, <code>DELETE</code>, <code>UPDATE</code>) e incluso dentro de otras instrucciones DDL.</p>
           </div>
           <div class="index-grid">
             <div>
-              <h4>9.3.1 INSERT ... SELECT</h4>
+              <h4>INSERT ... SELECT</h4>
               <p>Relleno de registros a partir de filas de una consulta</p>
             </div>
             <div>
-              <h4>9.3.2 UPDATE</h4>
+              <h4>UPDATE</h4>
               <p>Subconsultas en WHERE y en SET</p>
             </div>
             <div>
-              <h4>9.3.3 DELETE</h4>
+              <h4>DELETE</h4>
               <p>Subconsultas en la cláusula WHERE</p>
             </div>
           </div>
@@ -737,7 +734,7 @@ WHERE  NOT EXISTS (
 
         <!-- ══ 9.3.1 — INSERT ... SELECT ══ -->
         <section>
-          <span class="capitulo-pill">[9.3.1] INSERT con SELECT</span>
+          <span class="capitulo-pill">INSERT con SELECT</span>
           <h2>Relleno de registros desde una consulta</h2>
           <p>La instrucción <strong>INSERT</strong> puede rellenar datos <em>copiando el resultado de una consulta</em>. En definitiva, permite <strong>copiar datos de una tabla a otra</strong>.</p>
           <div class="two-col sintaxis-ejemplo">
@@ -767,7 +764,7 @@ WHERE  situacion = 'JUBILADO';</code></pre>
 
         <!-- ══ 9.3.2 — UPDATE con subconsulta en WHERE ══ -->
         <section>
-          <span class="capitulo-pill">[9.3.2] UPDATE con subconsulta</span>
+          <span class="capitulo-pill">UPDATE con subconsulta</span>
           <h2>Subconsulta en el apartado WHERE</h2>
           <p>La instrucción <code>UPDATE</code> permite modificar filas. Es muy habitual usar <code>WHERE</code> para indicar qué filas se modificarán: ahí se pueden usar subconsultas con las mismas posibilidades que en SELECT.</p>
           <div class="code-ejemplo">
@@ -789,7 +786,7 @@ WHERE  id_seccion =
 
         <!-- ══ 9.3.2 — UPDATE correlacionada ══ -->
         <section>
-          <span class="capitulo-pill">[9.3.2] UPDATE con subconsulta</span>
+          <span class="capitulo-pill">UPDATE con subconsulta</span>
           <h2>UPDATE con subconsulta correlacionada</h2>
           <p>Es posible utilizar subconsultas correlacionadas dentro de UPDATE:</p>
           <div class="code-ejemplo">
@@ -810,7 +807,7 @@ WHERE  1 = (SELECT COUNT(*)
 
         <!-- ══ 9.3.2 — UPDATE con subconsulta en SET ══ -->
         <section>
-          <span class="capitulo-pill">[9.3.2] UPDATE con subconsulta</span>
+          <span class="capitulo-pill">UPDATE con subconsulta</span>
           <h2>Subconsulta en el apartado SET</h2>
           <p>También podemos utilizar subconsultas en la cláusula <code>SET</code> de la instrucción UPDATE.</p>
           <div class="code-ejemplo">
@@ -831,7 +828,7 @@ WHERE  seccion = 23;</code></pre>
 
         <!-- ══ 9.3.3 — DELETE con subconsulta ══ -->
         <section>
-          <span class="capitulo-pill">[9.3.3] DELETE con subconsulta</span>
+          <span class="capitulo-pill">DELETE con subconsulta</span>
           <h2>Subconsultas en DELETE</h2>
           <p>Al igual que <code>INSERT</code> o <code>SELECT</code>, la instrucción <code>DELETE</code> dispone de cláusula <code>WHERE</code> donde podemos utilizar subconsultas.</p>
           <div class="code-ejemplo">
@@ -859,15 +856,14 @@ WHERE  id_empleado IN (SELECT id_empleado FROM errores_graves);</code></pre>
         <section data-background-gradient="linear-gradient(135deg, #1a237e 0%, #283593 50%, #3949ab 100%)">
           <div style="text-align: center;">
             <div style="font-size: 3.6em; margin-bottom: 10px;">📊</div>
-            <h2 class="white-title" style="font-size: 1.9em;">[9.4]</h2>
-            <h3 class="white-title" style="font-weight: 400; opacity: 0.9;">Subconsultas en las cláusulas FROM y JOIN</h3>
+            <h2 class="white-title" style="font-size: 1.9em;">Subconsultas en las cláusulas FROM y JOIN</h2>
             <p style="color: rgba(255,255,255,0.7); margin-top: 14px;">Vistas en línea (<em>inline views</em>)</p>
           </div>
         </section>
 
         <!-- ══ 9.4 — Vistas en línea intro ══ -->
         <section>
-          <span class="capitulo-pill">[9.4] Subconsultas en FROM y JOIN</span>
+          <span class="capitulo-pill">Subconsultas en FROM y JOIN</span>
           <h2>Vistas en línea (inline views)</h2>
           <div class="definition-box">
             <p>El resultado de un <code>SELECT</code> es una <strong>vista</strong> (aunque sea temporal, ya que no se almacena de forma permanente). Y las vistas pueden ser utilizadas dentro de otras vistas, al igual que las tablas.</p>
@@ -901,7 +897,7 @@ GROUP BY tipo;</code></pre>
 
         <!-- ══ 9.4 — JOIN con subconsulta ══ -->
         <section>
-          <span class="capitulo-pill">[9.4] Subconsultas en FROM y JOIN</span>
+          <span class="capitulo-pill">Subconsultas en FROM y JOIN</span>
           <h2>Subconsultas en JOIN</h2>
           <p>La posibilidad de usar subconsultas se extiende a la cláusula <code>JOIN</code>:</p>
           <div class="code-ejemplo">
@@ -923,7 +919,7 @@ JOIN (
 
         <!-- ══ 9.4 — Ejemplo jefes (SQL 92 vs 99) ══ -->
         <section>
-          <span class="capitulo-pill">[9.4] Subconsultas en FROM y JOIN</span>
+          <span class="capitulo-pill">Subconsultas en FROM y JOIN</span>
           <h2>Ejemplo: empleados cuyo jefe gana más de 2000 €</h2>
           <p class="sub-note">Primero se hace una consulta que obtiene el nombre e identificador de los empleados que ganan más de 2000 €. Luego se combina con la tabla de empleados de modo que el jefe del empleado esté en esa lista.</p>
           <div class="two-col dual-code">
@@ -955,15 +951,14 @@ JOIN   (SELECT nombre, id_empleado
         <section data-background-gradient="linear-gradient(135deg, #4a148c 0%, #7b1fa2 50%, #9c27b0 100%)">
           <div style="text-align: center;">
             <div style="font-size: 3.6em; margin-bottom: 10px;">🎯</div>
-            <h2 class="white-title" style="font-size: 1.9em;">[9.5]</h2>
-            <h3 class="white-title" style="font-weight: 400; opacity: 0.9;">Subconsultas escalares</h3>
+            <h2 class="white-title" style="font-size: 1.9em;">Subconsultas escalares</h2>
             <p style="color: rgba(255,255,255,0.7); margin-top: 14px;">Las que devuelven un único valor</p>
           </div>
         </section>
 
         <!-- ══ 9.5 — intro escalares ══ -->
         <section>
-          <span class="capitulo-pill">[9.5] Subconsultas escalares</span>
+          <span class="capitulo-pill">Subconsultas escalares</span>
           <h2>¿Qué son y dónde se pueden usar?</h2>
           <div class="definition-box">
             <p>Las <strong>subconsultas escalares</strong> son aquellas que devuelven un único resultado: <code>SELECT</code> que devuelve <strong>una sola fila y un único valor</strong>.</p>
@@ -982,7 +977,7 @@ JOIN   (SELECT nombre, id_empleado
 
         <!-- ══ 9.5 — Ejemplo número de provincias ══ -->
         <section>
-          <span class="capitulo-pill">[9.5] Subconsultas escalares</span>
+          <span class="capitulo-pill">Subconsultas escalares</span>
           <h2>Ejemplo: número de provincias por comunidad</h2>
           <div class="code-ejemplo">
             <span class="label">💡 EJEMPLO — subconsulta escalar en la lista SELECT</span>
@@ -1002,7 +997,7 @@ FROM   comunidades c;</code></pre>
 
         <!-- ══ 9.5 — Ejemplo con DECODE ══ -->
         <section>
-          <span class="capitulo-pill">[9.5] Subconsultas escalares</span>
+          <span class="capitulo-pill">Subconsultas escalares</span>
           <h2>Subconsulta escalar dentro de DECODE</h2>
           <p>Con imaginación, podemos conseguir consultas tan <em>espectaculares</em> como ésta:</p>
           <div class="code-ejemplo">
@@ -1030,14 +1025,13 @@ FROM   comunidades c;</code></pre>
         <section data-background-gradient="linear-gradient(135deg, #006064 0%, #00838f 50%, #26c6da 100%)">
           <div style="text-align: center;">
             <div style="font-size: 3.6em; margin-bottom: 10px;">🏗️</div>
-            <h2 class="white-title" style="font-size: 1.9em;">[9.6]</h2>
-            <h3 class="white-title" style="font-weight: 400; opacity: 0.9;">Creación de tablas mediante subconsultas</h3>
+            <h2 class="white-title" style="font-size: 1.9em;">Creación de tablas mediante subconsultas</h2>
           </div>
         </section>
 
         <!-- ══ 9.6 — CREATE TABLE AS SELECT ══ -->
         <section>
-          <span class="capitulo-pill">[9.6] CREATE TABLE AS SELECT</span>
+          <span class="capitulo-pill">CREATE TABLE AS SELECT</span>
           <h2>Crear tablas a partir de una consulta</h2>
           <p>La instrucción <code>CREATE TABLE</code> tiene la capacidad de ser utilizada mediante una subconsulta. Se crea una tabla que contiene una <strong>copia de los datos de la consulta</strong> y cuya <strong>estructura se basa en dichos datos</strong>.</p>
           <div class="two-col sintaxis-ejemplo">
@@ -1071,27 +1065,27 @@ FROM   comunidades c;</code></pre>
           <h2><span class="icon">📘</span>Resumen del tema</h2>
           <div class="index-grid">
             <div style="border-left-color: #00897b;">
-              <h4>9.1 Introducción</h4>
+              <h4>Introducción</h4>
               <p>SUBSELECT en WHERE, HAVING, FROM, JOIN</p>
             </div>
             <div style="border-left-color: #00897b;">
-              <h4>9.2 Subconsultas en SELECT</h4>
+              <h4>Subconsultas en SELECT</h4>
               <p>Simples (escalares) · ANY/ALL/IN · correlacionadas · EXISTS</p>
             </div>
             <div style="border-left-color: #e64a19;">
-              <h4>9.3 En DML</h4>
+              <h4>En DML</h4>
               <p>INSERT...SELECT · UPDATE (WHERE y SET) · DELETE con IN</p>
             </div>
             <div style="border-left-color: #283593;">
-              <h4>9.4 En FROM / JOIN</h4>
+              <h4>En FROM / JOIN</h4>
               <p>Vistas en línea (inline views) con alias obligatorio</p>
             </div>
             <div style="border-left-color: #7b1fa2;">
-              <h4>9.5 Escalares</h4>
+              <h4>Escalares</h4>
               <p>Un único valor · usables en SELECT, CASE, WHERE, SET</p>
             </div>
             <div style="border-left-color: #00838f;">
-              <h4>9.6 CREATE TABLE AS</h4>
+              <h4>CREATE TABLE AS</h4>
               <p>Crear tabla a partir de una consulta (sin restricciones)</p>
             </div>
           </div>
