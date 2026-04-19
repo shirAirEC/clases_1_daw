@@ -1,0 +1,1887 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subconsultas SQL — Clase 5</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="512x512" href="../favicon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="../favicon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
+    <link rel="apple-touch-icon" href="../favicon.png">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/white.css" id="theme">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/monokai.css">
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+      .btn-volver {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background: rgba(255,255,255,0.95);
+        color: #00897b;
+        padding: 10px 20px;
+        border-radius: 20px;
+        text-decoration: none;
+        font-weight: 600;
+        z-index: 1000;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+      }
+      .btn-volver:hover { background: #00897b; color: white; }
+
+      /* ─── Colores de tema (verde-azulado SQL) ─── */
+      :root {
+        --sql-primary: #00897b;
+        --sql-dark:    #004d40;
+        --sql-light:   #e0f2f1;
+        --sql-accent:  #26a69a;
+        --sql-warn:    #ff7043;
+        --sql-danger:  #c62828;
+      }
+
+      .reveal h1, .reveal h2, .reveal h3 { color: #004d40; }
+
+      /* ─── Cajas base ─── */
+      .definition-box {
+        background: #e0f2f1;
+        border-left: 5px solid #00897b;
+        padding: 18px 22px;
+        border-radius: 10px;
+        margin: 14px 0;
+      }
+      .definition-box h3 {
+        color: #004d40 !important;
+        margin-top: 0;
+        background: none !important;
+        padding: 0 !important;
+        text-shadow: none !important;
+      }
+
+      .tip-box {
+        background: #fff8e1;
+        border-left: 5px solid #ffa726;
+        padding: 14px 18px;
+        border-radius: 10px;
+        margin: 12px 0;
+      }
+
+      .warning-box {
+        background: #fbe9e7;
+        border-left: 5px solid #ff7043;
+        padding: 14px 18px;
+        border-radius: 10px;
+        margin: 12px 0;
+      }
+      .warning-box h3 {
+        color: #bf360c !important;
+        margin-top: 0;
+        background: none !important;
+        padding: 0 !important;
+        text-shadow: none !important;
+      }
+
+      .success-box {
+        background: #e8f5e9;
+        border-left: 5px solid #2e7d32;
+        padding: 14px 18px;
+        border-radius: 10px;
+        margin: 12px 0;
+      }
+
+      .danger-box {
+        background: #ffebee;
+        border-left: 5px solid #c62828;
+        padding: 18px 22px;
+        border-radius: 10px;
+        margin: 12px 0;
+      }
+      .danger-box h3 {
+        color: #b71c1c !important;
+        margin-top: 0;
+        background: none !important;
+        padding: 0 !important;
+        text-shadow: none !important;
+      }
+
+      .info-box {
+        background: #e3f2fd;
+        border-left: 5px solid #1565c0;
+        padding: 14px 18px;
+        border-radius: 10px;
+        margin: 12px 0;
+      }
+
+      /* ─── Código ─── */
+      .code-example {
+        background: #1a2332;
+        border-radius: 12px;
+        padding: 4px;
+        margin: 10px 0;
+      }
+      .code-example h4 {
+        color: #80cbc4 !important;
+        background: none !important;
+        padding: 6px 12px !important;
+        margin: 0;
+        font-size: 0.75em;
+        text-shadow: none !important;
+        letter-spacing: 0.05em;
+      }
+
+      /* ─── Layouts ─── */
+      .two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin: 18px 0;
+      }
+      .three-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 16px;
+        margin: 18px 0;
+      }
+      .four-col {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+        margin: 18px 0;
+      }
+
+      /* ─── Cards de tipo de subconsulta ─── */
+      .subquery-card {
+        background: white;
+        border-radius: 14px;
+        padding: 22px 18px;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        border-top: 5px solid #00897b;
+        transition: transform 0.2s;
+      }
+      .subquery-card h3 { color: #004d40 !important; font-size: 1em; margin: 10px 0 8px; }
+      .subquery-card p  { font-size: 0.82em; color: #555; margin: 0; }
+      .subquery-card .icon { font-size: 2.2em; }
+
+      .subquery-card.blue   { border-top-color: #1565c0; }
+      .subquery-card.orange { border-top-color: #e65100; }
+      .subquery-card.purple { border-top-color: #6a1b9a; }
+      .subquery-card.red    { border-top-color: #c62828; }
+
+      /* ─── Cards de operadores ─── */
+      .op-card {
+        background: #263238;
+        color: white;
+        border-radius: 12px;
+        padding: 18px 14px;
+        text-align: center;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      }
+      .op-card h3  { color: #80cbc4 !important; font-size: 1.3em; margin: 0 0 8px; background: none !important; padding: 0 !important; text-shadow: none !important; }
+      .op-card p   { font-size: 0.82em; color: #b0bec5; margin: 0; }
+
+      /* ─── Pill de bloque ─── */
+      .bloque-pill {
+        display: inline-block;
+        background: linear-gradient(135deg, #00897b, #004d40);
+        color: white;
+        padding: 6px 18px;
+        border-radius: 20px;
+        font-size: 0.75em;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 14px;
+      }
+
+      /* ─── Resaltado de sintaxis manual ─── */
+      .sql-keyword { color: #80cbc4; font-weight: bold; }
+      .sql-sub     { color: #ffcc80; }
+      .sql-comment { color: #78909c; font-style: italic; }
+
+      /* ─── Tabla de comparación ─── */
+      .compare-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.8em;
+        margin: 14px 0;
+      }
+      .compare-table th {
+        background: linear-gradient(135deg, #00897b, #004d40);
+        color: white;
+        padding: 10px 14px;
+        text-align: left;
+      }
+      .compare-table td {
+        padding: 9px 14px;
+        border-bottom: 1px solid #e0e0e0;
+        vertical-align: top;
+      }
+      .compare-table tr:nth-child(even) td { background: #f5fffe; }
+
+      /* ─── Ejercicios ─── */
+      .ejercicio-box {
+        background: #f3e5f5;
+        border-left: 5px solid #7b1fa2;
+        padding: 18px 22px;
+        border-radius: 10px;
+        margin: 12px 0;
+        text-align: left;
+      }
+      .ejercicio-box h3 {
+        color: #4a148c !important;
+        margin-top: 0;
+        background: none !important;
+        padding: 0 !important;
+        text-shadow: none !important;
+      }
+
+      .solucion-box {
+        background: #e8f5e9;
+        border-left: 5px solid #2e7d32;
+        padding: 18px 22px;
+        border-radius: 10px;
+        margin: 12px 0;
+        text-align: left;
+      }
+      .solucion-box h3 {
+        color: #1b5e20 !important;
+        margin-top: 0;
+        background: none !important;
+        padding: 0 !important;
+        text-shadow: none !important;
+      }
+
+      /* ─── Paso a paso ─── */
+      .steps-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin: 16px 0;
+      }
+      .step {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        background: white;
+        padding: 12px 16px;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        border-left: 4px solid #00897b;
+        text-align: left;
+      }
+      .step-num {
+        min-width: 32px;
+        height: 32px;
+        background: linear-gradient(135deg, #00897b, #004d40);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.9em;
+      }
+      .step-content { flex: 1; font-size: 0.88em; }
+      .step-content strong { color: #004d40; }
+
+      /* ─── Anotación de consulta ─── */
+      .query-anatomy {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        font-family: monospace;
+        font-size: 0.9em;
+        background: #263238;
+        border-radius: 12px;
+        padding: 20px 24px;
+        margin: 14px 0;
+        text-align: left;
+      }
+      .qa-outer { color: #80cbc4; }
+      .qa-inner { color: #ffcc80; padding-left: 30px; }
+      .qa-label {
+        font-family: sans-serif;
+        font-size: 0.7em;
+        padding: 2px 8px;
+        border-radius: 4px;
+        margin-left: 8px;
+        vertical-align: middle;
+        font-weight: 700;
+      }
+      .qa-label.outer { background: #00695c; color: white; }
+      .qa-label.inner { background: #e65100; color: white; }
+
+      /* ─── White title sobre gradiente ─── */
+      .white-title { color: white !important; text-shadow: 0 2px 4px rgba(0,0,0,0.3) !important; }
+
+      /* ─── Resultado tabla ─── */
+      .result-table {
+        border-collapse: collapse;
+        margin: 12px auto;
+        font-size: 0.82em;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .result-table th {
+        background: linear-gradient(135deg, #00897b, #004d40);
+        color: white;
+        padding: 10px 16px;
+        text-align: left;
+      }
+      .result-table td {
+        padding: 8px 16px;
+        border-bottom: 1px solid #e0e0e0;
+      }
+      .result-table tr:last-child td { border-bottom: none; }
+      .result-table tr:nth-child(even) td { background: #f5fffe; }
+
+      /* ─── Badge de "devuelve" ─── */
+      .returns-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.75em;
+        font-weight: 700;
+        margin-left: 6px;
+        vertical-align: middle;
+      }
+      .returns-badge.scalar  { background: #e0f7fa; color: #006064; }
+      .returns-badge.multi   { background: #fce4ec; color: #880e4f; }
+      .returns-badge.table   { background: #f3e5f5; color: #4a148c; }
+      .returns-badge.boolean { background: #fff8e1; color: #e65100; }
+    </style>
+  </head>
+  <body>
+    <!-- Verificación de autenticación -->
+    <script src="../auth-check.js"></script>
+    <!-- Editor de clases (solo profesor) -->
+    <script src="../teacher-edit.js"></script>
+
+    <a href="../index.html" class="btn-volver">← Inicio</a>
+
+    <div class="reveal">
+      <div class="slides">
+
+        <!-- ══ SLIDE 1 — Portada ══ -->
+        <section data-background-gradient="linear-gradient(135deg, #004d40 0%, #00897b 50%, #26a69a 100%)">
+          <h1 class="white-title">Subconsultas SQL</h1>
+          <p style="color: #e0f2f1; font-size: 1.25em; margin-top: 20px; font-weight: 600;">Consultas dentro de consultas</p>
+          <p style="color: rgba(255,255,255,0.75); margin-top: 40px;">
+            <span class="pill xml">Teoría</span>
+            <span class="pill xml">Práctica</span>
+            <span class="pill xml">MySQL</span>
+          </p>
+          <p style="color: rgba(255,255,255,0.55); font-size: 0.85em; margin-top: 40px;">Base de datos: Videoclub 🎬</p>
+        </section>
+
+        <!-- ══ SLIDE 2 — Objetivos ══ -->
+        <section>
+          <h2><span class="icon">🎯</span>Objetivos de la clase</h2>
+          <ul class="objetivos-lista">
+            <li class="fragment">✅ Entender qué es una subconsulta y para qué sirve</li>
+            <li class="fragment">✅ Conocer todos los lugares donde se pueden usar subconsultas</li>
+            <li class="fragment">✅ Dominar subconsultas escalares con operadores de comparación</li>
+            <li class="fragment">✅ Usar IN, NOT IN con subconsultas de múltiples filas</li>
+            <li class="fragment">✅ Trabajar con los operadores ANY y ALL</li>
+            <li class="fragment">✅ Crear tablas derivadas con subconsultas en FROM</li>
+            <li class="fragment">✅ Entender y escribir subconsultas correlacionadas</li>
+            <li class="fragment">✅ Dominar EXISTS y NOT EXISTS</li>
+            <li class="fragment">✅ Anidar subconsultas en varios niveles</li>
+            <li class="fragment">✅ Decidir cuándo usar subconsultas vs. JOINs</li>
+          </ul>
+        </section>
+
+        <!-- ══ SLIDE 3 — ¿Qué es una subconsulta? ══ -->
+        <section>
+          <h2><span class="icon">🔍</span>¿Qué es una Subconsulta?</h2>
+          <div class="definition-box fragment">
+            <h3>Definición</h3>
+            <p>Una <strong>subconsulta</strong> (o <em>subquery</em>) es una consulta <code>SELECT</code> que se escribe <strong>dentro de otra consulta</strong> SQL.</p>
+            <p style="margin-top: 10px;">También se llama <em>subselect</em>, <em>consulta anidada</em> o <em>consulta interna</em>.</p>
+          </div>
+          <div class="fragment" style="margin-top: 25px;">
+            <h3>¿Por qué son útiles?</h3>
+            <ul style="text-align: left; max-width: 750px; margin: 15px auto;">
+              <li class="fragment">🔄 Reutilizar el resultado de una consulta dentro de otra</li>
+              <li class="fragment">📊 Filtrar datos basándose en cálculos dinámicos</li>
+              <li class="fragment">🎯 Resolver preguntas complejas en un solo paso</li>
+              <li class="fragment">🧩 Construir lógica de varias capas sin tablas temporales</li>
+            </ul>
+          </div>
+          <div class="fragment tip-box" style="margin-top: 25px;">
+            <p><strong>💡 Ejemplo del mundo real:</strong> "Mostrar las películas cuyo precio sea superior al precio medio de todas las películas" → el "precio medio" hay que calcularlo primero, y luego usarlo como filtro.</p>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 4 — Anatomía de una subconsulta ══ -->
+        <section>
+          <h2><span class="icon">🔬</span>Anatomía de una Subconsulta</h2>
+          <div class="query-anatomy fragment">
+            <div class="qa-outer">SELECT titulo, precio_alquiler <span class="qa-label outer">CONSULTA EXTERNA</span></div>
+            <div class="qa-outer">FROM pelicula</div>
+            <div class="qa-outer">WHERE precio_alquiler &gt; (</div>
+            <div class="qa-inner">  SELECT AVG(precio_alquiler) <span class="qa-label inner">SUBCONSULTA</span></div>
+            <div class="qa-inner">  FROM pelicula</div>
+            <div class="qa-outer">);</div>
+          </div>
+          <div class="fragment" style="margin-top: 20px;">
+            <h3>Reglas fundamentales:</h3>
+            <div class="steps-container">
+              <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-content"><strong>Paréntesis obligatorios:</strong> la subconsulta siempre va entre <code>( )</code></div>
+              </div>
+              <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-content"><strong>Se ejecuta primero:</strong> MySQL evalúa la subconsulta antes que la consulta externa</div>
+              </div>
+              <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-content"><strong>No termina en <code>;</code>:</strong> el punto y coma solo va al final de toda la sentencia</div>
+              </div>
+              <div class="step">
+                <div class="step-num">4</div>
+                <div class="step-content"><strong>Puede anidarse:</strong> una subconsulta puede contener otra subconsulta a su vez</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 5 — ¿Dónde se pueden usar? ══ -->
+        <section>
+          <h2><span class="icon">📍</span>¿Dónde se pueden usar?</h2>
+          <p>Las subconsultas pueden aparecer en múltiples cláusulas SQL:</p>
+          <div class="four-col fragment" style="margin-top: 25px;">
+            <div class="subquery-card">
+              <div class="icon">🔍</div>
+              <h3>WHERE</h3>
+              <p>Filtrar filas según el resultado de la subconsulta</p>
+            </div>
+            <div class="subquery-card blue">
+              <div class="icon">📋</div>
+              <h3>FROM</h3>
+              <p>Usar la subconsulta como si fuera una tabla</p>
+            </div>
+            <div class="subquery-card orange">
+              <div class="icon">📊</div>
+              <h3>HAVING</h3>
+              <p>Filtrar grupos basándose en la subconsulta</p>
+            </div>
+            <div class="subquery-card purple">
+              <div class="icon">🗂️</div>
+              <h3>SELECT</h3>
+              <p>Calcular un valor por cada fila del resultado</p>
+            </div>
+          </div>
+          <div class="fragment info-box" style="margin-top: 25px;">
+            <p><strong>También en:</strong> INSERT, UPDATE y DELETE — pero hoy nos centramos en SELECT.</p>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 6 — Tipos de subconsultas ══ -->
+        <section>
+          <h2><span class="icon">🗂️</span>Tipos de Subconsultas</h2>
+          <p>Según <strong>qué devuelven</strong>:</p>
+          <div class="three-col fragment" style="margin-top: 20px;">
+            <div class="subquery-card">
+              <div class="icon">1️⃣</div>
+              <h3>Escalar</h3>
+              <p>Devuelve <strong>1 fila y 1 columna</strong> (un único valor)</p>
+              <span class="returns-badge scalar">1 valor</span>
+            </div>
+            <div class="subquery-card orange">
+              <div class="icon">📋</div>
+              <h3>De columna</h3>
+              <p>Devuelve <strong>múltiples filas</strong> de 1 columna (una lista de valores)</p>
+              <span class="returns-badge multi">N valores</span>
+            </div>
+            <div class="subquery-card purple">
+              <div class="icon">📊</div>
+              <h3>De tabla</h3>
+              <p>Devuelve <strong>múltiples filas y columnas</strong> (una tabla completa)</p>
+              <span class="returns-badge table">tabla</span>
+            </div>
+          </div>
+          <div class="fragment" style="margin-top: 25px;">
+            <p>Y según su <strong>relación con la consulta externa</strong>:</p>
+            <div class="two-col" style="margin-top: 14px;">
+              <div class="subquery-card">
+                <div class="icon">🔓</div>
+                <h3>No correlacionada</h3>
+                <p>Independiente. Se ejecuta <strong>una sola vez</strong>.</p>
+              </div>
+              <div class="subquery-card red">
+                <div class="icon">🔗</div>
+                <h3>Correlacionada</h3>
+                <p>Depende de la consulta externa. Se ejecuta <strong>una vez por cada fila</strong>.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ══ BLOQUE 1 — HEADER ══ -->
+        <section data-background-gradient="linear-gradient(135deg, #004d40 0%, #00897b 100%)">
+          <div style="text-align: center;">
+            <div style="font-size: 4em; margin-bottom: 20px;">🎯</div>
+            <h2 class="white-title" style="font-size: 2em;">Bloque 1</h2>
+            <h3 class="white-title" style="font-weight: 400; opacity: 0.9;">Subconsultas Escalares en WHERE</h3>
+            <p style="color: rgba(255,255,255,0.65); margin-top: 30px;">Devuelven un único valor para comparar</p>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 7 — Subconsulta escalar: concepto ══ -->
+        <section>
+          <div class="bloque-pill">Bloque 1 · Subconsultas Escalares</div>
+          <h2><span class="icon">🎯</span>Subconsulta Escalar</h2>
+          <div class="definition-box">
+            <p>Devuelve <strong>exactamente un valor</strong> (una fila, una columna). Se usa con operadores de comparación: <code>=</code>, <code>></code>, <code><</code>, <code>>=</code>, <code><=</code>, <code>!=</code></p>
+          </div>
+          <div class="code-example fragment" style="margin-top: 20px;">
+            <h4>Estructura general</h4>
+            <pre><code class="sql">SELECT columnas
+FROM tabla
+WHERE columna OPERADOR (
+    SELECT función_agregada(columna)
+    FROM tabla
+);</code></pre>
+          </div>
+          <div class="fragment warning-box">
+            <p>⚠️ Si la subconsulta devuelve más de un valor con un operador de comparación simple (<code>=</code>, <code>></code>...), MySQL dará un <strong>error</strong>. Usa <code>IN</code>, <code>ANY</code> o <code>ALL</code> para múltiples filas.</p>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 8 — Ejemplo: precio superior al promedio ══ -->
+        <section>
+          <div class="bloque-pill">Bloque 1 · Subconsultas Escalares</div>
+          <h2><span class="icon">💰</span>Ejemplo: Superior al Promedio</h2>
+          <p>¿Qué películas tienen un precio de alquiler superior al precio medio?</p>
+          <div class="code-example fragment">
+            <h4>Con subconsulta</h4>
+            <pre><code class="sql">SELECT titulo, precio_alquiler
+FROM pelicula
+WHERE precio_alquiler > (
+    SELECT AVG(precio_alquiler)
+    FROM pelicula
+)
+ORDER BY precio_alquiler DESC;</code></pre>
+          </div>
+          <div class="fragment" style="margin-top: 20px;">
+            <div class="steps-container">
+              <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-content"><strong>MySQL ejecuta primero</strong> <code>SELECT AVG(precio_alquiler) FROM pelicula</code> → obtiene, por ejemplo, <code>3.99</code></div>
+              </div>
+              <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-content"><strong>Sustituye</strong> la subconsulta por ese valor: <code>WHERE precio_alquiler > 3.99</code></div>
+              </div>
+              <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-content"><strong>Devuelve</strong> solo las películas que superen ese umbral</div>
+              </div>
+            </div>
+          </div>
+          <div class="fragment success-box">
+            <p>✅ La ventaja: si los precios cambian, la consulta <strong>se adapta sola</strong> sin tener que cambiar el valor a mano.</p>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 9 — Ejemplo: película más cara ══ -->
+        <section>
+          <div class="bloque-pill">Bloque 1 · Subconsultas Escalares</div>
+          <h2><span class="icon">🏆</span>Ejemplo: La Película Más Cara</h2>
+          <p>¿Qué película tiene el precio de alquiler más alto?</p>
+          <div class="code-example fragment">
+            <h4>Usando MAX() en subconsulta</h4>
+            <pre><code class="sql">SELECT titulo, precio_alquiler
+FROM pelicula
+WHERE precio_alquiler = (
+    SELECT MAX(precio_alquiler)
+    FROM pelicula
+);</code></pre>
+          </div>
+          <div class="fragment tip-box" style="margin-top: 20px;">
+            <p><strong>💡 ¿Por qué no usar ORDER BY + LIMIT 1?</strong><br>
+            Porque <code>LIMIT 1</code> devuelve <em>una</em> película aunque varias tengan el mismo precio máximo. La subconsulta con <code>MAX()</code> devuelve <strong>todas</strong> las películas que tengan ese precio.</p>
+          </div>
+          <div class="code-example fragment">
+            <h4>Diferencia entre ambas opciones</h4>
+            <pre><code class="sql">-- ❌ Puede perderse empates:
+SELECT titulo FROM pelicula ORDER BY precio_alquiler DESC LIMIT 1;
+
+-- ✅ Captura todos los empates:
+SELECT titulo FROM pelicula
+WHERE precio_alquiler = (SELECT MAX(precio_alquiler) FROM pelicula);</code></pre>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 10 — Ejemplo: película con más alquileres ══ -->
+        <section>
+          <div class="bloque-pill">Bloque 1 · Subconsultas Escalares</div>
+          <h2><span class="icon">📈</span>Ejemplo: La Más Alquilada</h2>
+          <p>¿Qué película ha sido alquilada más veces?</p>
+          <div class="code-example fragment">
+            <h4>Dos subconsultas anidadas</h4>
+            <pre><code class="sql">SELECT titulo
+FROM pelicula
+WHERE pelicula_id = (
+    SELECT pelicula_id
+    FROM alquiler
+    GROUP BY pelicula_id
+    ORDER BY COUNT(*) DESC
+    LIMIT 1
+);</code></pre>
+          </div>
+          <div class="fragment" style="margin-top: 20px;">
+            <p>La subconsulta devuelve el <code>pelicula_id</code> con más registros en <code>alquiler</code>. Luego la consulta externa busca el título correspondiente.</p>
+          </div>
+          <div class="fragment info-box">
+            <p><strong>Alternativa con subconsulta en FROM:</strong> Lo veremos más adelante en el Bloque 4. Cada problema puede tener varias soluciones.</p>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 11 — Ejemplo: misma tabla ══ -->
+        <section>
+          <div class="bloque-pill">Bloque 1 · Subconsultas Escalares</div>
+          <h2><span class="icon">🔄</span>Subconsulta sobre la Misma Tabla</h2>
+          <p>La subconsulta puede usar la <strong>misma tabla</strong> que la consulta externa</p>
+          <div class="code-example fragment">
+            <h4>Películas más cortas que la duración media</h4>
+            <pre><code class="sql">SELECT titulo, duracion
+FROM pelicula
+WHERE duracion < (
+    SELECT AVG(duracion)
+    FROM pelicula
+)
+ORDER BY duracion ASC;</code></pre>
+          </div>
+          <div class="code-example fragment">
+            <h4>Películas anteriores a la más antigua de acción (categoria_id=1)</h4>
+            <pre><code class="sql">SELECT titulo, año_lanzamiento
+FROM pelicula
+WHERE año_lanzamiento < (
+    SELECT MIN(año_lanzamiento)
+    FROM pelicula
+    WHERE categoria_id = 1
+);</code></pre>
+          </div>
+          <div class="fragment tip-box">
+            <p><strong>💡 MySQL</strong> en versiones antiguas no permite modificar la misma tabla con UPDATE/DELETE usando subconsulta directa, pero en SELECT no hay restricción.</p>
+          </div>
+        </section>
+
+        <!-- ══ BLOQUE 2 — HEADER ══ -->
+        <section data-background-gradient="linear-gradient(135deg, #1a237e 0%, #283593 50%, #3949ab 100%)">
+          <div style="text-align: center;">
+            <div style="font-size: 4em; margin-bottom: 20px;">📋</div>
+            <h2 class="white-title" style="font-size: 2em;">Bloque 2</h2>
+            <h3 class="white-title" style="font-weight: 400; opacity: 0.9;">Operadores IN y NOT IN</h3>
+            <p style="color: rgba(255,255,255,0.65); margin-top: 30px;">Subconsultas que devuelven múltiples filas</p>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 12 — Operador IN ══ -->
+        <section>
+          <div class="bloque-pill" style="background: linear-gradient(135deg, #283593, #1a237e);">Bloque 2 · IN / NOT IN</div>
+          <h2><span class="icon">📋</span>Operador IN</h2>
+          <div class="definition-box">
+            <p><code>IN</code> comprueba si un valor está <strong>dentro del conjunto</strong> de valores devueltos por la subconsulta.</p>
+          </div>
+          <div class="code-example fragment">
+            <h4>Estructura</h4>
+            <pre><code class="sql">SELECT columnas
+FROM tabla
+WHERE columna IN (
+    SELECT columna
+    FROM otra_tabla
+    WHERE condición
+);</code></pre>
+          </div>
+          <div class="fragment">
+            <p style="margin-top: 15px;">¿Qué clientes han alquilado <strong>alguna película</strong>?</p>
+          </div>
+          <div class="code-example fragment">
+            <h4>Ejemplo</h4>
+            <pre><code class="sql">SELECT nombre, apellido, email
+FROM cliente
+WHERE cliente_id IN (
+    SELECT DISTINCT cliente_id
+    FROM alquiler
+);</code></pre>
+          </div>
+          <div class="fragment tip-box">
+            <p><strong>💡 DISTINCT</strong> en la subconsulta no es obligatorio cuando se usa IN, pero puede mejorar el rendimiento al reducir duplicados que el motor debe procesar.</p>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 13 — IN: más ejemplos ══ -->
+        <section>
+          <div class="bloque-pill" style="background: linear-gradient(135deg, #283593, #1a237e);">Bloque 2 · IN / NOT IN</div>
+          <h2><span class="icon">🎬</span>IN: Ejemplos Prácticos</h2>
+          <div class="code-example fragment">
+            <h4>Películas de categorías con más de 3 películas</h4>
+            <pre><code class="sql">SELECT titulo, categoria_id
+FROM pelicula
+WHERE categoria_id IN (
+    SELECT categoria_id
+    FROM pelicula
+    GROUP BY categoria_id
+    HAVING COUNT(*) > 3
+);</code></pre>
+          </div>
+          <div class="code-example fragment">
+            <h4>Actores que han actuado en películas de Ciencia Ficción (categoria_id=5)</h4>
+            <pre><code class="sql">SELECT nombre, apellido
+FROM actor
+WHERE actor_id IN (
+    SELECT pa.actor_id
+    FROM pelicula_actor pa
+    JOIN pelicula p ON pa.pelicula_id = p.pelicula_id
+    WHERE p.categoria_id = 5
+);</code></pre>
+          </div>
+          <div class="fragment info-box">
+            <p><strong>Nota:</strong> la subconsulta en IN puede usar <code>JOIN</code> internamente. No hay restricción sobre lo que puede contener la subconsulta.</p>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 14 — NOT IN ══ -->
+        <section>
+          <div class="bloque-pill" style="background: linear-gradient(135deg, #283593, #1a237e);">Bloque 2 · IN / NOT IN</div>
+          <h2><span class="icon">🚫</span>Operador NOT IN</h2>
+          <div class="definition-box">
+            <p><code>NOT IN</code> devuelve las filas cuyo valor <strong>NO aparece</strong> en el conjunto de la subconsulta.</p>
+          </div>
+          <div class="code-example fragment">
+            <h4>Clientes que NUNCA han alquilado</h4>
+            <pre><code class="sql">SELECT nombre, apellido, email
+FROM cliente
+WHERE cliente_id NOT IN (
+    SELECT DISTINCT cliente_id
+    FROM alquiler
+);</code></pre>
+          </div>
+          <div class="code-example fragment">
+            <h4>Películas que nunca han sido alquiladas</h4>
+            <pre><code class="sql">SELECT titulo
+FROM pelicula
+WHERE pelicula_id NOT IN (
+    SELECT DISTINCT pelicula_id
+    FROM alquiler
+);</code></pre>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 15 — El peligro de NULL con NOT IN ══ -->
+        <section>
+          <div class="bloque-pill" style="background: linear-gradient(135deg, #283593, #1a237e);">Bloque 2 · IN / NOT IN</div>
+          <h2><span class="icon">⚠️</span>El Peligro de NULL con NOT IN</h2>
+          <div class="danger-box fragment">
+            <h3>⚠️ Trampa habitual</h3>
+            <p>Si la subconsulta devuelve <strong>algún valor NULL</strong>, <code>NOT IN</code> <strong>no devuelve ninguna fila</strong>.</p>
+          </div>
+          <div class="code-example fragment">
+            <h4>Ejemplo del problema</h4>
+            <pre><code class="sql">-- Si alquiler tuviera algún cliente_id NULL:
+SELECT nombre FROM cliente
+WHERE cliente_id NOT IN (
+    SELECT cliente_id FROM alquiler  -- ← puede devolver NULLs
+);
+-- Resultado: ¡0 filas! Aunque haya clientes sin alquileres</code></pre>
+          </div>
+          <div class="code-example fragment">
+            <h4>Solución: filtrar NULLs en la subconsulta</h4>
+            <pre><code class="sql">SELECT nombre FROM cliente
+WHERE cliente_id NOT IN (
+    SELECT cliente_id
+    FROM alquiler
+    WHERE cliente_id IS NOT NULL  -- ← protección contra NULL
+);</code></pre>
+          </div>
+          <div class="fragment success-box">
+            <p>✅ Como alternativa más segura, usa <code>NOT EXISTS</code> (lo veremos en el Bloque 7): funciona correctamente con NULLs.</p>
+          </div>
+        </section>
+
+        <!-- ══ BLOQUE 3 — HEADER ══ -->
+        <section data-background-gradient="linear-gradient(135deg, #bf360c 0%, #e64a19 50%, #ff7043 100%)">
+          <div style="text-align: center;">
+            <div style="font-size: 4em; margin-bottom: 20px;">⚖️</div>
+            <h2 class="white-title" style="font-size: 2em;">Bloque 3</h2>
+            <h3 class="white-title" style="font-weight: 400; opacity: 0.9;">Operadores ANY y ALL</h3>
+            <p style="color: rgba(255,255,255,0.65); margin-top: 30px;">Comparar contra un conjunto de valores</p>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 16 — Operador ANY ══ -->
+        <section>
+          <div class="bloque-pill" style="background: linear-gradient(135deg, #bf360c, #e64a19);">Bloque 3 · ANY / ALL</div>
+          <h2><span class="icon">⚖️</span>Operador ANY (= SOME)</h2>
+          <div class="definition-box">
+            <p><code>ANY</code> compara un valor con <strong>cada uno</strong> de los valores del conjunto. La condición es <strong>verdadera si se cumple con al menos uno</strong>.</p>
+          </div>
+          <div class="code-example fragment">
+            <h4>Estructura</h4>
+            <pre><code class="sql">WHERE columna OPERADOR ANY (subconsulta)</code></pre>
+          </div>
+          <div class="code-example fragment">
+            <h4>Ejemplo: películas más caras que ALGUNA película de animación</h4>
+            <pre><code class="sql">-- categoria_id = 7 es Animación
+SELECT titulo, precio_alquiler
+FROM pelicula
+WHERE precio_alquiler > ANY (
+    SELECT precio_alquiler
+    FROM pelicula
+    WHERE categoria_id = 7
+)
+AND categoria_id != 7;</code></pre>
+          </div>
+          <div class="fragment tip-box">
+            <p><strong>💡 Equivalencia:</strong> <code>> ANY (subconsulta)</code> es equivalente a <code>> MIN(subconsulta)</code> cuando la subconsulta es escalable. <code>= ANY</code> es equivalente a <code>IN</code>.</p>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 17 — Operador ALL ══ -->
+        <section>
+          <div class="bloque-pill" style="background: linear-gradient(135deg, #bf360c, #e64a19);">Bloque 3 · ANY / ALL</div>
+          <h2><span class="icon">🔒</span>Operador ALL</h2>
+          <div class="definition-box">
+            <p><code>ALL</code> compara un valor con <strong>todos</strong> los valores del conjunto. La condición es verdadera solo si se cumple con <strong>todos y cada uno</strong>.</p>
+          </div>
+          <div class="code-example fragment">
+            <h4>Estructura</h4>
+            <pre><code class="sql">WHERE columna OPERADOR ALL (subconsulta)</code></pre>
+          </div>
+          <div class="code-example fragment">
+            <h4>Ejemplo: películas más caras que TODAS las de animación</h4>
+            <pre><code class="sql">-- Devuelve películas cuyo precio supera el precio más alto de Animación
+SELECT titulo, precio_alquiler
+FROM pelicula
+WHERE precio_alquiler > ALL (
+    SELECT precio_alquiler
+    FROM pelicula
+    WHERE categoria_id = 7
+);</code></pre>
+          </div>
+          <div class="fragment tip-box">
+            <p><strong>💡 Equivalencia:</strong> <code>> ALL (subconsulta)</code> es lo mismo que <code>> MAX(subconsulta)</code>. <code>!= ALL</code> es equivalente a <code>NOT IN</code>.</p>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 18 — Comparativa ANY vs ALL ══ -->
+        <section>
+          <div class="bloque-pill" style="background: linear-gradient(135deg, #bf360c, #e64a19);">Bloque 3 · ANY / ALL</div>
+          <h2><span class="icon">🆚</span>ANY vs ALL: Resumen</h2>
+          <table class="compare-table fragment">
+            <thead>
+              <tr>
+                <th>Operador</th>
+                <th>Condición verdadera cuando...</th>
+                <th>Equivalencia</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>> ANY</code></td>
+                <td>el valor es mayor que <strong>alguno</strong> del conjunto</td>
+                <td><code>> MIN(...)</code></td>
+              </tr>
+              <tr>
+                <td><code>> ALL</code></td>
+                <td>el valor es mayor que <strong>todos</strong> los del conjunto</td>
+                <td><code>> MAX(...)</code></td>
+              </tr>
+              <tr>
+                <td><code>= ANY</code></td>
+                <td>el valor es igual a <strong>alguno</strong> del conjunto</td>
+                <td><code>IN (...)</code></td>
+              </tr>
+              <tr>
+                <td><code>!= ALL</code></td>
+                <td>el valor es distinto a <strong>todos</strong> los del conjunto</td>
+                <td><code>NOT IN (...)</code></td>
+              </tr>
+              <tr>
+                <td><code>< ANY</code></td>
+                <td>el valor es menor que <strong>alguno</strong> del conjunto</td>
+                <td><code>< MAX(...)</code></td>
+              </tr>
+              <tr>
+                <td><code>< ALL</code></td>
+                <td>el valor es menor que <strong>todos</strong> los del conjunto</td>
+                <td><code>< MIN(...)</code></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="fragment tip-box" style="margin-top: 18px;">
+            <p><strong>💡 Consejo:</strong> Usa <code>MIN()</code> / <code>MAX()</code> cuando la subconsulta es una tabla entera, y <code>ANY</code> / <code>ALL</code> cuando ya tienes la subconsulta escrita con <code>WHERE</code>. El resultado es idéntico.</p>
+          </div>
+        </section>
+
+        <!-- ══ BLOQUE 4 — HEADER ══ -->
+        <section data-background-gradient="linear-gradient(135deg, #4a148c 0%, #7b1fa2 50%, #9c27b0 100%)">
+          <div style="text-align: center;">
+            <div style="font-size: 4em; margin-bottom: 20px;">📊</div>
+            <h2 class="white-title" style="font-size: 2em;">Bloque 4</h2>
+            <h3 class="white-title" style="font-weight: 400; opacity: 0.9;">Subconsultas en FROM</h3>
+            <p style="color: rgba(255,255,255,0.65); margin-top: 30px;">Tablas derivadas — la subconsulta como tabla</p>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 19 — Subconsultas en FROM ══ -->
+        <section>
+          <div class="bloque-pill" style="background: linear-gradient(135deg, #4a148c, #7b1fa2);">Bloque 4 · Subconsultas en FROM</div>
+          <h2><span class="icon">📊</span>Tablas Derivadas</h2>
+          <div class="definition-box">
+            <p>Cuando una subconsulta aparece en la cláusula <code>FROM</code>, su resultado actúa como una <strong>tabla temporal</strong>. Se llama <strong>tabla derivada</strong>.</p>
+            <p style="margin-top: 8px;">Debe tener siempre un <strong>alias</strong> (nombre temporal).</p>
+          </div>
+          <div class="code-example fragment">
+            <h4>Estructura</h4>
+            <pre><code class="sql">SELECT columnas
+FROM (
+    SELECT ...
+    FROM tabla
+    WHERE ...
+) AS alias_tabla
+WHERE condición;</code></pre>
+          </div>
+          <div class="fragment warning-box">
+            <p>⚠️ El alias <code>AS alias_tabla</code> es <strong>obligatorio</strong> en MySQL. Sin él, obtendrás un error de sintaxis.</p>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 20 — Ejemplo tabla derivada ══ -->
+        <section>
+          <div class="bloque-pill" style="background: linear-gradient(135deg, #4a148c, #7b1fa2);">Bloque 4 · Subconsultas en FROM</div>
+          <h2><span class="icon">🗃️</span>Ejemplo: Categorías por Encima del Promedio</h2>
+          <p>¿Qué categorías tienen un precio medio superior al precio medio global?</p>
+          <div class="code-example fragment">
+            <h4>Con tabla derivada</h4>
+            <pre><code class="sql">SELECT resumen.categoria_id, resumen.precio_medio
+FROM (
+    SELECT categoria_id,
+           AVG(precio_alquiler) AS precio_medio,
+           COUNT(*)             AS num_peliculas
+    FROM pelicula
+    GROUP BY categoria_id
+) AS resumen
+WHERE resumen.precio_medio > (
+    SELECT AVG(precio_alquiler)
+    FROM pelicula
+)
+ORDER BY resumen.precio_medio DESC;</code></pre>
+          </div>
+          <div class="fragment" style="margin-top: 15px;">
+            <p>La tabla derivada <code>resumen</code> calcula el precio medio por categoría. Luego la consulta externa filtra por encima del promedio global.</p>
+          </div>
+          <div class="fragment info-box">
+            <p><strong>Útil para:</strong> aplicar <code>WHERE</code> sobre el resultado de un <code>GROUP BY</code>, algo que no puedes hacer directamente en <code>HAVING</code> cuando necesitas mezclar niveles de agregación.</p>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 21 — Tabla derivada con JOIN ══ -->
+        <section>
+          <div class="bloque-pill" style="background: linear-gradient(135deg, #4a148c, #7b1fa2);">Bloque 4 · Subconsultas en FROM</div>
+          <h2><span class="icon">🔗</span>Tabla Derivada con JOIN</h2>
+          <p>Las tablas derivadas se pueden combinar con JOINs como cualquier tabla.</p>
+          <div class="code-example fragment">
+            <h4>Ingresos totales por categoría (con nombre)</h4>
+            <pre><code class="sql">SELECT c.nombre AS categoria,
+       estadisticas.total_alquileres,
+       estadisticas.ingresos_totales
+FROM categoria c
+JOIN (
+    SELECT p.categoria_id,
+           COUNT(a.alquiler_id)     AS total_alquileres,
+           SUM(a.precio_pagado)     AS ingresos_totales
+    FROM pelicula p
+    JOIN alquiler a ON p.pelicula_id = a.pelicula_id
+    GROUP BY p.categoria_id
+) AS estadisticas ON c.categoria_id = estadisticas.categoria_id
+ORDER BY estadisticas.ingresos_totales DESC;</code></pre>
+          </div>
+          <div class="fragment success-box">
+            <p>✅ Este patrón es muy potente: calcula métricas agregadas en la subconsulta y luego enriquece el resultado con datos de otras tablas mediante JOIN.</p>
+          </div>
+        </section>
+
+        <!-- ══ BLOQUE 5 — HEADER ══ -->
+        <section data-background-gradient="linear-gradient(135deg, #e65100 0%, #f57c00 50%, #ff9800 100%)">
+          <div style="text-align: center;">
+            <div style="font-size: 4em; margin-bottom: 20px;">📦</div>
+            <h2 class="white-title" style="font-size: 2em;">Bloque 5</h2>
+            <h3 class="white-title" style="font-weight: 400; opacity: 0.9;">Subconsultas en HAVING</h3>
+            <p style="color: rgba(255,255,255,0.65); margin-top: 30px;">Filtrar grupos usando subconsultas</p>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 22 — HAVING con subconsulta ══ -->
+        <section>
+          <div class="bloque-pill" style="background: linear-gradient(135deg, #e65100, #f57c00);">Bloque 5 · Subconsultas en HAVING</div>
+          <h2><span class="icon">📦</span>Subconsultas en HAVING</h2>
+          <div class="definition-box">
+            <p><code>HAVING</code> filtra <strong>grupos</strong> (como <code>WHERE</code> filtra filas). Una subconsulta en <code>HAVING</code> permite comparar una función de agregación del grupo con un valor calculado dinámicamente.</p>
+          </div>
+          <div class="code-example fragment">
+            <h4>Categorías con más películas que la media de películas por categoría</h4>
+            <pre><code class="sql">SELECT categoria_id, COUNT(*) AS num_peliculas
+FROM pelicula
+GROUP BY categoria_id
+HAVING COUNT(*) > (
+    SELECT AVG(conteo)
+    FROM (
+        SELECT COUNT(*) AS conteo
+        FROM pelicula
+        GROUP BY categoria_id
+    ) AS subcuentas
+);</code></pre>
+          </div>
+          <div class="fragment tip-box">
+            <p><strong>💡 Nota:</strong> Para calcular el promedio de un COUNT necesitamos una tabla derivada (subconsulta dentro de subconsulta), ya que no se puede hacer <code>AVG(COUNT(*))</code> directamente.</p>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 23 — HAVING: ejemplo más directo ══ -->
+        <section>
+          <div class="bloque-pill" style="background: linear-gradient(135deg, #e65100, #f57c00);">Bloque 5 · Subconsultas en HAVING</div>
+          <h2><span class="icon">💵</span>HAVING: Ingresos sobre Umbral</h2>
+          <p>Clientes cuyos ingresos totales superen el gasto medio de todos los clientes:</p>
+          <div class="code-example fragment">
+            <pre><code class="sql">SELECT c.nombre,
+       c.apellido,
+       SUM(a.precio_pagado) AS gasto_total
+FROM cliente c
+JOIN alquiler a ON c.cliente_id = a.cliente_id
+GROUP BY c.cliente_id, c.nombre, c.apellido
+HAVING SUM(a.precio_pagado) > (
+    SELECT AVG(gasto_por_cliente)
+    FROM (
+        SELECT SUM(precio_pagado) AS gasto_por_cliente
+        FROM alquiler
+        GROUP BY cliente_id
+    ) AS gastos
+)
+ORDER BY gasto_total DESC;</code></pre>
+          </div>
+          <div class="fragment success-box">
+            <p>✅ Resultado: solo los clientes cuyo gasto total esté por encima del gasto promedio entre todos los clientes.</p>
+          </div>
+        </section>
+
+        <!-- ══ BLOQUE 6 — HEADER ══ -->
+        <section data-background-gradient="linear-gradient(135deg, #880e4f 0%, #ad1457 50%, #e91e63 100%)">
+          <div style="text-align: center;">
+            <div style="font-size: 4em; margin-bottom: 20px;">🔗</div>
+            <h2 class="white-title" style="font-size: 2em;">Bloque 6</h2>
+            <h3 class="white-title" style="font-weight: 400; opacity: 0.9;">Subconsultas Correlacionadas</h3>
+            <p style="color: rgba(255,255,255,0.65); margin-top: 30px;">La subconsulta depende de la consulta externa</p>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 24 — ¿Qué son? ══ -->
+        <section>
+          <div class="bloque-pill" style="background: linear-gradient(135deg, #880e4f, #ad1457);">Bloque 6 · Subconsultas Correlacionadas</div>
+          <h2><span class="icon">🔗</span>¿Qué es una Subconsulta Correlacionada?</h2>
+          <div class="definition-box">
+            <p>Una subconsulta <strong>correlacionada</strong> hace referencia a columnas de la <strong>consulta externa</strong>. No puede ejecutarse de forma independiente.</p>
+          </div>
+          <div class="fragment" style="margin-top: 20px;">
+            <div class="two-col">
+              <div class="subquery-card">
+                <div class="icon">🔓</div>
+                <h3>No correlacionada</h3>
+                <p>Independiente. Se ejecuta <strong>una vez</strong>, el resultado se reutiliza para todas las filas.</p>
+              </div>
+              <div class="subquery-card red">
+                <div class="icon">🔗</div>
+                <h3>Correlacionada</h3>
+                <p>Depende de la fila actual. Se ejecuta <strong>una vez por cada fila</strong> de la consulta externa.</p>
+              </div>
+            </div>
+          </div>
+          <div class="fragment warning-box" style="margin-top: 20px;">
+            <p>⚠️ Las subconsultas correlacionadas pueden ser <strong>lentas</strong> en tablas grandes porque se ejecutan N veces (una por fila). Cuando sea posible, prefiere un <code>JOIN</code>.</p>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 25 — Ejecución paso a paso ══ -->
+        <section>
+          <div class="bloque-pill" style="background: linear-gradient(135deg, #880e4f, #ad1457);">Bloque 6 · Subconsultas Correlacionadas</div>
+          <h2><span class="icon">⚙️</span>Cómo se Ejecuta (Paso a Paso)</h2>
+          <p>¿Películas cuyo precio supera el precio medio <strong>de su propia categoría</strong>?</p>
+          <div class="code-example fragment">
+            <h4>Subconsulta correlacionada con alias de tabla</h4>
+            <pre><code class="sql">SELECT p1.titulo,
+       p1.precio_alquiler,
+       p1.categoria_id
+FROM pelicula p1
+WHERE p1.precio_alquiler > (
+    SELECT AVG(p2.precio_alquiler)
+    FROM pelicula p2
+    WHERE p2.categoria_id = p1.categoria_id  -- ← correlación
+);</code></pre>
+          </div>
+          <div class="fragment" style="margin-top: 18px;">
+            <div class="steps-container">
+              <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-content">La consulta externa toma la <strong>primera fila</strong> de <code>pelicula</code> (p1), por ejemplo: Matrix con categoria_id=5</div>
+              </div>
+              <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-content">Ejecuta la subconsulta <strong>con ese categoria_id=5</strong>: calcula el precio medio de Ciencia Ficción</div>
+              </div>
+              <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-content">Compara el precio de Matrix con ese promedio. Si supera → se incluye en el resultado</div>
+              </div>
+              <div class="step">
+                <div class="step-num">4</div>
+                <div class="step-content">Repite para la <strong>siguiente fila</strong> de p1, y así sucesivamente</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 26 — Correlacionada en SELECT ══ -->
+        <section>
+          <div class="bloque-pill" style="background: linear-gradient(135deg, #880e4f, #ad1457);">Bloque 6 · Subconsultas Correlacionadas</div>
+          <h2><span class="icon">🗂️</span>Correlacionada en la Cláusula SELECT</h2>
+          <div class="definition-box">
+            <p>Una subconsulta correlacionada en el <code>SELECT</code> calcula <strong>un valor por cada fila</strong> del resultado.</p>
+          </div>
+          <div class="code-example fragment">
+            <h4>Mostrar cuántas veces ha sido alquilada cada película</h4>
+            <pre><code class="sql">SELECT p.titulo,
+       p.precio_alquiler,
+       (
+           SELECT COUNT(*)
+           FROM alquiler a
+           WHERE a.pelicula_id = p.pelicula_id
+       ) AS num_alquileres
+FROM pelicula p
+ORDER BY num_alquileres DESC;</code></pre>
+          </div>
+          <div class="fragment tip-box">
+            <p><strong>💡 Alternativa equivalente con JOIN:</strong></p>
+          </div>
+          <div class="code-example fragment">
+            <pre><code class="sql">SELECT p.titulo, p.precio_alquiler, COUNT(a.alquiler_id) AS num_alquileres
+FROM pelicula p
+LEFT JOIN alquiler a ON p.pelicula_id = a.pelicula_id
+GROUP BY p.pelicula_id, p.titulo, p.precio_alquiler
+ORDER BY num_alquileres DESC;</code></pre>
+          </div>
+        </section>
+
+        <!-- ══ BLOQUE 7 — HEADER ══ -->
+        <section data-background-gradient="linear-gradient(135deg, #1b5e20 0%, #2e7d32 50%, #43a047 100%)">
+          <div style="text-align: center;">
+            <div style="font-size: 4em; margin-bottom: 20px;">✅</div>
+            <h2 class="white-title" style="font-size: 2em;">Bloque 7</h2>
+            <h3 class="white-title" style="font-weight: 400; opacity: 0.9;">EXISTS y NOT EXISTS</h3>
+            <p style="color: rgba(255,255,255,0.65); margin-top: 30px;">¿Existe al menos una fila que cumpla la condición?</p>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 27 — Operador EXISTS ══ -->
+        <section>
+          <div class="bloque-pill" style="background: linear-gradient(135deg, #1b5e20, #2e7d32);">Bloque 7 · EXISTS / NOT EXISTS</div>
+          <h2><span class="icon">✅</span>Operador EXISTS</h2>
+          <div class="definition-box">
+            <p><code>EXISTS</code> devuelve <strong>TRUE</strong> si la subconsulta devuelve <strong>al menos una fila</strong>. De lo contrario, devuelve FALSE.</p>
+            <p style="margin-top: 8px;">Es siempre una subconsulta <strong>correlacionada</strong>.</p>
+          </div>
+          <div class="code-example fragment">
+            <h4>Estructura</h4>
+            <pre><code class="sql">SELECT columnas
+FROM tabla_externa te
+WHERE EXISTS (
+    SELECT 1   -- el valor seleccionado no importa, solo si hay filas
+    FROM tabla_interna ti
+    WHERE ti.columna = te.columna  -- correlación
+);</code></pre>
+          </div>
+          <div class="fragment info-box">
+            <p><strong>Convención:</strong> se suele escribir <code>SELECT 1</code> o <code>SELECT *</code> dentro de EXISTS porque el valor real no importa — solo importa si hay o no filas.</p>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 28 — EXISTS: ejemplo ══ -->
+        <section>
+          <div class="bloque-pill" style="background: linear-gradient(135deg, #1b5e20, #2e7d32);">Bloque 7 · EXISTS / NOT EXISTS</div>
+          <h2><span class="icon">🎬</span>EXISTS: Ejemplos</h2>
+          <div class="code-example fragment">
+            <h4>Clientes que han realizado al menos un alquiler</h4>
+            <pre><code class="sql">SELECT c.nombre, c.apellido
+FROM cliente c
+WHERE EXISTS (
+    SELECT 1
+    FROM alquiler a
+    WHERE a.cliente_id = c.cliente_id
+);</code></pre>
+          </div>
+          <div class="code-example fragment">
+            <h4>Películas alquiladas por clientes de más de 2 alquileres totales</h4>
+            <pre><code class="sql">SELECT DISTINCT p.titulo
+FROM pelicula p
+WHERE EXISTS (
+    SELECT 1
+    FROM alquiler a
+    JOIN cliente c ON a.cliente_id = c.cliente_id
+    WHERE a.pelicula_id = p.pelicula_id
+      AND (
+          SELECT COUNT(*) FROM alquiler a2
+          WHERE a2.cliente_id = c.cliente_id
+      ) > 2
+);</code></pre>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 29 — NOT EXISTS ══ -->
+        <section>
+          <div class="bloque-pill" style="background: linear-gradient(135deg, #1b5e20, #2e7d32);">Bloque 7 · EXISTS / NOT EXISTS</div>
+          <h2><span class="icon">🚫</span>NOT EXISTS</h2>
+          <div class="definition-box">
+            <p><code>NOT EXISTS</code> devuelve <strong>TRUE</strong> si la subconsulta <strong>no devuelve ninguna fila</strong>. Es la forma más segura de buscar "lo que no está".</p>
+          </div>
+          <div class="code-example fragment">
+            <h4>Clientes que NUNCA han alquilado (comparativa)</h4>
+            <pre><code class="sql">-- Con NOT IN (peligro con NULLs):
+SELECT nombre FROM cliente
+WHERE cliente_id NOT IN (SELECT DISTINCT cliente_id FROM alquiler);
+
+-- Con NOT EXISTS (seguro con NULLs):
+SELECT c.nombre, c.apellido
+FROM cliente c
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM alquiler a
+    WHERE a.cliente_id = c.cliente_id
+);</code></pre>
+          </div>
+          <div class="fragment success-box">
+            <p>✅ <code>NOT EXISTS</code> maneja correctamente los valores NULL porque no compara valores — solo comprueba si hay filas.</p>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 30 — EXISTS vs IN: cuándo usar cada uno ══ -->
+        <section>
+          <div class="bloque-pill" style="background: linear-gradient(135deg, #1b5e20, #2e7d32);">Bloque 7 · EXISTS / NOT EXISTS</div>
+          <h2><span class="icon">🆚</span>EXISTS vs IN: ¿Cuál Elegir?</h2>
+          <table class="compare-table fragment">
+            <thead>
+              <tr><th>Criterio</th><th>IN</th><th>EXISTS</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Si la subconsulta devuelve <strong>pocas filas</strong></td>
+                <td>✅ Eficiente</td>
+                <td>Similar</td>
+              </tr>
+              <tr>
+                <td>Si la subconsulta devuelve <strong>muchas filas</strong></td>
+                <td>⚠️ Puede ser lento</td>
+                <td>✅ Más eficiente</td>
+              </tr>
+              <tr>
+                <td>Posibles <strong>valores NULL</strong> en la subconsulta</td>
+                <td>⚠️ Problema con NOT IN</td>
+                <td>✅ Seguro</td>
+              </tr>
+              <tr>
+                <td>Subconsulta <strong>correlacionada</strong></td>
+                <td>No aplica</td>
+                <td>✅ Diseñado para esto</td>
+              </tr>
+              <tr>
+                <td>Legibilidad para "¿existe al menos uno?"</td>
+                <td>Posible con IN</td>
+                <td>✅ Más expresivo</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="fragment tip-box" style="margin-top: 14px;">
+            <p><strong>💡 Regla práctica:</strong> usa <code>EXISTS</code> cuando quieres verificar la <em>existencia</em> de datos relacionados. Usa <code>IN</code> cuando tienes una lista concreta de valores o una subconsulta pequeña.</p>
+          </div>
+        </section>
+
+        <!-- ══ BLOQUE 8 — HEADER ══ -->
+        <section data-background-gradient="linear-gradient(135deg, #37474f 0%, #546e7a 50%, #78909c 100%)">
+          <div style="text-align: center;">
+            <div style="font-size: 4em; margin-bottom: 20px;">🪆</div>
+            <h2 class="white-title" style="font-size: 2em;">Bloque 8</h2>
+            <h3 class="white-title" style="font-weight: 400; opacity: 0.9;">Subconsultas Anidadas</h3>
+            <p style="color: rgba(255,255,255,0.65); margin-top: 30px;">Una subconsulta dentro de otra subconsulta</p>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 31 — Subconsultas anidadas ══ -->
+        <section>
+          <div class="bloque-pill" style="background: linear-gradient(135deg, #37474f, #546e7a);">Bloque 8 · Subconsultas Anidadas</div>
+          <h2><span class="icon">🪆</span>Subconsultas Anidadas</h2>
+          <div class="definition-box">
+            <p>Una subconsulta puede contener <strong>otra subconsulta</strong> en su interior. MySQL permite múltiples niveles de anidamiento (hasta 32 niveles).</p>
+          </div>
+          <div class="code-example fragment">
+            <h4>Clientes que han alquilado películas de la categoría más cara</h4>
+            <pre><code class="sql">SELECT DISTINCT c.nombre, c.apellido
+FROM cliente c
+WHERE c.cliente_id IN (
+    SELECT a.cliente_id
+    FROM alquiler a
+    WHERE a.pelicula_id IN (
+        SELECT p.pelicula_id
+        FROM pelicula p
+        WHERE p.categoria_id = (
+            SELECT categoria_id
+            FROM pelicula
+            GROUP BY categoria_id
+            ORDER BY AVG(precio_alquiler) DESC
+            LIMIT 1
+        )
+    )
+);</code></pre>
+          </div>
+          <div class="fragment tip-box">
+            <p><strong>💡 Lectura de adentro hacia afuera:</strong> 1) ¿Cuál es la categoría con precio medio más alto? 2) ¿Qué películas pertenecen a esa categoría? 3) ¿Quién las ha alquilado?</p>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 32 — Niveles de anidamiento ══ -->
+        <section>
+          <div class="bloque-pill" style="background: linear-gradient(135deg, #37474f, #546e7a);">Bloque 8 · Subconsultas Anidadas</div>
+          <h2><span class="icon">📐</span>Legibilidad con Indentación</h2>
+          <p>La clave para entender subconsultas complejas es <strong>indentarlas bien</strong>:</p>
+          <div class="code-example fragment">
+            <h4>Mismo ejemplo con indentación clara</h4>
+            <pre><code class="sql">-- Nivel 0: consulta principal
+SELECT DISTINCT c.nombre, c.apellido
+FROM cliente c
+WHERE c.cliente_id IN (
+
+    -- Nivel 1: clientes que alquilaron esas películas
+    SELECT a.cliente_id
+    FROM alquiler a
+    WHERE a.pelicula_id IN (
+
+        -- Nivel 2: películas de la categoría más cara (en media)
+        SELECT p.pelicula_id
+        FROM pelicula p
+        WHERE p.categoria_id = (
+
+            -- Nivel 3: categoría con precio medio más alto
+            SELECT categoria_id
+            FROM pelicula
+            GROUP BY categoria_id
+            ORDER BY AVG(precio_alquiler) DESC
+            LIMIT 1
+        )
+    )
+);</code></pre>
+          </div>
+          <div class="fragment warning-box">
+            <p>⚠️ Más de 3 niveles suele ser señal de que la consulta se puede reescribir con JOINs o CTEs para mejorar la legibilidad y el rendimiento.</p>
+          </div>
+        </section>
+
+        <!-- ══ BLOQUE 9 — HEADER ══ -->
+        <section data-background-gradient="linear-gradient(135deg, #006064 0%, #00838f 50%, #26c6da 100%)">
+          <div style="text-align: center;">
+            <div style="font-size: 4em; margin-bottom: 20px;">⚖️</div>
+            <h2 class="white-title" style="font-size: 2em;">Bloque 9</h2>
+            <h3 class="white-title" style="font-weight: 400; opacity: 0.9;">Subconsultas vs JOINs</h3>
+            <p style="color: rgba(255,255,255,0.65); margin-top: 30px;">¿Cuándo usar cada técnica?</p>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 33 — Subconsultas vs JOINs ══ -->
+        <section>
+          <div class="bloque-pill" style="background: linear-gradient(135deg, #006064, #00838f);">Bloque 9 · Subconsultas vs JOINs</div>
+          <h2><span class="icon">⚖️</span>Subconsultas vs JOINs</h2>
+          <p>Muchas consultas con subconsulta se pueden reescribir con JOIN y viceversa:</p>
+          <div class="code-example fragment">
+            <h4>Con subconsulta</h4>
+            <pre><code class="sql">SELECT nombre, apellido
+FROM cliente
+WHERE cliente_id IN (
+    SELECT DISTINCT cliente_id
+    FROM alquiler
+);</code></pre>
+          </div>
+          <div class="code-example fragment">
+            <h4>Equivalente con JOIN</h4>
+            <pre><code class="sql">SELECT DISTINCT c.nombre, c.apellido
+FROM cliente c
+JOIN alquiler a ON c.cliente_id = a.cliente_id;</code></pre>
+          </div>
+          <div class="fragment tip-box">
+            <p><strong>💡</strong> En muchos casos, el optimizador de MySQL convierte internamente el IN en un JOIN. El rendimiento suele ser equivalente, pero el JOIN es más explícito sobre las relaciones.</p>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 34 — Cuándo usar cada uno ══ -->
+        <section>
+          <div class="bloque-pill" style="background: linear-gradient(135deg, #006064, #00838f);">Bloque 9 · Subconsultas vs JOINs</div>
+          <h2><span class="icon">🗺️</span>Guía de Decisión</h2>
+          <table class="compare-table fragment">
+            <thead>
+              <tr><th>Situación</th><th>Recomienda</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Filtrar con un valor calculado (promedio, máximo...)</td>
+                <td>✅ <strong>Subconsulta escalar</strong></td>
+              </tr>
+              <tr>
+                <td>Buscar filas "que no tienen" equivalente</td>
+                <td>✅ <strong>NOT EXISTS</strong> o LEFT JOIN + IS NULL</td>
+              </tr>
+              <tr>
+                <td>Combinar datos de múltiples tablas</td>
+                <td>✅ <strong>JOIN</strong></td>
+              </tr>
+              <tr>
+                <td>Necesitas columnas de ambas tablas en el resultado</td>
+                <td>✅ <strong>JOIN</strong></td>
+              </tr>
+              <tr>
+                <td>Calcular métricas agregadas y luego filtrar</td>
+                <td>✅ <strong>Tabla derivada</strong> (subconsulta en FROM)</td>
+              </tr>
+              <tr>
+                <td>La subconsulta es compleja y reutilizable</td>
+                <td>✅ <strong>CTE (WITH)</strong> — más legible</td>
+              </tr>
+              <tr>
+                <td>Comprobar existencia de datos relacionados</td>
+                <td>✅ <strong>EXISTS</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- ══ SLIDE 35 — CTE: introducción ══ -->
+        <section>
+          <div class="bloque-pill" style="background: linear-gradient(135deg, #006064, #00838f);">Bloque 9 · Subconsultas vs JOINs</div>
+          <h2><span class="icon">📝</span>Introducción a WITH (CTE)</h2>
+          <div class="definition-box">
+            <p>Una <strong>CTE</strong> (<em>Common Table Expression</em>) es una subconsulta con nombre, declarada antes de la consulta principal con <code>WITH</code>. Más legible que subconsultas anidadas.</p>
+          </div>
+          <div class="code-example fragment">
+            <h4>Reescribir el ejemplo del Bloque 4 con CTE</h4>
+            <pre><code class="sql">-- Sin CTE (subconsulta en FROM):
+SELECT resumen.categoria_id, resumen.precio_medio
+FROM (
+    SELECT categoria_id, AVG(precio_alquiler) AS precio_medio
+    FROM pelicula GROUP BY categoria_id
+) AS resumen
+WHERE resumen.precio_medio > (SELECT AVG(precio_alquiler) FROM pelicula);
+
+-- Con CTE (más legible):
+WITH resumen AS (
+    SELECT categoria_id, AVG(precio_alquiler) AS precio_medio
+    FROM pelicula
+    GROUP BY categoria_id
+)
+SELECT categoria_id, precio_medio
+FROM resumen
+WHERE precio_medio > (SELECT AVG(precio_alquiler) FROM pelicula);</code></pre>
+          </div>
+          <div class="fragment success-box">
+            <p>✅ MySQL soporta CTEs desde la versión 8.0. Las CTEs hacen el código más fácil de leer y mantener.</p>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 36 — Buenas prácticas ══ -->
+        <section>
+          <h2><span class="icon">💎</span>Buenas Prácticas con Subconsultas</h2>
+          <div class="two-col fragment">
+            <div class="success-box">
+              <h3 style="color: #1b5e20 !important; margin-top: 0; background: none !important; padding: 0 !important; text-shadow: none !important;">✅ Haz esto</h3>
+              <ul style="font-size: 0.85em; text-align: left;">
+                <li>Indenta la subconsulta con claridad</li>
+                <li>Usa alias descriptivos en tablas derivadas</li>
+                <li>Usa <code>NOT EXISTS</code> en lugar de <code>NOT IN</code> cuando puedan existir NULLs</li>
+                <li>Verifica la subconsulta por separado antes de integrarla</li>
+                <li>Considera reescribir con CTE si hay 3+ niveles</li>
+                <li>Añade <code>LIMIT 1</code> en subconsultas escalares si sabes que hay un único resultado</li>
+              </ul>
+            </div>
+            <div class="danger-box">
+              <h3>❌ Evita esto</h3>
+              <ul style="font-size: 0.85em; text-align: left;">
+                <li>Subconsultas correlacionadas en tablas de millones de filas</li>
+                <li><code>NOT IN</code> sin protección contra NULL</li>
+                <li>Subconsultas escalar donde puede haber múltiples filas</li>
+                <li>Anidar más de 3 niveles sin usar CTEs</li>
+                <li>Usar subconsultas cuando un JOIN es más simple y equivalente</li>
+              </ul>
+            </div>
+          </div>
+          <div class="fragment tip-box" style="margin-top: 18px;">
+            <p><strong>💡 Truco de depuración:</strong> si una subconsulta da resultados inesperados, ejecútala <strong>sola</strong> primero, asegúrate de que devuelve lo que esperas, y luego intégrala en la consulta principal.</p>
+          </div>
+        </section>
+
+        <!-- ══ EJERCICIOS — HEADER ══ -->
+        <section data-background-gradient="linear-gradient(135deg, #4a148c 0%, #7b1fa2 50%, #ab47bc 100%)">
+          <div style="text-align: center;">
+            <div style="font-size: 4em; margin-bottom: 20px;">🏋️</div>
+            <h2 class="white-title" style="font-size: 2em;">Ejercicios Prácticos</h2>
+            <h3 class="white-title" style="font-weight: 400; opacity: 0.9;">MySQL Workbench — Base de datos Videoclub</h3>
+            <p style="color: rgba(255,255,255,0.65); margin-top: 30px;">Carga el script SQL antes de empezar</p>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE E0 — Setup ══ -->
+        <section>
+          <h2><span class="icon">⚙️</span>Preparación del Entorno</h2>
+          <p>Antes de los ejercicios, asegúrate de tener la base de datos cargada en MySQL Workbench:</p>
+          <div class="steps-container" style="margin-top: 20px;">
+            <div class="step">
+              <div class="step-num">1</div>
+              <div class="step-content">Abre <strong>MySQL Workbench</strong> y conéctate a tu servidor local</div>
+            </div>
+            <div class="step">
+              <div class="step-num">2</div>
+              <div class="step-content">Ejecuta el script de creación de la base de datos <code>videoclub</code> (init-database.sql adaptado a MySQL)</div>
+            </div>
+            <div class="step">
+              <div class="step-num">3</div>
+              <div class="step-content">Selecciona la base de datos: <code>USE videoclub;</code></div>
+            </div>
+            <div class="step">
+              <div class="step-num">4</div>
+              <div class="step-content">Verifica con <code>SHOW TABLES;</code> que tienes: <code>categoria</code>, <code>pelicula</code>, <code>actor</code>, <code>pelicula_actor</code>, <code>cliente</code>, <code>alquiler</code></div>
+            </div>
+          </div>
+          <div class="fragment info-box" style="margin-top: 18px;">
+            <p><strong>Recordatorio del esquema:</strong></p>
+            <p style="font-size: 0.82em; font-family: monospace;">
+              pelicula(pelicula_id, titulo, año_lanzamiento, duracion, clasificacion, precio_alquiler, categoria_id)<br>
+              alquiler(alquiler_id, pelicula_id, cliente_id, fecha_alquiler, fecha_devolucion, precio_pagado)<br>
+              cliente(cliente_id, nombre, apellido, email, activo)<br>
+              actor(actor_id, nombre, apellido, nacionalidad)<br>
+              pelicula_actor(pelicula_id, actor_id, personaje)
+            </p>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE E1 — Ejercicio 1 ══ -->
+        <section>
+          <h2><span class="icon">🏋️</span>Ejercicio 1 — Nivel Básico</h2>
+          <div class="ejercicio-box">
+            <h3>📝 Enunciados</h3>
+            <ol style="font-size: 0.88em; line-height: 1.9;">
+              <li>Muestra los títulos y precios de alquiler de las películas cuyo precio sea <strong>igual o superior al precio máximo</strong> de todas las películas de animación (<code>categoria_id = 7</code>).</li>
+              <li>Lista los clientes (nombre y apellido) que han realizado <strong>más alquileres que la media</strong> de alquileres por cliente.</li>
+              <li>Obtén el nombre de los actores que <strong>no han actuado en ninguna película</strong> de terror (<code>categoria_id = 4</code>).</li>
+            </ol>
+          </div>
+          <div class="fragment solucion-box">
+            <h3>✅ Soluciones</h3>
+            <div class="code-example">
+              <h4>1 — Películas al precio máximo de animación</h4>
+              <pre><code class="sql">SELECT titulo, precio_alquiler FROM pelicula
+WHERE precio_alquiler >= (
+    SELECT MAX(precio_alquiler) FROM pelicula WHERE categoria_id = 7
+);</code></pre>
+            </div>
+            <div class="code-example">
+              <h4>2 — Clientes con más alquileres que la media</h4>
+              <pre><code class="sql">SELECT c.nombre, c.apellido
+FROM cliente c
+WHERE (
+    SELECT COUNT(*) FROM alquiler a WHERE a.cliente_id = c.cliente_id
+) > (
+    SELECT AVG(total) FROM (
+        SELECT COUNT(*) AS total FROM alquiler GROUP BY cliente_id
+    ) AS cuentas
+);</code></pre>
+            </div>
+            <div class="code-example">
+              <h4>3 — Actores sin películas de terror</h4>
+              <pre><code class="sql">SELECT nombre, apellido FROM actor
+WHERE actor_id NOT IN (
+    SELECT pa.actor_id
+    FROM pelicula_actor pa
+    JOIN pelicula p ON pa.pelicula_id = p.pelicula_id
+    WHERE p.categoria_id = 4
+);</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE E2 — Ejercicio 2 ══ -->
+        <section>
+          <h2><span class="icon">🏋️</span>Ejercicio 2 — Nivel Medio</h2>
+          <div class="ejercicio-box">
+            <h3>📝 Enunciados</h3>
+            <ol style="font-size: 0.88em; line-height: 1.9;">
+              <li>Muestra las películas cuya duración sea <strong>superior a la duración de TODAS las películas de comedia</strong> (<code>categoria_id = 2</code>).</li>
+              <li>Encuentra los clientes que han alquilado <strong>alguna</strong> película con precio de alquiler superior a 4€. Usa el operador <code>ANY</code> en la subconsulta.</li>
+              <li>Obtén las categorías (solo el <code>categoria_id</code>) en las que el precio medio de alquiler es <strong>superior al precio medio global</strong>. Muestra también el precio medio de cada categoría.</li>
+            </ol>
+          </div>
+          <div class="fragment solucion-box">
+            <h3>✅ Soluciones</h3>
+            <div class="code-example">
+              <h4>1 — Más largas que todas las comedias</h4>
+              <pre><code class="sql">SELECT titulo, duracion FROM pelicula
+WHERE duracion > ALL (
+    SELECT duracion FROM pelicula WHERE categoria_id = 2
+)
+ORDER BY duracion DESC;</code></pre>
+            </div>
+            <div class="code-example">
+              <h4>2 — Clientes con ANY precio > 4</h4>
+              <pre><code class="sql">SELECT DISTINCT c.nombre, c.apellido
+FROM cliente c
+JOIN alquiler a ON c.cliente_id = a.cliente_id
+WHERE a.precio_pagado > ANY (
+    SELECT precio_alquiler FROM pelicula WHERE precio_alquiler > 4
+);</code></pre>
+            </div>
+            <div class="code-example">
+              <h4>3 — Categorías con precio medio superior al global</h4>
+              <pre><code class="sql">SELECT categoria_id, ROUND(AVG(precio_alquiler), 2) AS precio_medio
+FROM pelicula
+GROUP BY categoria_id
+HAVING AVG(precio_alquiler) > (
+    SELECT AVG(precio_alquiler) FROM pelicula
+)
+ORDER BY precio_medio DESC;</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE E3 — Ejercicio 3 ══ -->
+        <section>
+          <h2><span class="icon">🏋️</span>Ejercicio 3 — EXISTS y Correlacionadas</h2>
+          <div class="ejercicio-box">
+            <h3>📝 Enunciados</h3>
+            <ol style="font-size: 0.88em; line-height: 1.9;">
+              <li>Usa <code>EXISTS</code> para listar los clientes que tienen <strong>alquileres sin devolver</strong> (fecha_devolucion IS NULL).</li>
+              <li>Usa <code>NOT EXISTS</code> para listar las películas que <strong>nunca han sido alquiladas</strong>.</li>
+              <li>Con una subconsulta correlacionada, muestra cada película junto al <strong>número de veces que ha sido alquilada</strong> y el <strong>total de ingresos generados</strong> por esa película.</li>
+            </ol>
+          </div>
+          <div class="fragment solucion-box">
+            <h3>✅ Soluciones</h3>
+            <div class="code-example">
+              <h4>1 — Clientes con alquileres pendientes (EXISTS)</h4>
+              <pre><code class="sql">SELECT c.nombre, c.apellido
+FROM cliente c
+WHERE EXISTS (
+    SELECT 1 FROM alquiler a
+    WHERE a.cliente_id = c.cliente_id
+      AND a.fecha_devolucion IS NULL
+);</code></pre>
+            </div>
+            <div class="code-example">
+              <h4>2 — Películas nunca alquiladas (NOT EXISTS)</h4>
+              <pre><code class="sql">SELECT p.titulo
+FROM pelicula p
+WHERE NOT EXISTS (
+    SELECT 1 FROM alquiler a
+    WHERE a.pelicula_id = p.pelicula_id
+);</code></pre>
+            </div>
+            <div class="code-example">
+              <h4>3 — Estadísticas por película (correlacionada en SELECT)</h4>
+              <pre><code class="sql">SELECT
+    p.titulo,
+    (SELECT COUNT(*) FROM alquiler a WHERE a.pelicula_id = p.pelicula_id)
+        AS num_alquileres,
+    (SELECT IFNULL(SUM(precio_pagado), 0) FROM alquiler a
+        WHERE a.pelicula_id = p.pelicula_id)
+        AS ingresos_totales
+FROM pelicula p
+ORDER BY num_alquileres DESC;</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE E4 — Ejercicio 4 ══ -->
+        <section>
+          <h2><span class="icon">🏋️</span>Ejercicio 4 — Tablas Derivadas</h2>
+          <div class="ejercicio-box">
+            <h3>📝 Enunciados</h3>
+            <ol style="font-size: 0.88em; line-height: 1.9;">
+              <li>Usando una subconsulta en <code>FROM</code>, obtén el <strong>top 3 de clientes</strong> con más ingresos generados para el videoclub (más alquileres × precio). Muestra nombre, apellido y total gastado.</li>
+              <li>Con una tabla derivada, obtén qué <strong>actores son los más populares</strong>: los que han actuado en las películas más alquiladas. Muestra nombre, apellido y total de alquileres de sus películas.</li>
+            </ol>
+          </div>
+          <div class="fragment solucion-box">
+            <h3>✅ Soluciones</h3>
+            <div class="code-example">
+              <h4>1 — Top 3 clientes por gasto</h4>
+              <pre><code class="sql">SELECT c.nombre, c.apellido, gasto.total_gastado
+FROM cliente c
+JOIN (
+    SELECT cliente_id, SUM(precio_pagado) AS total_gastado
+    FROM alquiler
+    GROUP BY cliente_id
+) AS gasto ON c.cliente_id = gasto.cliente_id
+ORDER BY gasto.total_gastado DESC
+LIMIT 3;</code></pre>
+            </div>
+            <div class="code-example">
+              <h4>2 — Actores más populares por alquileres</h4>
+              <pre><code class="sql">SELECT a.nombre, a.apellido,
+       SUM(popularidad.alquileres) AS total_alquileres_peliculas
+FROM actor a
+JOIN pelicula_actor pa ON a.actor_id = pa.actor_id
+JOIN (
+    SELECT pelicula_id, COUNT(*) AS alquileres
+    FROM alquiler
+    GROUP BY pelicula_id
+) AS popularidad ON pa.pelicula_id = popularidad.pelicula_id
+GROUP BY a.actor_id, a.nombre, a.apellido
+ORDER BY total_alquileres_peliculas DESC
+LIMIT 10;</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE E5 — Ejercicio 5 Desafío ══ -->
+        <section>
+          <h2><span class="icon">🔥</span>Ejercicio 5 — Desafío Final</h2>
+          <div class="ejercicio-box">
+            <h3>📝 Enunciados avanzados</h3>
+            <ol style="font-size: 0.86em; line-height: 1.9;">
+              <li>Obtén la lista de películas cuyo precio de alquiler supera el promedio de su categoría Y que además han sido alquiladas al menos una vez. Muestra título, precio, categoría y número de alquileres.</li>
+              <li>Encuentra los clientes "leales": los que han alquilado películas de <strong>al menos 3 categorías distintas</strong>. Muestra nombre, apellido y número de categorías distintas.</li>
+              <li>Reescribe la consulta del enunciado 1 usando una CTE (<code>WITH</code>) en lugar de subconsultas anidadas.</li>
+            </ol>
+          </div>
+          <div class="fragment solucion-box">
+            <h3>✅ Soluciones</h3>
+            <div class="code-example">
+              <h4>1 — Películas sobre promedio de su categoría y con alquileres</h4>
+              <pre><code class="sql">SELECT p.titulo, p.precio_alquiler, p.categoria_id,
+    (SELECT COUNT(*) FROM alquiler a WHERE a.pelicula_id = p.pelicula_id) AS alquileres
+FROM pelicula p
+WHERE p.precio_alquiler > (
+    SELECT AVG(p2.precio_alquiler)
+    FROM pelicula p2
+    WHERE p2.categoria_id = p.categoria_id
+)
+AND EXISTS (
+    SELECT 1 FROM alquiler a WHERE a.pelicula_id = p.pelicula_id
+)
+ORDER BY alquileres DESC;</code></pre>
+            </div>
+            <div class="code-example">
+              <h4>2 — Clientes con 3+ categorías distintas alquiladas</h4>
+              <pre><code class="sql">SELECT c.nombre, c.apellido,
+    COUNT(DISTINCT p.categoria_id) AS categorias_distintas
+FROM cliente c
+JOIN alquiler a ON c.cliente_id = a.cliente_id
+JOIN pelicula p ON a.pelicula_id = p.pelicula_id
+GROUP BY c.cliente_id, c.nombre, c.apellido
+HAVING COUNT(DISTINCT p.categoria_id) >= 3
+ORDER BY categorias_distintas DESC;</code></pre>
+            </div>
+            <div class="code-example">
+              <h4>3 — Reescritura con CTE</h4>
+              <pre><code class="sql">WITH promedio_categoria AS (
+    SELECT categoria_id, AVG(precio_alquiler) AS precio_medio
+    FROM pelicula
+    GROUP BY categoria_id
+),
+alquileres_pelicula AS (
+    SELECT pelicula_id, COUNT(*) AS num_alquileres
+    FROM alquiler
+    GROUP BY pelicula_id
+)
+SELECT p.titulo, p.precio_alquiler, p.categoria_id,
+       IFNULL(ap.num_alquileres, 0) AS alquileres
+FROM pelicula p
+JOIN promedio_categoria pc ON p.categoria_id = pc.categoria_id
+LEFT JOIN alquileres_pelicula ap ON p.pelicula_id = ap.pelicula_id
+WHERE p.precio_alquiler > pc.precio_medio
+  AND ap.num_alquileres IS NOT NULL
+ORDER BY ap.num_alquileres DESC;</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 37 — Resumen ══ -->
+        <section>
+          <h2><span class="icon">📖</span>Resumen de la Clase</h2>
+          <div class="two-col fragment" style="font-size: 0.85em;">
+            <div>
+              <div class="success-box">
+                <p>🎯 <strong>Subconsulta escalar</strong><br>Un valor → operadores <code>=</code>, <code>></code>...</p>
+              </div>
+              <div class="info-box" style="margin-top: 10px;">
+                <p>📋 <strong>IN / NOT IN</strong><br>Lista de valores → filtrar filas</p>
+              </div>
+              <div class="tip-box" style="margin-top: 10px;">
+                <p>⚖️ <strong>ANY / ALL</strong><br>Comparar contra un conjunto</p>
+              </div>
+              <div class="warning-box" style="margin-top: 10px;">
+                <p>📊 <strong>FROM (tabla derivada)</strong><br>La subconsulta actúa como tabla</p>
+              </div>
+            </div>
+            <div>
+              <div class="info-box">
+                <p>📦 <strong>HAVING</strong><br>Filtrar grupos con valores calculados</p>
+              </div>
+              <div class="danger-box" style="margin-top: 10px;">
+                <p>🔗 <strong>Correlacionadas</strong><br>Dependen de la consulta externa</p>
+              </div>
+              <div class="success-box" style="margin-top: 10px;">
+                <p>✅ <strong>EXISTS / NOT EXISTS</strong><br>Comprobar existencia de datos</p>
+              </div>
+              <div class="tip-box" style="margin-top: 10px;">
+                <p>🪆 <strong>Anidadas + CTE</strong><br>Varios niveles → WITH para legibilidad</p>
+              </div>
+            </div>
+          </div>
+          <div class="fragment definition-box" style="margin-top: 18px; text-align: center;">
+            <p><strong>Regla de oro:</strong> usa subconsultas cuando el valor que necesitas filtrar <em>depende de los datos</em>. Usa JOINs cuando necesitas <em>combinar columnas</em> de varias tablas.</p>
+          </div>
+        </section>
+
+        <!-- ══ SLIDE 38 — Cierre / SQL Playground ══ -->
+        <section data-background-gradient="linear-gradient(135deg, #004d40 0%, #00897b 50%, #26a69a 100%)">
+          <h2 class="white-title">🚀 ¡A Practicar!</h2>
+          <div style="background: rgba(255,255,255,0.95); padding: 40px; border-radius: 20px; max-width: 680px; margin: 30px auto;">
+            <h3 style="color: #004d40;">SQL Playground</h3>
+            <p style="color: #555; font-size: 1em; margin: 18px 0;">Prueba todas las subconsultas aprendidas<br>con la base de datos Videoclub</p>
+            <a href="/sql-playground" style="display: inline-block; background: linear-gradient(135deg, #004d40, #00897b); color: white; padding: 16px 40px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 1.15em; margin-top: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+              🗄️ Abrir SQL Playground
+            </a>
+          </div>
+          <p style="color: rgba(255,255,255,0.7); margin-top: 30px; font-size: 0.9em;">
+            Referencia: <a href="https://jorgesanchez.net/manuales/sql/select-subconsultas-sql2016.html" style="color: #b2dfdb;" target="_blank">Manual SQL — Jorge Sánchez</a>
+          </p>
+        </section>
+
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/highlight.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/notes/notes.js"></script>
+    <script>
+      Reveal.initialize({
+        hash: true,
+        slideNumber: 'c/t',
+        showSlideNumber: 'all',
+        transition: 'slide',
+        plugins: [ RevealHighlight, RevealNotes ]
+      });
+    </script>
+  </body>
+</html>
