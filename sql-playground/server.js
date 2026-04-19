@@ -55,8 +55,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// JSON parser
-app.use(express.json());
+// JSON parser (límite ampliado a 3 MB para permitir guardar clases editadas completas)
+app.use(express.json({ limit: '3mb' }));
 
 // Configuración de seguridad DESPUÉS de CORS
 app.use(helmet({
@@ -1109,6 +1109,201 @@ app.get('/api/cuestionario/mis-respuestas', requireAuth, async (req, res) => {
     });
   } finally {
     client.release();
+  }
+});
+
+// ===== ENDPOINTS DE EDICIÓN DE CLASES (SOLO PROFESOR) =====
+
+// Lista blanca de archivos de clase editables (seguridad: evita escribir archivos arbitrarios)
+const CLASES_EDITABLES = [
+  'basesdatos1.html',
+  'basesdatos2.html',
+  'clase1.html',
+  'clase2.html',
+  'dml-sql.html',
+  'subconsultas-sql.html'
+];
+
+// Crear tabla clases_editadas si no existe
+(async () => {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS clases_editadas (
+        filename TEXT PRIMARY KEY,
+        contenido TEXT NOT NULL,
+        ultima_edicion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        editado_por TEXT
+      );
+    `);
+    console.log('✅ Tabla clases_editadas verificada');
+  } catch (err) {
+    console.error('❌ Error creando tabla clases_editadas:', err.message);
+  }
+})();
+
+// Middleware: solo profesor
+function requireProfesor(req, res, next) {
+  const user = getCurrentUser(req);
+  if (!user || user.rol !== 'profesor') {
+    return res.status(403).json({
+      success: false,
+      error: 'Acceso denegado. Solo profesores.'
+    });
+  }
+  next();
+}
+
+// GET /api/clases/:filename - obtener contenido editado (o null si no existe)
+// Autenticado: cualquier usuario logueado puede leer la versión editada
+// (alumno o profesor); el guardado y borrado sí requieren rol profesor.
+app.get('/api/clases/:filename', requireAuth, async (req, res) => {
+  const { filename } = req.params;
+
+  if (!CLASES_EDITABLES.includes(filename)) {
+    return res.status(404).json({
+      success: false,
+      error: 'Clase no encontrada'
+    });
+  }
+
+  try {
+    const result = await pool.query(
+      'SELECT contenido, ultima_edicion, editado_por FROM clases_editadas WHERE filename = $1',
+      [filename]
+    );
+
+    if (result.rows.length === 0) {
+      return res.json({ success: true, edited: false });
+    }
+
+    res.json({
+      success: true,
+      edited: true,
+      contenido: result.rows[0].contenido,
+      ultima_edicion: result.rows[0].ultima_edicion,
+      editado_por: result.rows[0].editado_por
+    });
+  } catch (error) {
+    console.error('Error obteniendo clase editada:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Error al obtener la clase'
+    });
+  }
+});
+
+// PUT /api/clases/:filename - guardar contenido editado (solo profesor)
+app.put('/api/clases/:filename', requireAuth, requireProfesor, async (req, res) => {
+  const { filename } = req.params;
+  const { contenido } = req.body;
+  const user = getCurrentUser(req);
+
+  if (!CLASES_EDITABLES.includes(filename)) {
+    return res.status(404).json({
+      success: false,
+      error: 'Clase no encontrada'
+    });
+  }
+
+  if (typeof contenido !== 'string' || contenido.trim() === '') {
+    return res.status(400).json({
+      success: false,
+      error: 'El contenido no puede estar vacío'
+    });
+  }
+
+  // Límite de tamaño para prevenir abusos (2 MB)
+  if (contenido.length > 2 * 1024 * 1024) {
+    return res.status(413).json({
+      success: false,
+      error: 'El contenido excede el tamaño máximo (2 MB)'
+    });
+  }
+
+  try {
+    await pool.query(
+      `INSERT INTO clases_editadas (filename, contenido, ultima_edicion, editado_por)
+       VALUES ($1, $2, NOW(), $3)
+       ON CONFLICT (filename)
+       DO UPDATE SET contenido = $2, ultima_edicion = NOW(), editado_por = $3`,
+      [filename, contenido, user.username]
+    );
+
+    console.log(`📝 Clase editada: ${filename} por ${user.username}`);
+    res.json({
+      success: true,
+      message: 'Clase guardada correctamente'
+    });
+  } catch (error) {
+    console.error('Error guardando clase:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Error al guardar la clase'
+    });
+  }
+});
+
+// DELETE /api/clases/:filename - restaurar clase original (solo profesor)
+app.delete('/api/clases/:filename', requireAuth, requireProfesor, async (req, res) => {
+  const { filename } = req.params;
+
+  if (!CLASES_EDITABLES.includes(filename)) {
+    return res.status(404).json({
+      success: false,
+      error: 'Clase no encontrada'
+    });
+  }
+
+  try {
+    const result = await pool.query(
+      'DELETE FROM clases_editadas WHERE filename = $1',
+      [filename]
+    );
+
+    console.log(`🔄 Clase restaurada: ${filename} (${result.rowCount} filas eliminadas)`);
+    res.json({
+      success: true,
+      message: result.rowCount > 0
+        ? 'Clase restaurada a su versión original'
+        : 'La clase ya estaba en su versión original'
+    });
+  } catch (error) {
+    console.error('Error restaurando clase:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Error al restaurar la clase'
+    });
+  }
+});
+
+// GET /api/clases - listar todas las clases y saber cuáles han sido editadas (solo profesor)
+app.get('/api/clases', requireAuth, requireProfesor, async (req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT filename, ultima_edicion, editado_por FROM clases_editadas'
+    );
+
+    const editadas = {};
+    result.rows.forEach(row => {
+      editadas[row.filename] = {
+        ultima_edicion: row.ultima_edicion,
+        editado_por: row.editado_por
+      };
+    });
+
+    const clases = CLASES_EDITABLES.map(f => ({
+      filename: f,
+      edited: !!editadas[f],
+      ...(editadas[f] || {})
+    }));
+
+    res.json({ success: true, clases });
+  } catch (error) {
+    console.error('Error listando clases:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Error al listar las clases'
+    });
   }
 });
 
