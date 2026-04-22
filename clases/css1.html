@@ -1,0 +1,1839 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS desde cero — 1.º DAW</title>
+
+  <link rel="icon" type="image/png" sizes="512x512" href="../favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../favicon.png">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/white.css" id="theme">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/monokai.css">
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    .btn-volver {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: rgba(255,255,255,0.95);
+      color: #264de4;
+      padding: 10px 20px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-weight: 600;
+      z-index: 1000;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+    }
+    .btn-volver:hover { background: #264de4; color: white; }
+
+    /* CSS-specific overrides */
+    .objetivos-lista li { border-left-color: #264de4; }
+    .ejercicio-box      { border-left-color: #264de4; }
+    .callout.css        { border-left-color: #264de4; background: #f0f5ff; }
+    .mapa-box.hoy       { border-color: #264de4; }
+
+    /* Preview boxes */
+    .preview-box {
+      background: white;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 0.8em;
+    }
+    .preview-box h4 {
+      color: #264de4 !important;
+      background: none !important;
+      padding: 0 !important;
+      text-shadow: none !important;
+      margin: 0 0 8px 0;
+      font-size: 0.95em;
+    }
+
+    /* Especificidad visual */
+    .spec-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 8px 0;
+      font-size: 0.85em;
+    }
+    .spec-box {
+      background: #264de4;
+      color: white;
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-weight: 700;
+      min-width: 70px;
+      text-align: center;
+    }
+    .spec-box.high { background: #c62828; }
+    .spec-box.med  { background: #f57c00; }
+    .spec-box.low  { background: #388e3c; }
+
+    /* Box model diagram */
+    .bm-outer {
+      background: #fff3e0;
+      border: 3px dashed #f57c00;
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 0.75em;
+    }
+    .bm-border {
+      background: #ffe0b2;
+      border: 3px solid #e65100;
+      padding: 10px;
+      margin-top: 6px;
+      border-radius: 4px;
+    }
+    .bm-padding {
+      background: #c8e6c9;
+      border: 2px dashed #388e3c;
+      padding: 10px;
+      margin-top: 6px;
+    }
+    .bm-content {
+      background: #bbdefb;
+      border: 2px solid #1565c0;
+      padding: 10px;
+      margin-top: 6px;
+      font-weight: 700;
+    }
+
+    /* Flex demo */
+    .flex-demo {
+      display: flex;
+      gap: 8px;
+      background: #f0f5ff;
+      padding: 10px;
+      border-radius: 8px;
+      border: 2px solid #264de4;
+      font-size: 0.75em;
+    }
+    .flex-item {
+      background: #264de4;
+      color: white;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+    .flex-item.grow { flex-grow: 1; }
+
+    /* Grid demo */
+    .grid-demo {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      background: #f0f5ff;
+      padding: 10px;
+      border-radius: 8px;
+      border: 2px solid #264de4;
+      font-size: 0.75em;
+    }
+    .grid-item {
+      background: #264de4;
+      color: white;
+      padding: 12px;
+      border-radius: 6px;
+      text-align: center;
+      font-weight: 600;
+    }
+    .grid-item.span2 { grid-column: span 2; }
+
+    /* Transition demo */
+    .anim-demo {
+      display: inline-block;
+      padding: 12px 28px;
+      background: #264de4;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      font-weight: 600;
+    }
+    .anim-demo:hover {
+      background: #c62828;
+      transform: scale(1.1);
+      border-radius: 50px;
+    }
+
+    .dos-columnas {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <script src="../auth-check.js"></script>
+  <a href="../index.html" class="btn-volver">← Inicio</a>
+
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- ═══════════════════════════════════════════════ -->
+      <!-- SLIDE 1 — PORTADA                              -->
+      <!-- ═══════════════════════════════════════════════ -->
+      <section data-background-gradient="linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #264de4 100%)">
+        <h1 class="grad-text">CSS desde cero</h1>
+        <p class="subtitle" style="color:#e8f4ff; font-size:1.2em; background:transparent; padding:15px 30px; margin-top:20px; text-shadow:1px 1px 4px rgba(0,0,0,0.5);">
+          Hojas de Estilo en Cascada — 1.º DAW
+        </p>
+        <p style="margin-top:30px; background:transparent; padding:10px;">
+          <span class="pill css">Teoría</span>
+          <span class="pill css">Práctica guiada</span>
+          <span class="pill css">Ejercicio TechSummit</span>
+        </p>
+        <aside class="notes">
+          Bienvenida a la clase de CSS. Esta sesión cubre TODO el CSS necesario para 1.º DAW, desde la sintaxis básica hasta Flexbox, Grid y animaciones.
+          Referencia vídeo: https://www.youtube.com/watch?v=TlJbu0BMLaY — CSS desde cero por midudev (6+ horas).
+          Usaremos el ejercicio TechSummit 2026 como hilo conductor práctico.
+        </aside>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════ -->
+      <!-- SLIDE 2 — OBJETIVOS                            -->
+      <!-- ═══════════════════════════════════════════════ -->
+      <section>
+        <h2><span class="icon">🎯</span>¿Qué sabrás hacer al final?</h2>
+        <ul class="objetivos-lista">
+          <li class="fragment">✅ Enlazar CSS a un HTML y escribir reglas con selector + propiedad + valor.</li>
+          <li class="fragment">✅ Usar selectores simples, combinados y pseudoclases.</li>
+          <li class="fragment">✅ Entender la cascada, la herencia y la especificidad.</li>
+          <li class="fragment">✅ Dominar el modelo de caja: <code>margin</code>, <code>padding</code>, <code>border</code>, <code>box-sizing</code>.</li>
+          <li class="fragment">✅ Posicionar elementos con <code>position</code>, <code>display</code> y <code>z-index</code>.</li>
+          <li class="fragment">✅ Maquetar con <strong>Flexbox</strong> y <strong>CSS Grid</strong>.</li>
+          <li class="fragment">✅ Crear <strong>transiciones</strong> y <strong>animaciones</strong> con <code>@keyframes</code>.</li>
+          <li class="fragment">✅ Usar <strong>variables CSS</strong> y <strong>media queries</strong> para diseño responsive.</li>
+        </ul>
+        <aside class="notes">
+          Repasa estos objetivos al inicio. Son los contenidos mínimos del currículo de 1.º DAW en Lenguajes de Marcas.
+        </aside>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════ -->
+      <!-- SLIDE 3 — MAPA DEL TEMARIO                     -->
+      <!-- ═══════════════════════════════════════════════ -->
+      <section data-background-color="#fff8f0">
+        <h2><span class="icon">🗺️</span>Mapa de contenidos</h2>
+        <div class="features-grid" style="grid-template-columns: repeat(4,1fr); font-size:0.8em;">
+          <div class="feature-card" style="border-color:#264de4;">
+            <div class="feature-icon">🔤</div>
+            <h4>Fundamentos</h4>
+            <p>Qué es CSS, sintaxis, selectores, cascada, especificidad, unidades</p>
+          </div>
+          <div class="feature-card" style="border-color:#264de4;">
+            <div class="feature-icon">📦</div>
+            <h4>Box Model</h4>
+            <p>Margin, padding, border, box-sizing, overflow, position</p>
+          </div>
+          <div class="feature-card" style="border-color:#264de4;">
+            <div class="feature-icon">🏗️</div>
+            <h4>Layout</h4>
+            <p>Flexbox, CSS Grid, display, z-index</p>
+          </div>
+          <div class="feature-card" style="border-color:#264de4;">
+            <div class="feature-icon">✨</div>
+            <h4>Avanzado</h4>
+            <p>Transiciones, animaciones, variables CSS, media queries</p>
+          </div>
+        </div>
+        <div class="callout css fragment" style="margin-top:20px; font-size:0.85em;">
+          <strong>📌 Hilo conductor:</strong> Iremos aplicando cada concepto al ejercicio <strong>TechSummit 2026</strong> (<code>ejercicio.html</code>).
+        </div>
+        <aside class="notes">
+          El mapa de 4 bloques corresponde exactamente a las 4 unidades de CSS del currículo.
+          Referencia los timestamps del vídeo para que los estudiantes puedan repasar.
+        </aside>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════ -->
+      <!-- BLOQUE 1: FUNDAMENTOS                                      -->
+      <!-- ══════════════════════════════════════════════════════════ -->
+      <section data-background-gradient="linear-gradient(135deg, #264de4 0%, #4f7fff 100%)">
+        <h2 style="color:white!important; text-shadow:none!important; font-size:2em;">🔤 Bloque 1</h2>
+        <h3 style="color:#e8f4ff!important; text-shadow:none!important; font-size:1.5em;">Fundamentos de CSS</h3>
+        <p style="color:rgba(255,255,255,0.85); font-size:1em; background:transparent; padding:10px;">
+          Qué es CSS · Dónde se escribe · Sintaxis · Colores · Selectores · Herencia · Cascada · Especificidad · Unidades
+        </p>
+        <aside class="notes">Slide de separación de bloque.</aside>
+      </section>
+
+      <!-- SLIDE: Qué es CSS -->
+      <section>
+        <h2><span class="icon">🎨</span>¿Qué es CSS?</h2>
+        <div class="dos-columnas">
+          <div>
+            <div class="callout css">
+              <strong>CSS</strong> = <em>Cascading Style Sheets</em><br>
+              Lenguaje que describe <strong>cómo se presenta</strong> el contenido HTML.
+            </div>
+            <ul style="margin-top:16px; font-size:0.9em;">
+              <li class="fragment">HTML define <strong>qué</strong> hay en la página.</li>
+              <li class="fragment">CSS define <strong>cómo se ve</strong> (colores, tamaños, posiciones, animaciones).</li>
+              <li class="fragment">Creado por <strong>Håkon Wium Lie</strong> (1994).</li>
+              <li class="fragment">Versión actual: <strong>CSS3</strong> (modular, evoluciona continuamente).</li>
+            </ul>
+          </div>
+          <div>
+            <pre><code class="language-html">&lt;!-- HTML --&gt;
+&lt;h1&gt;TechSummit 2026&lt;/h1&gt;
+&lt;p&gt;Conferencia de tecnología&lt;/p&gt;</code></pre>
+            <pre><code class="language-css">/* CSS */
+h1 {
+  color: #264de4;
+  font-size: 2rem;
+}
+p {
+  color: #475569;
+}</code></pre>
+          </div>
+        </div>
+        <aside class="notes">
+          Analogía útil: HTML es el esqueleto, CSS es la ropa y el maquillaje.
+          Vídeo referencia: 03:04 — "Qué es CSS".
+        </aside>
+      </section>
+
+      <!-- SLIDE: El significado de Cascada -->
+      <section>
+        <h2><span class="icon">🌊</span>La "Cascada"</h2>
+        <p style="font-size:0.9em;">El nombre completo es <em>Cascading</em> Style Sheets porque los estilos se aplican en <strong>cascada</strong>: de arriba a abajo, con reglas de prioridad.</p>
+        <div class="dos-columnas" style="margin-top:20px;">
+          <div class="ejercicio-box">
+            <h3>¿Qué determina qué estilo gana?</h3>
+            <ol style="font-size:0.85em;">
+              <li class="fragment">El <strong>origen</strong> (navegador < autor < usuario)</li>
+              <li class="fragment">La <strong>especificidad</strong> del selector</li>
+              <li class="fragment">El <strong>orden</strong> en el código (el último gana si empatan)</li>
+            </ol>
+          </div>
+          <div>
+            <pre><code class="language-css">/* Regla 1 */
+p { color: red; }
+
+/* Regla 2 — gana porque va después */
+p { color: blue; }</code></pre>
+            <div class="callout css fragment" style="font-size:0.85em;">
+              El párrafo se verá en <strong style="color:blue;">azul</strong> porque la segunda regla sobreescribe la primera.
+            </div>
+          </div>
+        </div>
+        <aside class="notes">Vídeo referencia: 06:43 — "El significado de Cascada".</aside>
+      </section>
+
+      <!-- SLIDE: Dónde poner los estilos -->
+      <section>
+        <h2><span class="icon">📍</span>¿Dónde se escribe el CSS?</h2>
+        <div class="reglas-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+          <div class="regla-card">
+            <div class="regla-icon">📄</div>
+            <h3>Externo</h3>
+            <p style="font-size:0.8em;">Archivo <code>.css</code> separado. <strong>Recomendado.</strong></p>
+            <pre><code class="language-html">&lt;link rel="stylesheet"
+  href="styles.css"&gt;</code></pre>
+          </div>
+          <div class="regla-card">
+            <div class="regla-icon">🏷️</div>
+            <h3>Interno</h3>
+            <p style="font-size:0.8em;">Bloque <code>&lt;style&gt;</code> en el <code>&lt;head&gt;</code>.</p>
+            <pre><code class="language-html">&lt;style&gt;
+  h1 { color: blue; }
+&lt;/style&gt;</code></pre>
+          </div>
+          <div class="regla-card" style="border-left-color: #c62828;">
+            <div class="regla-icon">⚠️</div>
+            <h3>Inline</h3>
+            <p style="font-size:0.8em;">Atributo <code>style</code>. <strong>Evitar.</strong></p>
+            <pre><code class="language-html">&lt;h1 style="color:blue"&gt;
+  Título
+&lt;/h1&gt;</code></pre>
+          </div>
+        </div>
+        <div class="callout css fragment" style="margin-top:16px; font-size:0.85em;">
+          En el <strong>ejercicio TechSummit</strong> usamos CSS interno (<code>&lt;style&gt;</code> en el <code>&lt;head&gt;</code>). En proyectos reales siempre archivo externo.
+        </div>
+        <aside class="notes">Vídeo referencia: 11:23 — "Dónde poner los estilos".</aside>
+      </section>
+
+      <!-- SLIDE: Sintaxis CSS -->
+      <section>
+        <h2><span class="icon">🔬</span>Sintaxis de una regla CSS</h2>
+        <div style="text-align:center; margin:20px 0;">
+          <img src="https://placehold.co/700x160/1e293b/ffffff?text=selector+%7B+propiedad%3A+valor%3B+%7D" alt="Estructura de una regla CSS" style="border-radius:10px; max-width:90%;">
+        </div>
+        <div class="dos-columnas">
+          <div>
+            <pre><code class="language-css">/* Selector de tipo */
+header {
+  background: #1e1b4b;
+  color: white;
+  padding: 80px 20px;
+}
+
+/* Múltiples propiedades */
+nav a {
+  color: #cbd5e1;
+  text-decoration: none;
+  font-weight: 500;
+}</code></pre>
+          </div>
+          <div class="ejercicio-box">
+            <h3>Reglas del ejercicio TechSummit</h3>
+            <ul style="font-size:0.82em;">
+              <li><code>header</code> → fondo oscuro con gradiente</li>
+              <li><code>nav</code> → barra de navegación sticky</li>
+              <li><code>section</code> → tarjeta blanca con sombra</li>
+              <li><code>footer</code> → fondo muy oscuro</li>
+            </ul>
+          </div>
+        </div>
+        <aside class="notes">Vídeo referencia: 13:42 — "Partes de CSS".</aside>
+      </section>
+
+      <!-- SLIDE: Colores -->
+      <section>
+        <h2><span class="icon">🎨</span>Colores en CSS</h2>
+        <div class="reglas-grid" style="grid-template-columns:repeat(4,1fr); font-size:0.82em;">
+          <div class="regla-card">
+            <h3>Nombre</h3>
+            <pre><code class="language-css">color: red;
+color: white;
+color: navy;</code></pre>
+            <p style="font-size:0.8em;">140 nombres definidos. Solo para prototipos.</p>
+          </div>
+          <div class="regla-card">
+            <h3>HEX</h3>
+            <pre><code class="language-css">color: #264de4;
+color: #0f172a;
+color: #fff;</code></pre>
+            <p style="font-size:0.8em;">#RRGGBB — el más común en código.</p>
+          </div>
+          <div class="regla-card">
+            <h3>RGB / RGBA</h3>
+            <pre><code class="language-css">color: rgb(38,77,228);
+color: rgba(0,0,0,0.5);
+/* 4.º valor: opacidad */</code></pre>
+          </div>
+          <div class="regla-card">
+            <h3>HSL</h3>
+            <pre><code class="language-css">color: hsl(230,76%,52%);
+/* tono, saturación,
+   luminosidad */</code></pre>
+            <p style="font-size:0.8em;">Muy intuitivo para paletas.</p>
+          </div>
+        </div>
+        <div class="callout css fragment" style="font-size:0.85em;">
+          Herramienta recomendada: <a href="https://coolors.co" target="_blank">coolors.co</a> para generar paletas y <a href="https://developer.chrome.com/docs/devtools" target="_blank">Chrome DevTools</a> para elegir colores con el selector visual.
+        </div>
+        <aside class="notes">Vídeo referencia: 18:23 — "Colores".</aside>
+      </section>
+
+      <!-- SLIDE: Selectores básicos -->
+      <section>
+        <h2><span class="icon">🎯</span>Selectores básicos</h2>
+        <div class="dos-columnas">
+          <div>
+            <table style="font-size:0.8em; width:100%; border-collapse:collapse;">
+              <thead>
+                <tr style="background:#264de4; color:white;">
+                  <th style="padding:8px;">Selector</th>
+                  <th style="padding:8px;">Apunta a…</th>
+                  <th style="padding:8px;">Ejemplo</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom:1px solid #e2e8f0;">
+                  <td style="padding:8px;"><code>h1</code></td>
+                  <td style="padding:8px;">Tipo/etiqueta</td>
+                  <td style="padding:8px;">Todos los <code>&lt;h1&gt;</code></td>
+                </tr>
+                <tr style="background:#f8fafc; border-bottom:1px solid #e2e8f0;">
+                  <td style="padding:8px;"><code>.clase</code></td>
+                  <td style="padding:8px;">Clase CSS</td>
+                  <td style="padding:8px;"><code>class="speakers-grid"</code></td>
+                </tr>
+                <tr style="border-bottom:1px solid #e2e8f0;">
+                  <td style="padding:8px;"><code>#id</code></td>
+                  <td style="padding:8px;">Identificador</td>
+                  <td style="padding:8px;"><code>id="sobre"</code></td>
+                </tr>
+                <tr style="background:#f8fafc; border-bottom:1px solid #e2e8f0;">
+                  <td style="padding:8px;"><code>*</code></td>
+                  <td style="padding:8px;">Universal</td>
+                  <td style="padding:8px;">Todos los elementos</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px;"><code>a, p</code></td>
+                  <td style="padding:8px;">Lista (OR)</td>
+                  <td style="padding:8px;">Todos los <code>&lt;a&gt;</code> y <code>&lt;p&gt;</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div>
+            <pre><code class="language-css">/* Tipo */
+section { background: white; }
+
+/* Clase */
+.speakers-grid {
+  display: grid;
+}
+
+/* ID */
+#inscripcion {
+  border-top: 4px solid #7c3aed;
+}
+
+/* Universal (reset) */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}</code></pre>
+          </div>
+        </div>
+        <aside class="notes">Vídeo referencia: 28:03 clases, 29:45 IDs. Recalcar que los IDs deben ser únicos por página.</aside>
+      </section>
+
+      <!-- SLIDE: Selectores combinados -->
+      <section>
+        <h2><span class="icon">🔗</span>Selectores combinados</h2>
+        <div class="dos-columnas">
+          <div>
+            <table style="font-size:0.82em; width:100%; border-collapse:collapse;">
+              <thead>
+                <tr style="background:#264de4; color:white;">
+                  <th style="padding:8px;">Operador</th>
+                  <th style="padding:8px;">Significado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom:1px solid #e2e8f0;">
+                  <td style="padding:8px;"><code>nav a</code></td>
+                  <td style="padding:8px;">Descendiente (cualquier nivel)</td>
+                </tr>
+                <tr style="background:#f8fafc; border-bottom:1px solid #e2e8f0;">
+                  <td style="padding:8px;"><code>nav > a</code></td>
+                  <td style="padding:8px;">Hijo directo</td>
+                </tr>
+                <tr style="border-bottom:1px solid #e2e8f0;">
+                  <td style="padding:8px;"><code>h2 + p</code></td>
+                  <td style="padding:8px;">Hermano adyacente (inmediato)</td>
+                </tr>
+                <tr style="background:#f8fafc;">
+                  <td style="padding:8px;"><code>h2 ~ p</code></td>
+                  <td style="padding:8px;">Todos los hermanos siguientes</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div>
+            <pre><code class="language-css">/* nav > ul — hijos directos de nav */
+nav > ul {
+  display: flex;
+  list-style: none;
+}
+
+/* nav a — todos los enlaces de nav */
+nav a {
+  color: #cbd5e1;
+  padding: 8px 16px;
+}
+
+/* nav a:hover — estado de hover */
+nav a:hover {
+  background: #7c3aed;
+  color: white;
+}</code></pre>
+          </div>
+        </div>
+        <aside class="notes">Vídeo referencia: 49:40 — "Selectores combinados" y 55:34, 59:10, 01:01:04 los operadores.</aside>
+      </section>
+
+      <!-- SLIDE: Pseudoclases -->
+      <section>
+        <h2><span class="icon">🎭</span>Pseudoclases</h2>
+        <div class="dos-columnas">
+          <div>
+            <p style="font-size:0.88em;">Las pseudoclases seleccionan elementos en <strong>estados especiales</strong> o por su <strong>posición</strong>.</p>
+            <table style="font-size:0.78em; width:100%; border-collapse:collapse; margin-top:10px;">
+              <tr style="background:#264de4; color:white;">
+                <th style="padding:7px;">Pseudoclase</th>
+                <th style="padding:7px;">Cuándo aplica</th>
+              </tr>
+              <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:7px;"><code>:hover</code></td>
+                <td style="padding:7px;">El cursor está encima</td>
+              </tr>
+              <tr style="background:#f8fafc; border-bottom:1px solid #e2e8f0;">
+                <td style="padding:7px;"><code>:focus</code></td>
+                <td style="padding:7px;">El elemento tiene el foco</td>
+              </tr>
+              <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:7px;"><code>:active</code></td>
+                <td style="padding:7px;">Al hacer clic</td>
+              </tr>
+              <tr style="background:#f8fafc; border-bottom:1px solid #e2e8f0;">
+                <td style="padding:7px;"><code>:visited</code></td>
+                <td style="padding:7px;">Enlace ya visitado</td>
+              </tr>
+              <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:7px;"><code>:first-child</code></td>
+                <td style="padding:7px;">Primer hijo de su padre</td>
+              </tr>
+              <tr style="background:#f8fafc; border-bottom:1px solid #e2e8f0;">
+                <td style="padding:7px;"><code>:last-child</code></td>
+                <td style="padding:7px;">Último hijo de su padre</td>
+              </tr>
+              <tr>
+                <td style="padding:7px;"><code>:nth-child(n)</code></td>
+                <td style="padding:7px;">El hijo número n</td>
+              </tr>
+            </table>
+          </div>
+          <div>
+            <pre><code class="language-css">/* Ponentes — efecto hover */
+.speakers-grid article:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px
+    rgba(0,0,0,0.12);
+}
+
+/* Inputs — al enfocar */
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px
+    rgba(124,58,237,0.15);
+}
+
+/* FAQ — filas alternas */
+tbody tr:nth-child(even) td {
+  background: #f8fafc;
+}</code></pre>
+            <div style="margin-top:10px; text-align:center;">
+              <span class="anim-demo">Pasa el cursor ✨</span>
+            </div>
+          </div>
+        </div>
+        <aside class="notes">Vídeo referencia: 42:17, 45:58 — pseudoclases. Mostrar el botón animado en vivo.</aside>
+      </section>
+
+      <!-- SLIDE: Herencia -->
+      <section>
+        <h2><span class="icon">🧬</span>Herencia</h2>
+        <div class="dos-columnas">
+          <div>
+            <p style="font-size:0.9em;">Algunas propiedades CSS se <strong>heredan</strong> automáticamente de padres a hijos. Otras no.</p>
+            <div class="ejercicio-box" style="margin-top:14px;">
+              <h3>Se heredan ✅</h3>
+              <ul style="font-size:0.82em;">
+                <li><code>color</code>, <code>font-family</code>, <code>font-size</code></li>
+                <li><code>line-height</code>, <code>text-align</code></li>
+                <li><code>list-style</code>, <code>cursor</code></li>
+              </ul>
+            </div>
+            <div class="ejercicio-box" style="margin-top:10px; border-left-color:#c62828;">
+              <h3>NO se heredan ❌</h3>
+              <ul style="font-size:0.82em;">
+                <li><code>margin</code>, <code>padding</code>, <code>border</code></li>
+                <li><code>background</code>, <code>width</code>, <code>height</code></li>
+                <li><code>display</code>, <code>position</code></li>
+              </ul>
+            </div>
+          </div>
+          <div>
+            <pre><code class="language-css">body {
+  font-family: 'Segoe UI', sans-serif;
+  /* Todos los elementos heredan
+     este font-family */
+  color: #1e293b;
+  line-height: 1.7;
+}
+
+/* Valores especiales */
+.reset-color {
+  color: initial;   /* valor inicial */
+}
+.like-parent {
+  color: inherit;   /* fuerza herencia */
+}
+.neutral {
+  color: unset;     /* hereda o inicial */
+}</code></pre>
+            <div class="callout css fragment" style="font-size:0.82em;">
+              En TechSummit el <code>body</code> establece <code>font-family</code> y <code>color</code> base. Todos los elementos los heredan.
+            </div>
+          </div>
+        </div>
+        <aside class="notes">Vídeo referencia: 32:35 — "Herencia" y 37:48 — valores especiales.</aside>
+      </section>
+
+      <!-- SLIDE: Especificidad -->
+      <section>
+        <h2><span class="icon">⚖️</span>Especificidad</h2>
+        <p style="font-size:0.88em;">Cuando dos reglas apuntan al mismo elemento, <strong>gana la más específica</strong>. Se calcula con 3 columnas (A, B, C):</p>
+        <div class="dos-columnas" style="margin-top:16px;">
+          <div>
+            <div class="spec-row">
+              <div class="spec-box high">1,0,0</div>
+              <span style="font-size:0.85em;">Estilos inline (<code>style=""</code>)</span>
+            </div>
+            <div class="spec-row">
+              <div class="spec-box med">0,1,0</div>
+              <span style="font-size:0.85em;">IDs (<code>#inscripcion</code>)</span>
+            </div>
+            <div class="spec-row">
+              <div class="spec-box">0,0,1+</div>
+              <span style="font-size:0.85em;">Clases (<code>.card</code>), pseudoclases (<code>:hover</code>), atributos</span>
+            </div>
+            <div class="spec-row">
+              <div class="spec-box low">0,0,1</div>
+              <span style="font-size:0.85em;">Tipos (<code>p</code>), pseudoelementos (<code>::before</code>)</span>
+            </div>
+            <div class="callout css fragment" style="font-size:0.8em; margin-top:12px;">
+              <code>!important</code> supera todo. Úsalo solo como <strong>último recurso</strong>.
+            </div>
+          </div>
+          <div>
+            <pre><code class="language-css">/* Especificidad 0,0,1 */
+p { color: black; }
+
+/* Especificidad 0,1,0 — GANA */
+.texto { color: blue; }
+
+/* Especificidad 0,1,1 — MÁS GANA */
+.contenido p { color: green; }
+
+/* Especificidad 1,0,0 — MÁXIMO */
+#titulo { color: red; }
+
+/* !important — NUCLEAR */
+p { color: pink !important; }</code></pre>
+          </div>
+        </div>
+        <aside class="notes">Vídeo referencia: 01:08:04 — "Especificidad". Herramienta útil: specificity.keegan.st</aside>
+      </section>
+
+      <!-- SLIDE: Unidades -->
+      <section>
+        <h2><span class="icon">📏</span>Unidades CSS</h2>
+        <div class="dos-columnas">
+          <div>
+            <div class="ejercicio-box">
+              <h3>Absolutas</h3>
+              <ul style="font-size:0.82em;">
+                <li><code>px</code> — píxeles (la más común para pantalla)</li>
+                <li><code>pt</code>, <code>cm</code>, <code>mm</code> — para impresión</li>
+              </ul>
+            </div>
+            <div class="ejercicio-box" style="margin-top:12px;">
+              <h3>Relativas ⭐ Preferir estas</h3>
+              <ul style="font-size:0.82em;">
+                <li><code>em</code> — relativa al <code>font-size</code> del padre</li>
+                <li><code>rem</code> — relativa al <code>font-size</code> del <code>html</code></li>
+                <li><code>%</code> — porcentaje del elemento padre</li>
+                <li><code>vw</code> — % del ancho del viewport</li>
+                <li><code>vh</code> — % del alto del viewport</li>
+                <li><code>fr</code> — fracción (solo en Grid)</li>
+              </ul>
+            </div>
+          </div>
+          <div>
+            <pre><code class="language-css">/* TechSummit — combinación de unidades */
+html { font-size: 16px; }
+
+header {
+  padding: 80px 20px;  /* px */
+}
+
+header h1 {
+  /* clamp(min, preferido, max) */
+  font-size: clamp(2.5rem, 6vw, 4rem);
+}
+
+main {
+  max-width: 1000px;   /* px para max */
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+section {
+  padding: 48px 40px;  /* px */
+  margin: 36px 0;
+}</code></pre>
+          </div>
+        </div>
+        <aside class="notes">
+          Vídeo referencia: 01:18:37 — "Unidades relativas y absolutas".
+          Regla práctica: usar rem para tamaños de texto, px para bordes y sombras, % para anchos fluidos.
+          clamp() es moderno y muy útil para tipografía responsive.
+        </aside>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════ -->
+      <!-- BLOQUE 2: BOX MODEL                                        -->
+      <!-- ══════════════════════════════════════════════════════════ -->
+      <section data-background-gradient="linear-gradient(135deg, #264de4 0%, #4f7fff 100%)">
+        <h2 style="color:white!important; text-shadow:none!important; font-size:2em;">📦 Bloque 2</h2>
+        <h3 style="color:#e8f4ff!important; text-shadow:none!important; font-size:1.5em;">Modelo de caja y posicionamiento</h3>
+        <p style="color:rgba(255,255,255,0.85); font-size:1em; background:transparent; padding:10px;">
+          Box model · margin · padding · border · box-sizing · overflow · position · z-index · display · tipografía
+        </p>
+      </section>
+
+      <!-- SLIDE: Box model -->
+      <section>
+        <h2><span class="icon">📦</span>El Modelo de Caja</h2>
+        <div class="dos-columnas">
+          <div style="text-align:center;">
+            <div class="bm-outer">
+              <strong>margin</strong> (espacio exterior)
+              <div class="bm-border">
+                <strong>border</strong> (borde)
+                <div class="bm-padding">
+                  <strong>padding</strong> (relleno interior)
+                  <div class="bm-content">
+                    content<br><small>width × height</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <pre><code class="language-css">section {
+  /* Contenido */
+  width: auto;
+  
+  /* Relleno interior */
+  padding: 48px 40px;
+  
+  /* Borde */
+  border-radius: 12px;
+  
+  /* Espacio exterior */
+  margin: 36px 0;
+  
+  /* Fondo */
+  background: white;
+  
+  /* Sombra */
+  box-shadow:
+    0 4px 24px rgba(0,0,0,0.08);
+}</code></pre>
+          </div>
+        </div>
+        <div class="callout css fragment" style="font-size:0.82em;">
+          <strong>Atajo padding/margin:</strong> <code>padding: arriba derecha abajo izquierda</code> (sentido de las agujas del reloj). Con 2 valores: <code>arriba/abajo izquierda/derecha</code>.
+        </div>
+        <aside class="notes">Vídeo referencia: 01:27:00 — "Modelo de la caja" y 01:34:40 — "Propiedades de la caja".</aside>
+      </section>
+
+      <!-- SLIDE: box-sizing -->
+      <section>
+        <h2><span class="icon">📐</span><code>box-sizing</code></h2>
+        <div class="dos-columnas">
+          <div>
+            <div class="ejemplo-incorrecto">
+              <strong>❌ content-box (por defecto)</strong>
+              <p style="font-size:0.82em; margin-top:8px;">El <code>width</code> solo cuenta el contenido. Padding y border se <em>suman</em> → el elemento es más grande de lo esperado.</p>
+              <pre><code class="language-css">div {
+  width: 300px;
+  padding: 20px; /* +40px */
+  border: 2px solid; /* +4px */
+  /* Total real: 344px 😱 */
+}</code></pre>
+            </div>
+          </div>
+          <div>
+            <div class="ejemplo-correcto">
+              <strong>✅ border-box (recomendado)</strong>
+              <p style="font-size:0.82em; margin-top:8px;">El <code>width</code> <em>incluye</em> padding y border. El elemento siempre mide exactamente lo que declaras.</p>
+              <pre><code class="language-css">/* Reset universal */
+* {
+  box-sizing: border-box;
+}
+
+div {
+  width: 300px;
+  padding: 20px;
+  border: 2px solid;
+  /* Total real: 300px ✅ */
+}</code></pre>
+            </div>
+          </div>
+        </div>
+        <div class="callout css fragment" style="font-size:0.85em;">
+          El reset <code>* { box-sizing: border-box; }</code> es la primera línea del CSS de TechSummit (y de casi cualquier proyecto moderno).
+        </div>
+        <aside class="notes">Vídeo referencia: 01:40:35 — "box-sizing".</aside>
+      </section>
+
+      <!-- SLIDE: Tipografía -->
+      <section>
+        <h2><span class="icon">🔤</span>Tipografía</h2>
+        <div class="dos-columnas">
+          <div>
+            <table style="font-size:0.8em; width:100%; border-collapse:collapse;">
+              <tr style="background:#264de4; color:white;">
+                <th style="padding:8px;">Propiedad</th>
+                <th style="padding:8px;">Descripción</th>
+              </tr>
+              <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:7px;"><code>font-family</code></td>
+                <td style="padding:7px;">Tipo de letra</td>
+              </tr>
+              <tr style="background:#f8fafc; border-bottom:1px solid #e2e8f0;">
+                <td style="padding:7px;"><code>font-size</code></td>
+                <td style="padding:7px;">Tamaño</td>
+              </tr>
+              <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:7px;"><code>font-weight</code></td>
+                <td style="padding:7px;">Grosor (100–900)</td>
+              </tr>
+              <tr style="background:#f8fafc; border-bottom:1px solid #e2e8f0;">
+                <td style="padding:7px;"><code>font-style</code></td>
+                <td style="padding:7px;"><code>italic</code> / normal</td>
+              </tr>
+              <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:7px;"><code>line-height</code></td>
+                <td style="padding:7px;">Interlineado</td>
+              </tr>
+              <tr style="background:#f8fafc; border-bottom:1px solid #e2e8f0;">
+                <td style="padding:7px;"><code>text-align</code></td>
+                <td style="padding:7px;">Alineación</td>
+              </tr>
+              <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:7px;"><code>text-decoration</code></td>
+                <td style="padding:7px;">Subrayado, etc.</td>
+              </tr>
+              <tr style="background:#f8fafc;">
+                <td style="padding:7px;"><code>letter-spacing</code></td>
+                <td style="padding:7px;">Espacio entre letras</td>
+              </tr>
+            </table>
+          </div>
+          <div>
+            <pre><code class="language-css">body {
+  font-family: 'Segoe UI',
+    system-ui, sans-serif;
+  line-height: 1.7;
+}
+
+header h1 {
+  font-size: clamp(2.5rem,6vw,4rem);
+  font-weight: 800;
+  letter-spacing: -1.5px;
+}
+
+section h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+nav a {
+  font-size: 0.88rem;
+  font-weight: 500;
+  text-decoration: none;
+}</code></pre>
+          </div>
+        </div>
+        <aside class="notes">La tipografía es uno de los elementos que más impacto visual tiene. En TechSummit usamos una sola familia de fuentes con distintos pesos.</aside>
+      </section>
+
+      <!-- SLIDE: Overflow -->
+      <section>
+        <h2><span class="icon">🌊</span>Overflow — Desbordamiento</h2>
+        <div class="dos-columnas">
+          <div>
+            <p style="font-size:0.9em;">Controla qué pasa cuando el contenido es <strong>más grande que su contenedor</strong>.</p>
+            <table style="font-size:0.82em; margin-top:12px; width:100%; border-collapse:collapse;">
+              <tr style="background:#264de4; color:white;">
+                <th style="padding:8px;">Valor</th>
+                <th style="padding:8px;">Comportamiento</th>
+              </tr>
+              <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px;"><code>visible</code></td>
+                <td style="padding:8px;">Se sale del contenedor (defecto)</td>
+              </tr>
+              <tr style="background:#f8fafc; border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px;"><code>hidden</code></td>
+                <td style="padding:8px;">Se recorta lo que sobresale</td>
+              </tr>
+              <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px;"><code>scroll</code></td>
+                <td style="padding:8px;">Siempre muestra barra de scroll</td>
+              </tr>
+              <tr style="background:#f8fafc;">
+                <td style="padding:8px;"><code>auto</code></td>
+                <td style="padding:8px;">Barra solo si es necesario ✅</td>
+              </tr>
+            </table>
+          </div>
+          <div>
+            <pre><code class="language-css">/* Texto largo en 1 línea */
+.titulo-truncado {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* "..." */
+  max-width: 200px;
+}
+
+/* Tabla con scroll horizontal */
+.tabla-responsive {
+  overflow-x: auto;
+}
+
+/* Fondo que no se desborda */
+header {
+  overflow: hidden;
+  /* Mantiene los efectos
+     de radial-gradient dentro */
+}</code></pre>
+          </div>
+        </div>
+        <aside class="notes">Vídeo referencia: 01:49:55 — "Overflow" y 01:54:45 — "text-overflow".</aside>
+      </section>
+
+      <!-- SLIDE: Position -->
+      <section>
+        <h2><span class="icon">📌</span>Position</h2>
+        <div class="dos-columnas">
+          <div>
+            <table style="font-size:0.8em; width:100%; border-collapse:collapse;">
+              <tr style="background:#264de4; color:white;">
+                <th style="padding:8px;">Valor</th>
+                <th style="padding:8px;">Descripción</th>
+              </tr>
+              <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px;"><code>static</code></td>
+                <td style="padding:8px;">Flujo normal (defecto)</td>
+              </tr>
+              <tr style="background:#f8fafc; border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px;"><code>relative</code></td>
+                <td style="padding:8px;">Desplaza desde su posición original. Crea contexto para hijos absolute.</td>
+              </tr>
+              <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px;"><code>absolute</code></td>
+                <td style="padding:8px;">Sale del flujo. Se posiciona respecto al ancestro relative más cercano.</td>
+              </tr>
+              <tr style="background:#f8fafc; border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px;"><code>fixed</code></td>
+                <td style="padding:8px;">Respecto al viewport. No se mueve al hacer scroll.</td>
+              </tr>
+              <tr>
+                <td style="padding:8px;"><code>sticky</code></td>
+                <td style="padding:8px;">Relative hasta un umbral, luego fixed.</td>
+              </tr>
+            </table>
+            <div class="callout css fragment" style="font-size:0.8em; margin-top:10px;">
+              <code>top</code>, <code>right</code>, <code>bottom</code>, <code>left</code> solo tienen efecto si <code>position</code> ≠ <code>static</code>.
+            </div>
+          </div>
+          <div>
+            <pre><code class="language-css">/* Nav sticky — scrollea hasta 0,
+   luego se queda fija */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* Header — pseudo-elemento absoluto */
+header { position: relative; }
+header::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  /* Efecto decorativo */
+}
+
+/* Botón volver — fijo en pantalla */
+.btn-volver {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+}</code></pre>
+          </div>
+        </div>
+        <aside class="notes">Vídeo referencia: 01:58:02 — "Position", 02:00:34 "Absolute y relative", 02:07:14 "fixed", 02:10:42 "sticky".</aside>
+      </section>
+
+      <!-- SLIDE: z-index y display -->
+      <section>
+        <h2><span class="icon">🃏</span><code>z-index</code> y <code>display</code></h2>
+        <div class="dos-columnas">
+          <div>
+            <div class="ejercicio-box">
+              <h3>z-index — capas</h3>
+              <p style="font-size:0.83em;">Controla qué elemento queda <strong>por encima</strong>. Solo funciona con position ≠ static.</p>
+              <pre><code class="language-css">nav {
+  position: sticky;
+  top: 0;
+  z-index: 100; /* encima de todo */
+}
+.btn-volver {
+  position: fixed;
+  z-index: 1000; /* más arriba */
+}</code></pre>
+            </div>
+          </div>
+          <div>
+            <div class="ejercicio-box">
+              <h3>display — tipo de caja</h3>
+              <table style="font-size:0.78em; width:100%; border-collapse:collapse; margin-top:8px;">
+                <tr style="background:#264de4; color:white;">
+                  <th style="padding:6px;">Valor</th>
+                  <th style="padding:6px;">Comportamiento</th>
+                </tr>
+                <tr style="border-bottom:1px solid #e2e8f0;">
+                  <td style="padding:6px;"><code>block</code></td>
+                  <td style="padding:6px;">Ocupa toda la línea (<code>div</code>, <code>p</code>…)</td>
+                </tr>
+                <tr style="background:#f8fafc; border-bottom:1px solid #e2e8f0;">
+                  <td style="padding:6px;"><code>inline</code></td>
+                  <td style="padding:6px;">Fluye en la línea (<code>span</code>, <code>a</code>…)</td>
+                </tr>
+                <tr style="border-bottom:1px solid #e2e8f0;">
+                  <td style="padding:6px;"><code>inline-block</code></td>
+                  <td style="padding:6px;">Inline pero acepta width/height</td>
+                </tr>
+                <tr style="background:#f8fafc; border-bottom:1px solid #e2e8f0;">
+                  <td style="padding:6px;"><code>none</code></td>
+                  <td style="padding:6px;">Oculta el elemento (no ocupa espacio)</td>
+                </tr>
+                <tr style="border-bottom:1px solid #e2e8f0;">
+                  <td style="padding:6px;"><code>flex</code></td>
+                  <td style="padding:6px;">Activa Flexbox ✨</td>
+                </tr>
+                <tr>
+                  <td style="padding:6px;"><code>grid</code></td>
+                  <td style="padding:6px;">Activa Grid ✨</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+        <aside class="notes">Vídeo referencia: 02:13:57 — "z-index".</aside>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════ -->
+      <!-- BLOQUE 3: LAYOUT — FLEXBOX + GRID                         -->
+      <!-- ══════════════════════════════════════════════════════════ -->
+      <section data-background-gradient="linear-gradient(135deg, #264de4 0%, #4f7fff 100%)">
+        <h2 style="color:white!important; text-shadow:none!important; font-size:2em;">🏗️ Bloque 3</h2>
+        <h3 style="color:#e8f4ff!important; text-shadow:none!important; font-size:1.5em;">Layout: Flexbox y CSS Grid</h3>
+        <p style="color:rgba(255,255,255,0.85); font-size:1em; background:transparent; padding:10px;">
+          display:flex · flex-direction · justify-content · align-items · flex-wrap · gap · display:grid · fr · repeat() · grid-template · áreas
+        </p>
+      </section>
+
+      <!-- SLIDE: Flexbox intro -->
+      <section>
+        <h2><span class="icon">🏋️</span>Flexbox — Diseño en 1 dimensión</h2>
+        <div class="dos-columnas">
+          <div>
+            <p style="font-size:0.9em;">Flexbox organiza elementos en <strong>una fila o columna</strong>. Ideal para componentes: navbars, tarjetas, formularios.</p>
+            <div class="ejercicio-box" style="margin-top:12px;">
+              <h3>Propiedades del contenedor</h3>
+              <ul style="font-size:0.8em;">
+                <li><code>display: flex</code> — activa flexbox</li>
+                <li><code>flex-direction</code> — row | column</li>
+                <li><code>justify-content</code> — eje principal</li>
+                <li><code>align-items</code> — eje cruzado</li>
+                <li><code>flex-wrap</code> — salto de línea</li>
+                <li><code>gap</code> — espacio entre elementos</li>
+              </ul>
+            </div>
+            <div class="ejercicio-box" style="margin-top:10px;">
+              <h3>Propiedades de los hijos</h3>
+              <ul style="font-size:0.8em;">
+                <li><code>flex-grow</code> — cuánto crece</li>
+                <li><code>flex-shrink</code> — cuánto encoge</li>
+                <li><code>flex-basis</code> — tamaño base</li>
+                <li><code>order</code> — orden visual</li>
+              </ul>
+            </div>
+          </div>
+          <div>
+            <pre><code class="language-css">/* Nav de TechSummit */
+nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  list-style: none;
+}
+
+/* Footer links */
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 24px;
+}
+
+/* Botones del formulario */
+.form-actions {
+  display: flex;
+  gap: 16px;
+}</code></pre>
+          </div>
+        </div>
+        <aside class="notes">Vídeo referencia: 02:27:34 — "Flexbox", 02:32:02 display:flex, 02:33:36 flex-direction, 02:55:59 justify-content.</aside>
+      </section>
+
+      <!-- SLIDE: Flexbox ejes -->
+      <section>
+        <h2><span class="icon">↔️</span>Flexbox — Los dos ejes</h2>
+        <div class="dos-columnas">
+          <div>
+            <div class="ejercicio-box">
+              <h3><code>justify-content</code> — eje principal</h3>
+              <ul style="font-size:0.82em;">
+                <li><code>flex-start</code> — al inicio</li>
+                <li><code>flex-end</code> — al final</li>
+                <li><code>center</code> — al centro</li>
+                <li><code>space-between</code> — espaciado extremos</li>
+                <li><code>space-around</code> — espaciado con margen</li>
+                <li><code>space-evenly</code> — espaciado uniforme</li>
+              </ul>
+            </div>
+            <div class="ejercicio-box" style="margin-top:10px;">
+              <h3><code>align-items</code> — eje cruzado</h3>
+              <ul style="font-size:0.82em;">
+                <li><code>stretch</code> — estira (defecto)</li>
+                <li><code>flex-start</code> / <code>flex-end</code></li>
+                <li><code>center</code> — alineación vertical centrada</li>
+                <li><code>baseline</code> — alinea la línea base del texto</li>
+              </ul>
+            </div>
+          </div>
+          <div>
+            <p style="font-size:0.85em; margin-bottom:10px;"><strong>Demo en vivo:</strong></p>
+            <div class="flex-demo" id="flex-demo">
+              <div class="flex-item">1</div>
+              <div class="flex-item grow">2 (flex-grow:1)</div>
+              <div class="flex-item">3</div>
+            </div>
+            <pre style="margin-top:14px;"><code class="language-css">/* Ponentes en grid de tarjetas */
+.speakers-grid {
+  display: flex;  /* o grid */
+  gap: 28px;
+}
+
+/* Centrado perfecto */
+.centrado {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}</code></pre>
+          </div>
+        </div>
+        <aside class="notes">Vídeo referencia: 02:55:59 justify-content, 03:04:14 align-items, 03:00:05 gap.</aside>
+      </section>
+
+      <!-- SLIDE: CSS Grid intro -->
+      <section>
+        <h2><span class="icon">🔲</span>CSS Grid — Diseño en 2 dimensiones</h2>
+        <div class="dos-columnas">
+          <div>
+            <p style="font-size:0.9em;">Grid organiza elementos en <strong>filas Y columnas</strong> a la vez. Ideal para layouts de página completa.</p>
+            <div class="ejercicio-box" style="margin-top:12px;">
+              <h3>Diferencia clave con Flexbox</h3>
+              <table style="font-size:0.78em; width:100%; border-collapse:collapse; margin-top:8px;">
+                <tr style="background:#264de4; color:white;">
+                  <th style="padding:6px;">Flexbox</th>
+                  <th style="padding:6px;">Grid</th>
+                </tr>
+                <tr style="border-bottom:1px solid #e2e8f0;">
+                  <td style="padding:6px;">1 dimensión</td>
+                  <td style="padding:6px;">2 dimensiones</td>
+                </tr>
+                <tr style="background:#f8fafc; border-bottom:1px solid #e2e8f0;">
+                  <td style="padding:6px;">Los hijos deciden</td>
+                  <td style="padding:6px;">El padre controla todo</td>
+                </tr>
+                <tr>
+                  <td style="padding:6px;">Componentes pequeños</td>
+                  <td style="padding:6px;">Layouts completos</td>
+                </tr>
+              </table>
+            </div>
+            <div class="callout css fragment" style="font-size:0.8em; margin-top:10px;">
+              En TechSummit usamos <strong>Grid</strong> para la cuadrícula de ponentes y patrocinadores, y <strong>Flexbox</strong> para la nav y los botones.
+            </div>
+          </div>
+          <div>
+            <p style="font-size:0.85em; margin-bottom:8px;"><strong>Demo Grid 3 columnas:</strong></p>
+            <div class="grid-demo">
+              <div class="grid-item">A</div>
+              <div class="grid-item">B</div>
+              <div class="grid-item">C</div>
+              <div class="grid-item span2">D (colspan 2)</div>
+              <div class="grid-item">E</div>
+            </div>
+            <pre style="margin-top:12px;"><code class="language-css">.grid-demo {
+  display: grid;
+  grid-template-columns:
+    repeat(3, 1fr);
+  gap: 8px;
+}
+.item-D {
+  grid-column: span 2;
+}</code></pre>
+          </div>
+        </div>
+        <aside class="notes">Vídeo referencia: 03:16:33 — "Qué es Grid", 03:20:30 — "Grid vs Flex".</aside>
+      </section>
+
+      <!-- SLIDE: Grid avanzado -->
+      <section>
+        <h2><span class="icon">🗓️</span>CSS Grid — Propiedades principales</h2>
+        <div class="dos-columnas">
+          <div>
+            <table style="font-size:0.8em; width:100%; border-collapse:collapse;">
+              <tr style="background:#264de4; color:white;">
+                <th style="padding:8px;">Propiedad</th>
+                <th style="padding:8px;">Descripción</th>
+              </tr>
+              <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px;"><code>grid-template-columns</code></td>
+                <td style="padding:8px;">Define columnas</td>
+              </tr>
+              <tr style="background:#f8fafc; border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px;"><code>grid-template-rows</code></td>
+                <td style="padding:8px;">Define filas</td>
+              </tr>
+              <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px;"><code>grid-template-areas</code></td>
+                <td style="padding:8px;">Mapa visual del layout</td>
+              </tr>
+              <tr style="background:#f8fafc; border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px;"><code>gap</code></td>
+                <td style="padding:8px;">Espaciado filas/columnas</td>
+              </tr>
+              <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px;"><code>repeat(n, size)</code></td>
+                <td style="padding:8px;">Repite N columnas/filas</td>
+              </tr>
+              <tr style="background:#f8fafc; border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px;"><code>fr</code></td>
+                <td style="padding:8px;">Fracción del espacio libre</td>
+              </tr>
+              <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px;"><code>auto-fit / auto-fill</code></td>
+                <td style="padding:8px;">Columnas automáticas responsive</td>
+              </tr>
+              <tr>
+                <td style="padding:8px;"><code>grid-column/row: span N</code></td>
+                <td style="padding:8px;">Ocupa N columnas/filas</td>
+              </tr>
+            </table>
+          </div>
+          <div>
+            <pre><code class="language-css">/* Ponentes — 3 columnas responsive */
+.speakers-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fit, minmax(260px, 1fr));
+  gap: 28px;
+}
+
+/* Patrocinadores row */
+.sponsors-row {
+  display: flex; /* Flex aquí */
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+/* Layout completo de página */
+.layout {
+  display: grid;
+  grid-template-areas:
+    "header header"
+    "nav    nav"
+    "main   aside"
+    "footer footer";
+  grid-template-columns: 1fr 300px;
+}</code></pre>
+          </div>
+        </div>
+        <aside class="notes">Vídeo referencia: 03:22:37 Grid en código, 03:42:46 repeat(), 04:03:19 auto-fill/auto-fit, 04:33:00 Grid áreas.</aside>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════ -->
+      <!-- BLOQUE 4: AVANZADO                                         -->
+      <!-- ══════════════════════════════════════════════════════════ -->
+      <section data-background-gradient="linear-gradient(135deg, #264de4 0%, #4f7fff 100%)">
+        <h2 style="color:white!important; text-shadow:none!important; font-size:2em;">✨ Bloque 4</h2>
+        <h3 style="color:#e8f4ff!important; text-shadow:none!important; font-size:1.5em;">CSS Avanzado</h3>
+        <p style="color:rgba(255,255,255,0.85); font-size:1em; background:transparent; padding:10px;">
+          Variables CSS · Transiciones · Animaciones (@keyframes) · Media Queries · Diseño responsive
+        </p>
+      </section>
+
+      <!-- SLIDE: Variables CSS -->
+      <section>
+        <h2><span class="icon">🧩</span>Variables CSS (Custom Properties)</h2>
+        <div class="dos-columnas">
+          <div>
+            <p style="font-size:0.9em;">Las variables CSS permiten <strong>reutilizar valores</strong> y cambiar el tema de toda la web desde un solo lugar.</p>
+            <div class="callout css" style="margin-top:14px; font-size:0.85em;">
+              Se declaran con <code>--nombre-variable</code> dentro de <code>:root</code> (o cualquier elemento) y se usan con <code>var(--nombre)</code>.
+            </div>
+            <div class="ejercicio-box" style="margin-top:12px; font-size:0.85em;">
+              <h3>Ventajas</h3>
+              <ul>
+                <li>Cambiar colores en un solo punto</li>
+                <li>Coherencia visual automática</li>
+                <li>Se pueden modificar con JavaScript</li>
+                <li>Heredables como cualquier propiedad</li>
+              </ul>
+            </div>
+          </div>
+          <div>
+            <pre><code class="language-css">/* Variables del ejercicio TechSummit */
+:root {
+  --indigo: #1e1b4b;
+  --indigo-light: #312e81;
+  --violet: #7c3aed;
+  --violet-soft: #a78bfa;
+  --slate-50: #f8fafc;
+  --slate-800: #1e293b;
+  --amber-light: #fef3c7;
+  --radius: 12px;
+  --shadow: 0 4px 24px
+    rgba(0,0,0,0.08);
+}
+
+/* Uso de las variables */
+section {
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+section h2 {
+  color: var(--indigo);
+  border-bottom: 3px solid
+    var(--violet-soft);
+}</code></pre>
+          </div>
+        </div>
+        <aside class="notes">Las variables CSS son modernas y muy potentes. No son lo mismo que las variables de Sass/Less (que son compiladas). Estas son nativas del navegador y dinámicas.</aside>
+      </section>
+
+      <!-- SLIDE: Transiciones -->
+      <section>
+        <h2><span class="icon">🎬</span>Transiciones</h2>
+        <div class="dos-columnas">
+          <div>
+            <p style="font-size:0.88em;">Las transiciones animan el <strong>cambio de un estado a otro</strong> (hover, focus, active…).</p>
+            <pre><code class="language-css">/* Sintaxis completa */
+.elemento {
+  transition:
+    propiedad
+    duración
+    función-de-tiempo
+    retardo;
+}
+
+/* Ejemplo */
+nav a {
+  transition: all 0.2s ease;
+}
+
+/* Atajo múltiples propiedades */
+.card {
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+</code></pre>
+            <div class="callout css fragment" style="font-size:0.82em;">
+              ⚠️ <code>transition: all</code> es práctico pero puede afectar rendimiento. Mejor especificar las propiedades exactas.
+            </div>
+          </div>
+          <div>
+            <pre><code class="language-css">/* Ponentes — tarjeta hover */
+.speakers-grid article {
+  transition:
+    transform 0.25s,
+    box-shadow 0.25s;
+}
+.speakers-grid article:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px
+    rgba(0,0,0,0.12);
+}
+
+/* Nav link hover */
+nav a {
+  transition: all 0.2s;
+}
+nav a:hover {
+  background: var(--violet);
+  color: white;
+}
+
+/* Botón submit */
+button[type="submit"] {
+  transition: all 0.2s;
+}
+button[type="submit"]:hover {
+  background: var(--indigo-light);
+  transform: translateY(-1px);
+}</code></pre>
+          </div>
+        </div>
+        <aside class="notes">Vídeo referencia: 04:51:58 — "Transiciones", 04:56:39 transition-duration, 05:06:53 cubic-bezier.</aside>
+      </section>
+
+      <!-- SLIDE: Animaciones -->
+      <section>
+        <h2><span class="icon">🎞️</span>Animaciones con <code>@keyframes</code></h2>
+        <div class="dos-columnas">
+          <div>
+            <p style="font-size:0.88em;">Las animaciones permiten transiciones entre <strong>múltiples estados</strong> sin necesidad de interacción del usuario.</p>
+            <pre><code class="language-css">/* 1. Definir la animación */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 2. Aplicarla */
+.hero-content {
+  animation: fadeInUp 0.8s ease;
+}
+
+/* Con múltiples estados */
+@keyframes pulse {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}</code></pre>
+          </div>
+          <div>
+            <div class="ejercicio-box">
+              <h3>Propiedades de animation</h3>
+              <table style="font-size:0.78em; width:100%; border-collapse:collapse; margin-top:8px;">
+                <tr style="background:#264de4; color:white;">
+                  <th style="padding:6px;">Propiedad</th>
+                  <th style="padding:6px;">Valor</th>
+                </tr>
+                <tr style="border-bottom:1px solid #e2e8f0;">
+                  <td style="padding:6px;"><code>animation-name</code></td>
+                  <td style="padding:6px;">nombre del @keyframes</td>
+                </tr>
+                <tr style="background:#f8fafc; border-bottom:1px solid #e2e8f0;">
+                  <td style="padding:6px;"><code>animation-duration</code></td>
+                  <td style="padding:6px;"><code>0.8s</code>, <code>500ms</code></td>
+                </tr>
+                <tr style="border-bottom:1px solid #e2e8f0;">
+                  <td style="padding:6px;"><code>animation-iteration-count</code></td>
+                  <td style="padding:6px;"><code>1</code>, <code>infinite</code></td>
+                </tr>
+                <tr style="background:#f8fafc; border-bottom:1px solid #e2e8f0;">
+                  <td style="padding:6px;"><code>animation-direction</code></td>
+                  <td style="padding:6px;"><code>normal</code>, <code>reverse</code>, <code>alternate</code></td>
+                </tr>
+                <tr style="border-bottom:1px solid #e2e8f0;">
+                  <td style="padding:6px;"><code>animation-fill-mode</code></td>
+                  <td style="padding:6px;"><code>forwards</code> — mantiene estado final</td>
+                </tr>
+                <tr style="background:#f8fafc;">
+                  <td style="padding:6px;"><code>animation</code></td>
+                  <td style="padding:6px;">Atajo de todas las anteriores</td>
+                </tr>
+              </table>
+            </div>
+            <pre style="margin-top:10px;"><code class="language-css">/* Atajo */
+.home-container {
+  animation: fadeInUp 0.8s ease;
+}</code></pre>
+          </div>
+        </div>
+        <aside class="notes">Vídeo referencia: 05:24:29 — "Animaciones", 05:43:45 fill-mode, 05:46:53 atajo animation.</aside>
+      </section>
+
+      <!-- SLIDE: Media Queries -->
+      <section>
+        <h2><span class="icon">📱</span>Media Queries — Diseño Responsive</h2>
+        <div class="dos-columnas">
+          <div>
+            <p style="font-size:0.88em;">Las media queries aplican estilos <strong>solo cuando se cumplen ciertas condiciones</strong> (ancho de pantalla, orientación, etc.).</p>
+            <div class="callout css" style="margin-top:12px; font-size:0.85em;">
+              <strong>Mobile-first:</strong> diseña primero para móvil y añade estilos para pantallas más grandes con <code>min-width</code>.
+            </div>
+            <pre style="margin-top:12px;"><code class="language-css">/* Móvil: estilos base */
+.speakers-grid {
+  grid-template-columns: 1fr;
+}
+
+/* Tablet: desde 640px */
+@media (min-width: 640px) {
+  .speakers-grid {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+}
+
+/* Desktop: desde 1024px */
+@media (min-width: 1024px) {
+  .speakers-grid {
+    grid-template-columns:
+      repeat(3, 1fr);
+  }
+}</code></pre>
+          </div>
+          <div>
+            <pre><code class="language-css">/* Media queries de TechSummit */
+@media (max-width: 640px) {
+  section, aside {
+    padding: 28px 20px;
+    margin: 20px 0;
+  }
+  nav ul { gap: 2px; }
+  nav a {
+    font-size: 0.8rem;
+    padding: 6px 10px;
+  }
+  dl {
+    grid-template-columns: 1fr;
+  }
+  .form-actions {
+    flex-direction: column;
+  }
+  .speakers-grid {
+    grid-template-columns: 1fr;
+  }
+  thead th, tbody td {
+    padding: 8px 10px;
+    font-size: 0.82rem;
+  }
+}</code></pre>
+            <div class="callout css fragment" style="font-size:0.8em; margin-top:10px;">
+              TechSummit usa <code>max-width: 640px</code> (desktop-first). Lo más común hoy es <code>min-width</code> (mobile-first).
+            </div>
+          </div>
+        </div>
+        <aside class="notes">Las media queries son fundamentales para que la web funcione bien en móvil. Chrome DevTools tiene emulación de dispositivos.</aside>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════ -->
+      <!-- PRÁCTICA — TechSummit completo                            -->
+      <!-- ══════════════════════════════════════════════════════════ -->
+      <section data-background-color="#f0f5ff">
+        <h2><span class="icon">🛠️</span>Práctica: Analiza el CSS de TechSummit</h2>
+        <p style="font-size:0.9em; margin-bottom:20px;">Abre <code>ejercicio.html</code> en el navegador y en VS Code. Localiza en el <code>&lt;style&gt;</code>:</p>
+        <div class="reglas-grid" style="grid-template-columns:repeat(4,1fr); font-size:0.8em;">
+          <div class="ejercicio-box">
+            <h3>🎯 Tarea 1</h3>
+            <p>Busca dónde se usan las <strong>variables CSS</strong> (<code>:root</code>). Cámbia el valor de <code>--violet</code> y observa qué cambia.</p>
+          </div>
+          <div class="ejercicio-box">
+            <h3>🎯 Tarea 2</h3>
+            <p>Encuentra el selector que hace que los <strong>artículos de ponentes</strong> suban al pasar el cursor. ¿Qué propiedades usa?</p>
+          </div>
+          <div class="ejercicio-box">
+            <h3>🎯 Tarea 3</h3>
+            <p>Localiza el <strong>nav sticky</strong>. ¿Por qué necesita <code>z-index: 100</code>?</p>
+          </div>
+          <div class="ejercicio-box">
+            <h3>🎯 Tarea 4</h3>
+            <p>¿Qué valor de <code>grid-template-columns</code> hace que la cuadrícula de ponentes sea <strong>automáticamente responsive</strong>?</p>
+          </div>
+        </div>
+        <div class="callout css fragment" style="margin-top:20px;">
+          <strong>Reto:</strong> Modifica el CSS de TechSummit para cambiar el esquema de colores a una paleta verde (<code>#166534</code>, <code>#15803d</code>, <code>#4ade80</code>). Solo cambiando los valores de las variables en <code>:root</code>.
+        </div>
+        <aside class="notes">
+          Esta práctica guiada tarda ~30 minutos.
+          Tarea 4: la clave es repeat(auto-fit, minmax(260px, 1fr)) que crea las columnas automáticamente.
+        </aside>
+      </section>
+
+      <!-- SLIDE: Reset CSS -->
+      <section>
+        <h2><span class="icon">🔄</span>Reset CSS y Normalize</h2>
+        <div class="dos-columnas">
+          <div>
+            <p style="font-size:0.88em;">Los navegadores tienen estilos por defecto distintos. El <strong>Reset CSS</strong> elimina esas diferencias para partir de cero.</p>
+            <div class="ejercicio-box" style="margin-top:12px;">
+              <h3>Reset mínimo (TechSummit)</h3>
+              <pre><code class="language-css">* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}</code></pre>
+            </div>
+          </div>
+          <div>
+            <div class="ejercicio-box">
+              <h3>Reset completo moderno</h3>
+              <pre><code class="language-css">*, *::before, *::after {
+  box-sizing: border-box;
+}
+* {
+  margin: 0;
+}
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing:
+    antialiased;
+}
+img, video, svg {
+  display: block;
+  max-width: 100%;
+}
+input, button, textarea, select {
+  font: inherit;
+}
+p, h1, h2, h3, h4 {
+  overflow-wrap: break-word;
+}</code></pre>
+            </div>
+          </div>
+        </div>
+        <aside class="notes">Vídeo referencia: 01:24:26 — "Reset CSS y Normalize". Normalize.css mantiene algunos estilos útiles del navegador; el reset los elimina todos.</aside>
+      </section>
+
+      <!-- SLIDE: Pseudoelementos -->
+      <section>
+        <h2><span class="icon">🔮</span>Pseudoelementos</h2>
+        <div class="dos-columnas">
+          <div>
+            <p style="font-size:0.9em;">Los pseudoelementos crean <strong>elementos visuales sin necesidad de HTML</strong> adicional.</p>
+            <table style="font-size:0.82em; margin-top:12px; width:100%; border-collapse:collapse;">
+              <tr style="background:#264de4; color:white;">
+                <th style="padding:8px;">Pseudoelemento</th>
+                <th style="padding:8px;">Inserta…</th>
+              </tr>
+              <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px;"><code>::before</code></td>
+                <td style="padding:8px;">Contenido antes del elemento</td>
+              </tr>
+              <tr style="background:#f8fafc; border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px;"><code>::after</code></td>
+                <td style="padding:8px;">Contenido después del elemento</td>
+              </tr>
+              <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px;"><code>::placeholder</code></td>
+                <td style="padding:8px;">Estilo del placeholder</td>
+              </tr>
+              <tr style="background:#f8fafc;">
+                <td style="padding:8px;"><code>::selection</code></td>
+                <td style="padding:8px;">Texto seleccionado por el usuario</td>
+              </tr>
+            </table>
+          </div>
+          <div>
+            <pre><code class="language-css">/* Efecto decorativo del header */
+header::before {
+  content: ''; /* obligatorio */
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background:
+    radial-gradient(circle at 30% 70%,
+      rgba(124,58,237,0.3), transparent),
+    radial-gradient(circle at 70% 30%,
+      rgba(245,158,11,0.15), transparent);
+  pointer-events: none;
+}
+
+/* Indicador en FAQ */
+summary::before {
+  content: '+ ';
+  color: #7c3aed;
+  font-weight: 700;
+}
+details[open] summary::before {
+  content: '− ';
+}</code></pre>
+          </div>
+        </div>
+        <aside class="notes">Los pseudoelementos ::before y ::after son muy potentes para decoración. El atributo content: '' es obligatorio aunque esté vacío.</aside>
+      </section>
+
+      <!-- SLIDE: Cierre y resumen -->
+      <section data-background-gradient="linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #264de4 100%)">
+        <h2 class="grad-text">Resumen de CSS</h2>
+        <div class="resumen-grid" style="grid-template-columns: repeat(4,1fr);">
+          <div class="resumen-card">
+            <h3>🔤 Fundamentos</h3>
+            <p>Sintaxis, selectores, cascada, especificidad, unidades, herencia.</p>
+          </div>
+          <div class="resumen-card">
+            <h3>📦 Box Model</h3>
+            <p>Margin, padding, border, box-sizing, overflow, position, display.</p>
+          </div>
+          <div class="resumen-card">
+            <h3>🏗️ Layout</h3>
+            <p>Flexbox (1D) y Grid (2D): los dos sistemas de maquetación modernos.</p>
+          </div>
+          <div class="resumen-card">
+            <h3>✨ Avanzado</h3>
+            <p>Variables CSS, transiciones, animaciones, media queries.</p>
+          </div>
+        </div>
+        <div class="callout css fragment" style="margin-top:24px; font-size:0.88em; background:rgba(255,255,255,0.15); border-left-color:white;">
+          <strong>📚 Para seguir practicando:</strong><br>
+          Vídeo completo: <a href="https://www.youtube.com/watch?v=TlJbu0BMLaY" target="_blank" style="color:#a78bfa;">CSS desde cero — midudev (YouTube)</a><br>
+          Referencia: <a href="https://developer.mozilla.org/es/docs/Web/CSS" target="_blank" style="color:#a78bfa;">MDN Web Docs</a> &nbsp;|&nbsp;
+          Playground: <a href="https://codepen.io" target="_blank" style="color:#a78bfa;">CodePen</a>
+        </div>
+        <aside class="notes">
+          Slide de cierre. Anima a los estudiantes a explorar el CSS del ejercicio TechSummit como referencia.
+          El siguiente paso lógico sería un proyecto propio donde apliquen todo esto.
+        </aside>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/highlight/highlight.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/notes/notes.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      slideNumber: 'c/t',
+      transition: 'slide',
+      transitionSpeed: 'fast',
+      controls: true,
+      progress: true,
+      center: false,
+      width: 1280,
+      height: 720,
+      margin: 0.04,
+      plugins: [RevealHighlight, RevealNotes],
+      keyboard: {
+        78: () => Reveal.toggleNotesWindow(), // N abre notas del profesor
+      }
+    });
+  </script>
+</body>
+</html>

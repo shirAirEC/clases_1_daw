@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="TechSummit 2026 es la conferencia de tecnología más importante de España. Tres días de charlas, talleres y networking en Madrid.">
+  <meta name="author" content="Organización TechSummit">
+  <meta name="keywords" content="conferencia, tecnología, desarrollo web, inteligencia artificial, Madrid, 2026">
+  <title>TechSummit 2026 — Conferencia de Tecnología</title>
+  <link rel="icon" type="image/png" href="https://em-content.zobj.net/source/apple/391/rocket_1f680.png">
+  <style>
+    :root {
+      --indigo: #1e1b4b;
+      --indigo-light: #312e81;
+      --violet: #7c3aed;
+      --violet-soft: #a78bfa;
+      --slate-50: #f8fafc;
+      --slate-100: #f1f5f9;
+      --slate-200: #e2e8f0;
+      --slate-300: #cbd5e1;
+      --slate-600: #475569;
+      --slate-700: #334155;
+      --slate-800: #1e293b;
+      --slate-900: #0f172a;
+      --amber: #f59e0b;
+      --amber-light: #fef3c7;
+      --emerald: #10b981;
+      --rose: #f43f5e;
+      --radius: 12px;
+      --shadow: 0 4px 24px rgba(0,0,0,0.08);
+      --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      color: var(--slate-800);
+      line-height: 1.7;
+      background: var(--slate-50);
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: linear-gradient(135deg, var(--indigo) 0%, var(--indigo-light) 40%, var(--violet) 100%);
+      color: white;
+      text-align: center;
+      padding: 80px 20px 50px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 70%, rgba(124,58,237,0.3) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 30%, rgba(245,158,11,0.15) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    header h1 {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      position: relative;
+      margin-bottom: 12px;
+    }
+
+    header > p {
+      font-size: 1.25rem;
+      opacity: 0.85;
+      font-weight: 300;
+      position: relative;
+      max-width: 550px;
+      margin: 0 auto;
+    }
+
+    /* ── NAV ── */
+    nav {
+      background: var(--slate-900);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 4px;
+      padding: 10px 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    nav a {
+      color: var(--slate-300);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 500;
+      padding: 8px 16px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    nav a:hover,
+    nav a:focus {
+      background: var(--violet);
+      color: white;
+    }
+
+    /* ── LAYOUT ── */
+    main {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    section, aside {
+      background: white;
+      border-radius: var(--radius);
+      padding: 48px 40px;
+      margin: 36px 0;
+      box-shadow: var(--shadow);
+    }
+
+    section h2, aside h2 {
+      font-size: 1.8rem;
+      color: var(--indigo);
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 3px solid var(--violet-soft);
+      letter-spacing: -0.5px;
+    }
+
+    section h3 {
+      font-size: 1.15rem;
+      color: var(--violet);
+      margin: 24px 0 10px;
+    }
+
+    p {
+      margin-bottom: 14px;
+      color: var(--slate-700);
+    }
+
+    /* ── DEFINITION LIST ── */
+    dl {
+      display: grid;
+      grid-template-columns: max-content 1fr;
+      gap: 8px 24px;
+      margin: 24px 0;
+      padding: 24px;
+      background: var(--slate-100);
+      border-radius: var(--radius);
+    }
+
+    dt {
+      font-weight: 700;
+      color: var(--indigo);
+    }
+
+    dd {
+      color: var(--slate-700);
+    }
+
+    mark {
+      background: var(--amber-light);
+      padding: 1px 6px;
+      border-radius: 3px;
+    }
+
+    /* ── FIGURE ── */
+    figure {
+      margin: 28px 0;
+    }
+
+    figure img {
+      width: 100%;
+      height: auto;
+      border-radius: var(--radius);
+      display: block;
+    }
+
+    figcaption {
+      text-align: center;
+      font-size: 0.88rem;
+      color: var(--slate-600);
+      margin-top: 10px;
+      font-style: italic;
+    }
+
+    /* ── SPEAKERS ── */
+    .speakers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 28px;
+      margin-top: 24px;
+    }
+
+    .speakers-grid article {
+      background: var(--slate-50);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      text-align: center;
+      border: 1px solid var(--slate-200);
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+
+    .speakers-grid article:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .speakers-grid img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--violet-soft);
+      margin-bottom: 16px;
+    }
+
+    .speakers-grid h3 {
+      margin: 0 0 6px;
+      color: var(--indigo);
+      font-size: 1.15rem;
+    }
+
+    .speakers-grid p {
+      font-size: 0.9rem;
+    }
+
+    .speakers-grid a {
+      display: inline-block;
+      margin-top: 12px;
+      color: var(--violet);
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 0.88rem;
+    }
+
+    .speakers-grid a:hover {
+      text-decoration: underline;
+    }
+
+    /* ── TABLE ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 0.92rem;
+    }
+
+    caption {
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin-bottom: 12px;
+      color: var(--indigo);
+      caption-side: top;
+      text-align: left;
+    }
+
+    thead th {
+      background: var(--indigo);
+      color: white;
+      padding: 14px 16px;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    tbody th {
+      background: var(--slate-100);
+      padding: 12px 16px;
+      font-weight: 600;
+      color: var(--indigo-light);
+      text-align: left;
+    }
+
+    tbody td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--slate-200);
+    }
+
+    tbody tr:hover td,
+    tbody tr:hover th {
+      background: #f0ecff;
+    }
+
+    .common-event {
+      text-align: center;
+      font-weight: 600;
+      background: var(--amber-light);
+    }
+
+    .break-event {
+      text-align: center;
+      background: #dcfce7;
+    }
+
+    .workshop-cell {
+      background: #ede9fe;
+      font-style: italic;
+      vertical-align: middle;
+      text-align: center;
+    }
+
+    tfoot td {
+      padding: 10px 16px;
+      font-size: 0.85rem;
+      color: var(--slate-600);
+      background: var(--slate-100);
+      text-align: center;
+    }
+
+    /* ── ADDRESS / LOCATION ── */
+    address {
+      font-style: normal;
+      background: var(--slate-100);
+      padding: 20px 24px;
+      border-radius: var(--radius);
+      margin: 16px 0;
+      border-left: 4px solid var(--violet);
+    }
+
+    iframe {
+      border: none;
+      border-radius: var(--radius);
+      display: block;
+      max-width: 100%;
+      margin: 20px 0;
+    }
+
+    video {
+      display: block;
+      max-width: 100%;
+      border-radius: var(--radius);
+      margin: 20px 0;
+      background: #000;
+    }
+
+    /* ── SPONSORS ── */
+    aside {
+      background: linear-gradient(to bottom, white, var(--slate-50));
+    }
+
+    aside h3 {
+      font-size: 1.1rem;
+      margin: 28px 0 14px;
+      padding: 6px 14px;
+      border-radius: 6px;
+      display: inline-block;
+    }
+
+    .tier-platino { background: linear-gradient(90deg, #e2e8f0, #f1f5f9); color: var(--slate-800); }
+    .tier-oro { background: linear-gradient(90deg, var(--amber-light), #fff); color: var(--slate-800); }
+    .tier-plata { background: var(--slate-200); color: var(--slate-700); }
+
+    .sponsors-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      align-items: center;
+      margin: 10px 0 20px;
+    }
+
+    .sponsors-row a {
+      transition: transform 0.2s;
+    }
+
+    .sponsors-row a:hover {
+      transform: scale(1.05);
+    }
+
+    .sponsors-row img {
+      border-radius: 8px;
+      border: 1px solid var(--slate-200);
+      display: block;
+    }
+
+    /* ── FORM ── */
+    form {
+      margin-top: 16px;
+    }
+
+    fieldset {
+      border: 2px solid var(--slate-200);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      margin-bottom: 28px;
+    }
+
+    legend {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--violet);
+      padding: 0 10px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--slate-700);
+      margin: 16px 0 6px;
+    }
+
+    .inline-label {
+      display: inline;
+      font-weight: 400;
+      margin: 0;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="date"],
+    input[type="url"],
+    input[type="number"],
+    input[type="password"],
+    input[type="file"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 2px solid var(--slate-200);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: border-color 0.2s;
+      background: white;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--violet);
+      box-shadow: 0 0 0 3px rgba(124,58,237,0.15);
+    }
+
+    select[multiple] {
+      height: auto;
+      min-height: 120px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      margin: 8px 0;
+      accent-color: var(--violet);
+    }
+
+    .range-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--slate-600);
+    }
+
+    .radio-group,
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin: 10px 0;
+    }
+
+    .radio-group label,
+    .checkbox-group label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 400;
+      margin: 0;
+      cursor: pointer;
+    }
+
+    input[type="radio"],
+    input[type="checkbox"] {
+      accent-color: var(--violet);
+      width: 18px;
+      height: 18px;
+    }
+
+    output {
+      display: inline-block;
+      background: var(--violet);
+      color: white;
+      padding: 2px 12px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      vertical-align: middle;
+      margin-left: 8px;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 16px;
+      margin-top: 28px;
+    }
+
+    button {
+      padding: 14px 32px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    button[type="submit"] {
+      background: var(--violet);
+      color: white;
+    }
+
+    button[type="submit"]:hover {
+      background: var(--indigo-light);
+      transform: translateY(-1px);
+    }
+
+    button[type="reset"] {
+      background: var(--slate-200);
+      color: var(--slate-700);
+    }
+
+    button[type="reset"]:hover {
+      background: var(--slate-300);
+    }
+
+    /* ── DETAILS / FAQ ── */
+    details {
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius);
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    summary {
+      font-weight: 600;
+      padding: 16px 20px;
+      cursor: pointer;
+      background: var(--slate-50);
+      color: var(--indigo);
+      transition: background 0.2s;
+      list-style: none;
+    }
+
+    summary::before {
+      content: '+ ';
+      font-weight: 700;
+      color: var(--violet);
+      margin-right: 4px;
+    }
+
+    details[open] summary::before {
+      content: '− ';
+    }
+
+    summary:hover {
+      background: var(--slate-100);
+    }
+
+    details > p,
+    details > ol {
+      padding: 16px 20px;
+    }
+
+    details ol {
+      padding-left: 40px;
+    }
+
+    details ol li {
+      margin-bottom: 4px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--slate-900);
+      color: var(--slate-300);
+      text-align: center;
+      padding: 40px 20px;
+      margin-top: 40px;
+    }
+
+    footer p {
+      color: var(--slate-300);
+      margin-bottom: 10px;
+    }
+
+    footer a {
+      color: var(--violet-soft);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+      color: white;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px 24px;
+      margin: 14px 0;
+    }
+
+    footer small {
+      color: var(--slate-600);
+      font-size: 0.8rem;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      section, aside {
+        padding: 28px 20px;
+        margin: 20px 0;
+      }
+
+      nav ul {
+        gap: 2px;
+      }
+
+      nav a {
+        font-size: 0.8rem;
+        padding: 6px 10px;
+      }
+
+      dl {
+        grid-template-columns: 1fr;
+      }
+
+      .form-actions {
+        flex-direction: column;
+      }
+
+      .speakers-grid {
+        grid-template-columns: 1fr;
+      }
+
+      thead th, tbody td, tbody th, tfoot td {
+        padding: 8px 10px;
+        font-size: 0.82rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PARTE 1 & 2: Cabecera y navegación -->
+  <header>
+    <h1>TechSummit 2026</h1>
+    <p>Donde la innovación se encuentra con el futuro</p>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="#sobre">Sobre el evento</a></li>
+      <li><a href="#ponentes">Ponentes</a></li>
+      <li><a href="#programa">Programa</a></li>
+      <li><a href="#ubicacion">Ubicación</a></li>
+      <li><a href="#patrocinadores">Patrocinadores</a></li>
+      <li><a href="#inscripcion">Inscripción</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+  </nav>
+
+  <main>
+
+    <!-- PARTE 3: Sobre el evento -->
+    <section id="sobre">
+      <h2>Sobre el evento</h2>
+      <p>
+        <strong>TechSummit 2026</strong> es la conferencia de tecnología más importante del panorama nacional.
+        Durante tres días, más de <mark>2.000 profesionales</mark> del sector se reúnen para compartir conocimientos,
+        descubrir las últimas tendencias y crear conexiones que impulsan el futuro de la industria tecnológica.
+      </p>
+      <p>
+        Desde inteligencia artificial hasta desarrollo web, pasando por ciberseguridad y computación en la nube,
+        <em>TechSummit</em> ofrece un programa diverso y riguroso diseñado tanto para perfiles junior como para
+        profesionales con años de experiencia. <strong>No te pierdas la oportunidad de formar parte de esta
+        experiencia única.</strong>
+      </p>
+
+      <dl>
+        <dt>Fecha</dt>
+        <dd>15–17 de octubre de 2026</dd>
+        <dt>Lugar</dt>
+        <dd>Palacio de Congresos de Madrid</dd>
+        <dt>Aforo</dt>
+        <dd>2.000 asistentes</dd>
+        <dt>Idiomas</dt>
+        <dd>Español e Inglés (traducción simultánea)</dd>
+      </dl>
+
+      <figure>
+        <img src="https://picsum.photos/seed/techsummit/800/400" alt="Vista panorámica del auditorio principal del Palacio de Congresos durante una conferencia de tecnología" width="800" height="400">
+        <figcaption>Auditorio principal del Palacio de Congresos de Madrid durante la edición anterior</figcaption>
+      </figure>
+    </section>
+
+    <!-- PARTE 4: Ponentes -->
+    <section id="ponentes">
+      <h2>Ponentes destacados</h2>
+      <div class="speakers-grid">
+        <article>
+          <img src="https://i.pravatar.cc/150?img=11" alt="Foto de perfil de Elena Martínez García">
+          <h3>Elena Martínez García</h3>
+          <p><strong>Directora de IA</strong> en <em>NovaTech Solutions</em></p>
+          <p>Investigadora con más de 15 años de experiencia en aprendizaje automático. Ha liderado proyectos de IA aplicada a la salud en tres continentes. Ponente habitual en conferencias internacionales como NeurIPS y ICML.</p>
+          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">Ver perfil en LinkedIn &rarr;</a>
+        </article>
+
+        <article>
+          <img src="https://i.pravatar.cc/150?img=12" alt="Foto de perfil de Carlos Ruiz Fernández">
+          <h3>Carlos Ruiz Fernández</h3>
+          <p><strong>CTO</strong> en <em>CloudBridge Europe</em></p>
+          <p>Arquitecto de soluciones cloud con experiencia en migraciones a gran escala. Certificado en AWS, Azure y GCP. Autor del libro "Infraestructura como código: guía práctica".</p>
+          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">Ver perfil en LinkedIn &rarr;</a>
+        </article>
+
+        <article>
+          <img src="https://i.pravatar.cc/150?img=32" alt="Foto de perfil de Lucía Chen Wei">
+          <h3>Lucía Chen Wei</h3>
+          <p><strong>Lead Frontend Engineer</strong> en <em>Spotify</em></p>
+          <p>Especialista en rendimiento web y accesibilidad. Contribuidora activa en proyectos de código abierto como React y Vite. Mentora en programas de diversidad en tecnología.</p>
+          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">Ver perfil en LinkedIn &rarr;</a>
+        </article>
+      </div>
+    </section>
+
+    <!-- PARTE 5: Programa (tabla compleja) -->
+    <section id="programa">
+      <h2>Programa</h2>
+      <table>
+        <caption>Programa — Día 1 (15 de octubre)</caption>
+        <thead>
+          <tr>
+            <th scope="col">Hora</th>
+            <th scope="col">Sala A</th>
+            <th scope="col">Sala B</th>
+            <th scope="col">Sala C</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">09:00 – 09:30</th>
+            <td colspan="3" class="common-event">Inauguración oficial y bienvenida</td>
+          </tr>
+          <tr>
+            <th scope="row">09:30 – 10:30</th>
+            <td>Keynote: El futuro de la IA generativa — Elena Martínez</td>
+            <td>Introducción a Cloud Native — Carlos Ruiz</td>
+            <td rowspan="2" class="workshop-cell">Taller práctico: Git &amp; GitHub avanzado (2 horas)</td>
+          </tr>
+          <tr>
+            <th scope="row">10:30 – 11:30</th>
+            <td>Web Components en 2026 — Lucía Chen</td>
+            <td>Seguridad en APIs REST — David López</td>
+          </tr>
+          <tr>
+            <th scope="row">11:30 – 12:00</th>
+            <td colspan="3" class="break-event">&#9749; Pausa café y networking</td>
+          </tr>
+          <tr>
+            <th scope="row">12:00 – 13:00</th>
+            <td>Arquitectura de microservicios — Ana Torres</td>
+            <td>Accesibilidad web: más allá del checklist — Pablo Sanz</td>
+            <td>Machine Learning con Python — Sara Kim</td>
+          </tr>
+          <tr>
+            <th scope="row">13:00 – 14:30</th>
+            <td colspan="3" class="break-event">&#127869; Almuerzo</td>
+          </tr>
+          <tr>
+            <th scope="row">14:30 – 15:30</th>
+            <td>DevOps para equipos pequeños — Marcos Gil</td>
+            <td rowspan="2" class="workshop-cell">Taller: Diseño de bases de datos NoSQL (2 horas)</td>
+            <td>TypeScript avanzado — Laura Vega</td>
+          </tr>
+          <tr>
+            <th scope="row">15:30 – 16:30</th>
+            <td>Rendimiento web: Core Web Vitals — Lucía Chen</td>
+            <td>Blockchain más allá de las criptomonedas — Hugo Prat</td>
+          </tr>
+          <tr>
+            <th scope="row">16:30 – 17:00</th>
+            <td colspan="3" class="common-event">Mesa redonda de cierre y sorteos</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="4">Todos los horarios en hora peninsular (CET). Programa sujeto a cambios.</td>
+          </tr>
+        </tfoot>
+      </table>
+    </section>
+
+    <!-- PARTE 6: Ubicación y multimedia -->
+    <section id="ubicacion">
+      <h2>Ubicación</h2>
+      <address>
+        Palacio de Congresos de Madrid<br>
+        Paseo de la Castellana, 99<br>
+        28046 Madrid, España
+      </address>
+
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3036.088693420868!2d-3.6929587!3d40.4529394!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd4228e4e1526505%3A0x8e021523ae tried!5e0!3m2!1ses!2ses"
+        width="600"
+        height="400"
+        loading="lazy"
+        title="Mapa con la ubicación del Palacio de Congresos de Madrid">
+      </iframe>
+
+      <h3>Aftermovie de la edición anterior</h3>
+      <video controls width="640" preload="metadata">
+        <source src="techsummit-recap-2025.mp4" type="video/mp4">
+        <source src="techsummit-recap-2025.webm" type="video/webm">
+        <track kind="subtitles" src="subtitulos-es.vtt" srclang="es" label="Español">
+        Tu navegador no soporta la etiqueta de vídeo. <a href="techsummit-recap-2025.mp4">Descarga el vídeo aquí.</a>
+      </video>
+    </section>
+
+    <!-- PARTE 7: Patrocinadores -->
+    <aside id="patrocinadores">
+      <h2>Nuestros patrocinadores</h2>
+
+      <h3 class="tier-platino">&#128142; Platino</h3>
+      <div class="sponsors-row">
+        <a href="https://www.ejemplo-globaltech.com" target="_blank" rel="noopener noreferrer">
+          <img src="https://placehold.co/240x90/312e81/ffffff?text=GlobalTech" alt="GlobalTech" width="240" height="90">
+        </a>
+      </div>
+
+      <h3 class="tier-oro">&#127942; Oro</h3>
+      <div class="sponsors-row">
+        <a href="https://www.ejemplo-innovasoft.com" target="_blank" rel="noopener noreferrer">
+          <img src="https://placehold.co/200x80/f59e0b/1e293b?text=InnovaSoft" alt="InnovaSoft" width="200" height="80">
+        </a>
+        <a href="https://www.ejemplo-datacore.com" target="_blank" rel="noopener noreferrer">
+          <img src="https://placehold.co/200x80/f59e0b/1e293b?text=DataCore" alt="DataCore" width="200" height="80">
+        </a>
+      </div>
+
+      <h3 class="tier-plata">&#129351; Plata</h3>
+      <div class="sponsors-row">
+        <a href="https://www.ejemplo-codelab.com" target="_blank" rel="noopener noreferrer">
+          <img src="https://placehold.co/180x70/94a3b8/1e293b?text=CodeLab" alt="CodeLab" width="180" height="70">
+        </a>
+        <a href="https://www.ejemplo-netplus.com" target="_blank" rel="noopener noreferrer">
+          <img src="https://placehold.co/180x70/94a3b8/1e293b?text=NetPlus" alt="NetPlus" width="180" height="70">
+        </a>
+        <a href="https://www.ejemplo-devhub.com" target="_blank" rel="noopener noreferrer">
+          <img src="https://placehold.co/180x70/94a3b8/1e293b?text=DevHub" alt="DevHub" width="180" height="70">
+        </a>
+      </div>
+    </aside>
+
+    <!-- PARTE 8: Formulario de inscripción -->
+    <section id="inscripcion">
+      <h2>Inscripción</h2>
+      <form action="#" method="POST">
+
+        <!-- 8.1 Datos personales -->
+        <fieldset>
+          <legend>Datos personales</legend>
+
+          <label for="nombre">Nombre completo</label>
+          <input type="text" id="nombre" name="nombre" required placeholder="Ej: María López García" minlength="3" maxlength="100">
+
+          <label for="email">Correo electrónico</label>
+          <input type="email" id="email" name="email" required placeholder="tu@email.com">
+
+          <label for="telefono">Teléfono</label>
+          <input type="tel" id="telefono" name="telefono" placeholder="612345678" pattern="[0-9]{9}">
+
+          <label for="nacimiento">Fecha de nacimiento</label>
+          <input type="date" id="nacimiento" name="nacimiento" min="1940-01-01" max="2010-12-31">
+
+          <label for="web">Página web personal</label>
+          <input type="url" id="web" name="web" placeholder="https://tu-portfolio.com">
+        </fieldset>
+
+        <!-- 8.2 Datos profesionales -->
+        <fieldset>
+          <legend>Datos profesionales</legend>
+
+          <label for="empresa">Empresa</label>
+          <input type="text" id="empresa" name="empresa" placeholder="Nombre de tu empresa">
+
+          <label for="cargo">Cargo</label>
+          <input type="text" id="cargo" name="cargo" list="cargos-sugeridos" placeholder="Selecciona o escribe tu cargo">
+          <datalist id="cargos-sugeridos">
+            <option value="Developer">
+            <option value="Designer">
+            <option value="Manager">
+            <option value="CTO">
+            <option value="Student">
+            <option value="Data Scientist">
+            <option value="DevOps Engineer">
+          </datalist>
+
+          <label for="experiencia">Años de experiencia</label>
+          <input type="number" id="experiencia" name="experiencia" min="0" max="50" placeholder="0">
+
+          <label for="nivel">Nivel de conocimiento tecnológico: <output id="nivel-valor">5</output></label>
+          <input type="range" id="nivel" name="nivel" min="1" max="10" step="1" value="5" oninput="document.getElementById('nivel-valor').value=this.value">
+          <span class="range-labels">
+            <span>1 — Principiante</span>
+            <span>10 — Experto</span>
+          </span>
+
+          <label for="tecnologias">Tecnologías que dominas (Ctrl+clic para seleccionar varias)</label>
+          <select id="tecnologias" name="tecnologias" multiple>
+            <optgroup label="Frontend">
+              <option value="html">HTML</option>
+              <option value="css">CSS</option>
+              <option value="javascript">JavaScript</option>
+              <option value="react">React</option>
+            </optgroup>
+            <optgroup label="Backend">
+              <option value="java">Java</option>
+              <option value="python">Python</option>
+              <option value="nodejs">Node.js</option>
+              <option value="php">PHP</option>
+            </optgroup>
+          </select>
+        </fieldset>
+
+        <!-- 8.3 Preferencias de asistencia -->
+        <fieldset>
+          <legend>Preferencias de asistencia</legend>
+
+          <label>Tipo de entrada</label>
+          <div class="radio-group">
+            <label class="inline-label">
+              <input type="radio" name="tipo-entrada" value="estandar" required> Estándar (50&euro;)
+            </label>
+            <label class="inline-label">
+              <input type="radio" name="tipo-entrada" value="premium"> Premium (120&euro;)
+            </label>
+            <label class="inline-label">
+              <input type="radio" name="tipo-entrada" value="vip"> VIP (250&euro;)
+            </label>
+          </div>
+
+          <label>Talleres a los que deseas asistir</label>
+          <div class="checkbox-group">
+            <label class="inline-label">
+              <input type="checkbox" name="talleres" value="git"> Git &amp; GitHub avanzado
+            </label>
+            <label class="inline-label">
+              <input type="checkbox" name="talleres" value="nosql"> Bases de datos NoSQL
+            </label>
+            <label class="inline-label">
+              <input type="checkbox" name="talleres" value="docker"> Docker y contenedores
+            </label>
+            <label class="inline-label">
+              <input type="checkbox" name="talleres" value="figma"> Diseño UI con Figma
+            </label>
+          </div>
+
+          <label for="dias">Días de asistencia</label>
+          <select id="dias" name="dias">
+            <option value="">— Selecciona —</option>
+            <option value="dia1">Solo día 1</option>
+            <option value="dia2">Solo día 2</option>
+            <option value="dia3">Solo día 3</option>
+            <option value="todos">Los 3 días</option>
+          </select>
+
+          <label for="referencia">¿Cómo nos conociste?</label>
+          <select id="referencia" name="referencia">
+            <option value="">— Selecciona —</option>
+            <option value="redes">Redes sociales</option>
+            <option value="web">Búsqueda web</option>
+            <option value="recomendacion">Recomendación</option>
+            <option value="otro">Otro</option>
+          </select>
+
+          <label for="comentarios">Comentarios adicionales</label>
+          <textarea id="comentarios" name="comentarios" rows="5" cols="50" placeholder="¿Hay algo más que quieras contarnos?"></textarea>
+
+          <div style="margin-top: 16px;">
+            <label class="inline-label">
+              <input type="checkbox" name="terminos" required>
+              Acepto los <a href="#">términos y condiciones</a>
+            </label>
+          </div>
+        </fieldset>
+
+        <!-- 8.4 Subida de archivos y envío -->
+        <fieldset>
+          <legend>Cuenta y envío</legend>
+
+          <label for="foto">Foto de perfil</label>
+          <input type="file" id="foto" name="foto" accept="image/*">
+
+          <label for="password">Contraseña para el portal</label>
+          <input type="password" id="password" name="password" minlength="8" required placeholder="Mínimo 8 caracteres">
+
+          <input type="hidden" name="formulario_version" value="1.0">
+
+          <div class="form-actions">
+            <button type="submit">Completar inscripción</button>
+            <button type="reset">Limpiar formulario</button>
+          </div>
+        </fieldset>
+
+      </form>
+    </section>
+
+    <!-- PARTE 9: FAQ -->
+    <section id="faq">
+      <h2>Preguntas frecuentes</h2>
+
+      <details open>
+        <summary>¿Hay aparcamiento disponible?</summary>
+        <p>Sí, el Palacio de Congresos dispone de un aparcamiento subterráneo con capacidad para 800 vehículos. El coste es de 2&euro;/hora con un máximo diario de 15&euro;. Los asistentes VIP tienen plaza reservada gratuita.</p>
+      </details>
+
+      <details>
+        <summary>¿Se puede pagar en efectivo?</summary>
+        <p>Las entradas solo se pueden adquirir de forma online mediante tarjeta de crédito/débito o PayPal. En el recinto se aceptan los siguientes métodos de pago para comida y merchandising:</p>
+        <ol>
+          <li>Tarjeta de crédito o débito (contactless incluido)</li>
+          <li>Pago con móvil (Apple Pay, Google Pay)</li>
+          <li>Efectivo (solo en la cafetería principal)</li>
+        </ol>
+      </details>
+
+      <details>
+        <summary>¿Hay código de vestimenta?</summary>
+        <p>No existe un código de vestimenta formal. Recomendamos ropa cómoda, ya que las jornadas son largas. Eso sí, la sala principal suele tener el aire acondicionado fuerte: trae una chaqueta ligera.</p>
+      </details>
+
+      <details>
+        <summary>¿Se graban las ponencias?</summary>
+        <p>Todas las charlas de la Sala A se retransmiten en directo y se publican en nuestro canal de YouTube en las semanas posteriores al evento. Los talleres prácticos no se graban para respetar la privacidad de los participantes.</p>
+      </details>
+
+      <details>
+        <summary>¿Cómo puedo cancelar mi entrada?</summary>
+        <p>Puedes solicitar la cancelación hasta 15 días antes del evento para obtener un reembolso completo. Las cancelaciones posteriores permiten un reembolso del 50%. Para cancelar, envía un email a <a href="mailto:info@techsummit2026.com">info@techsummit2026.com</a> con tu número de confirmación.</p>
+      </details>
+    </section>
+
+  </main>
+
+  <!-- PARTE 10: Pie de página -->
+  <footer>
+    <p><small>&copy; 2026 TechSummit. Todos los derechos reservados.</small></p>
+    <div class="footer-links">
+      <a href="#">Política de privacidad</a>
+      <a href="#">Aviso legal</a>
+      <a href="mailto:info@techsummit2026.com">info@techsummit2026.com</a>
+      <a href="tel:+34912345678">+34 912 345 678</a>
+    </div>
+    <p>Hecho con &lt;3 desde Madrid</p>
+  </footer>
+
+</body>
+</html>

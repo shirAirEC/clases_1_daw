@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enunciado — Ejercicio HTML: TechSummit 2026</title>
+  <link rel="icon" type="image/png" href="https://em-content.zobj.net/source/apple/391/rocket_1f680.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+    :root {
+      --indigo: #1e1b4b;
+      --violet: #7c3aed;
+      --violet-soft: #a78bfa;
+      --slate-50: #f8fafc;
+      --slate-100: #f1f5f9;
+      --slate-200: #e2e8f0;
+      --slate-600: #475569;
+      --slate-700: #334155;
+      --slate-800: #1e293b;
+      --slate-900: #0f172a;
+      --amber-light: #fef3c7;
+      --rose-light: #ffe4e6;
+      --emerald-light: #d1fae5;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--slate-100);
+      color: var(--slate-800);
+      line-height: 1.75;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #7c3aed 100%);
+      color: white;
+      text-align: center;
+      padding: 70px 24px 50px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 60% 0%, rgba(124,58,237,0.4), transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -1px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero h1 span {
+      display: block;
+      font-size: 0.45em;
+      font-weight: 400;
+      opacity: 0.8;
+      margin-top: 8px;
+      letter-spacing: 0;
+    }
+
+    .hero .meta {
+      position: relative;
+      z-index: 1;
+      margin-top: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .hero .meta span {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.25);
+      padding: 6px 18px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      backdrop-filter: blur(6px);
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 20px 60px;
+    }
+
+    /* ── Instrucciones generales ── */
+    .instrucciones {
+      background: white;
+      border-radius: 14px;
+      padding: 32px 28px;
+      margin-bottom: 28px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+      border-top: 4px solid var(--violet);
+    }
+
+    .instrucciones h2 {
+      font-size: 1.3rem;
+      color: var(--indigo);
+      margin-bottom: 14px;
+    }
+
+    .instrucciones ul {
+      margin-left: 22px;
+    }
+
+    .instrucciones li {
+      margin-bottom: 6px;
+      font-size: 0.93rem;
+    }
+
+    /* ── Partes del ejercicio ── */
+    .parte {
+      background: white;
+      border-radius: 14px;
+      padding: 32px 28px;
+      margin-bottom: 22px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+      position: relative;
+    }
+
+    .parte::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 5px;
+      border-radius: 14px 0 0 14px;
+      background: var(--violet);
+    }
+
+    .parte h2 {
+      font-size: 1.25rem;
+      color: var(--indigo);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .puntos {
+      background: var(--violet);
+      color: white;
+      padding: 3px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .parte h3 {
+      font-size: 1rem;
+      color: var(--violet);
+      margin: 20px 0 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px dashed var(--slate-200);
+    }
+
+    .parte p {
+      font-size: 0.93rem;
+      color: var(--slate-700);
+      margin-bottom: 10px;
+    }
+
+    .parte ol, .parte ul {
+      margin-left: 22px;
+      margin-bottom: 12px;
+    }
+
+    .parte li {
+      margin-bottom: 5px;
+      font-size: 0.93rem;
+      color: var(--slate-700);
+    }
+
+    .parte li ul, .parte li ol {
+      margin-top: 4px;
+    }
+
+    code {
+      background: #f0ecff;
+      color: #6d28d9;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 0.88em;
+      font-family: 'Cascadia Code', 'Consolas', 'Courier New', monospace;
+    }
+
+    pre {
+      background: var(--slate-900);
+      color: #e2e8f0;
+      padding: 18px 20px;
+      border-radius: 10px;
+      font-size: 0.84rem;
+      line-height: 1.6;
+      overflow-x: auto;
+      margin: 14px 0;
+      font-family: 'Cascadia Code', 'Consolas', 'Courier New', monospace;
+    }
+
+    pre .tag { color: #93c5fd; }
+    pre .attr { color: #fde68a; }
+    pre .val { color: #86efac; }
+    pre .cmt { color: #64748b; font-style: italic; }
+
+    .tip {
+      background: var(--amber-light);
+      border-left: 4px solid #f59e0b;
+      padding: 12px 16px;
+      border-radius: 0 8px 8px 0;
+      margin: 14px 0;
+      font-size: 0.88rem;
+    }
+
+    .tip::before {
+      content: '💡 Pista: ';
+      font-weight: 700;
+    }
+
+    .aviso {
+      background: var(--rose-light);
+      border-left: 4px solid #f43f5e;
+      padding: 12px 16px;
+      border-radius: 0 8px 8px 0;
+      margin: 14px 0;
+      font-size: 0.88rem;
+    }
+
+    .aviso::before {
+      content: '⚠️ Importante: ';
+      font-weight: 700;
+    }
+
+    /* ── Rúbrica ── */
+    .rubrica-section {
+      background: white;
+      border-radius: 14px;
+      padding: 32px 28px;
+      margin-top: 36px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+      border-top: 4px solid var(--indigo);
+    }
+
+    .rubrica-section h2 {
+      font-size: 1.3rem;
+      color: var(--indigo);
+      margin-bottom: 16px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+
+    thead th {
+      background: var(--indigo);
+      color: white;
+      padding: 12px 14px;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    tbody td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--slate-200);
+    }
+
+    tbody tr:nth-child(even) td {
+      background: var(--slate-50);
+    }
+
+    tfoot td {
+      padding: 12px 14px;
+      font-weight: 700;
+      background: #ede9fe;
+    }
+
+    /* ── Checklist ── */
+    .checklist {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .checklist-item {
+      background: var(--slate-50);
+      border: 1px solid var(--slate-200);
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+
+    .checklist-item strong {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--violet);
+      margin-bottom: 4px;
+    }
+
+    .checklist-item span {
+      font-size: 0.82rem;
+      color: var(--slate-600);
+      font-family: 'Cascadia Code', 'Consolas', monospace;
+    }
+
+    footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 0.8rem;
+      color: var(--slate-600);
+    }
+
+    @media (max-width: 600px) {
+      .parte, .instrucciones, .rubrica-section {
+        padding: 24px 18px;
+      }
+
+      thead th, tbody td, tfoot td {
+        padding: 8px 10px;
+        font-size: 0.82rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="hero">
+    <h1>
+      Ejercicio HTML: TechSummit 2026
+      <span>Lenguajes de Marcas y Sistemas de Gestión de Información — 1.º DAW</span>
+    </h1>
+    <div class="meta">
+      <span>Entrega: techsummit.html</span>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- ═══════ INSTRUCCIONES GENERALES ═══════ -->
+    <div class="instrucciones">
+      <h2>Instrucciones generales</h2>
+      <ul>
+        <li>Crea un <strong>único archivo</strong> llamado <code>techsummit.html</code>.</li>
+        <li>Todo el código debe ser <strong>HTML5 válido</strong>. Compruébalo con el <a href="https://validator.w3.org/#validate_by_input" target="_blank">validador del W3C</a>.</li>
+        <li><strong>No se permite usar CSS</strong> de ningún tipo (ni <code>&lt;style&gt;</code>, ni atributo <code>style</code>, ni archivos externos).</li>
+        <li>Usa <strong>etiquetas semánticas</strong> de HTML5 siempre que sea posible.</li>
+        <li>Los textos de contenido son libres (invéntalos) salvo los indicados literalmente entre comillas.</li>
+        <li>Cuida la <strong>indentación</strong> (2 o 4 espacios, consistente en todo el archivo).</li>
+        <li>Incluye un <strong>comentario HTML</strong> al inicio de cada parte: <code>&lt;!-- PARTE N --&gt;</code>.</li>
+      </ul>
+    </div>
+
+    <!-- ═══════ PARTE 1 ═══════ -->
+    <div class="parte">
+      <h2>Parte 1 — Estructura base del documento </h2>
+      <p>Crea la estructura base del archivo HTML con los siguientes requisitos:</p>
+      <ol>
+        <li>Declaración <code>&lt;!DOCTYPE html&gt;</code>.</li>
+        <li>Elemento <code>&lt;html&gt;</code> con atributo <code>lang="es"</code>.</li>
+        <li>Dentro de <code>&lt;head&gt;</code> incluye:
+          <ul>
+            <li>Codificación <strong>UTF-8</strong>.</li>
+            <li>Meta <code>viewport</code> para diseño responsive.</li>
+            <li>Meta <code>description</code> con una descripción del evento (mínimo 50 caracteres).</li>
+            <li>Meta <code>author</code> con tu nombre completo.</li>
+            <li>Meta <code>keywords</code> con al menos 5 palabras clave separadas por comas.</li>
+            <li>Título de la página: <em>"TechSummit 2026 — Conferencia de Tecnología"</em>.</li>
+            <li>Un favicon apuntando a: <code>https://em-content.zobj.net/source/apple/391/rocket_1f680.png</code></li>
+          </ul>
+        </li>
+      </ol>
+
+      <pre><span class="cmt">&lt;!-- Estructura mínima esperada --&gt;</span>
+<span class="tag">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html</span> <span class="attr">lang</span>=<span class="val">"es"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;head&gt;</span>
+  <span class="tag">&lt;meta</span> <span class="attr">charset</span>=<span class="val">"UTF-8"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;meta</span> <span class="attr">name</span>=<span class="val">"viewport"</span> <span class="attr">content</span>=<span class="val">"..."</span><span class="tag">&gt;</span>
+  <span class="cmt">&lt;!-- Resto de metas... --&gt;</span>
+  <span class="tag">&lt;title&gt;</span>...<span class="tag">&lt;/title&gt;</span>
+  <span class="tag">&lt;link</span> <span class="attr">rel</span>=<span class="val">"icon"</span> ...<span class="tag">&gt;</span>
+<span class="tag">&lt;/head&gt;</span>
+<span class="tag">&lt;body&gt;</span>
+  <span class="cmt">&lt;!-- Aquí todo el contenido --&gt;</span>
+<span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></pre>
+    </div>
+
+    <!-- ═══════ PARTE 2 ═══════ -->
+    <div class="parte">
+      <h2>Parte 2 — Cabecera y navegación </h2>
+      <ol>
+        <li>Crea un <code>&lt;header&gt;</code> con:
+          <ul>
+            <li>Un <code>&lt;h1&gt;</code> con el texto <em>"TechSummit 2026"</em>.</li>
+            <li>Un párrafo con el lema: <em>"Donde la innovación se encuentra con el futuro"</em>.</li>
+          </ul>
+        </li>
+        <li>Crea un <code>&lt;nav&gt;</code> con una <strong>lista no ordenada</strong> que contenga <strong>enlaces internos</strong> (anclas con <code>#</code>) a las siguientes secciones:
+          <ul>
+            <li>Sobre el evento</li>
+            <li>Ponentes</li>
+            <li>Programa</li>
+            <li>Ubicación</li>
+            <li>Patrocinadores</li>
+            <li>Inscripción</li>
+            <li>FAQ</li>
+          </ul>
+        </li>
+      </ol>
+      <div class="tip">Los enlaces internos usan <code>href="#id-seccion"</code> y cada sección destino debe tener el atributo <code>id</code> correspondiente.</div>
+    </div>
+
+    <!-- ═══════ PARTE 3 ═══════ -->
+    <div class="parte">
+      <h2>Parte 3 — Sección "Sobre el evento" </h2>
+      <p>Dentro de un <code>&lt;main&gt;</code>, crea un <code>&lt;section&gt;</code> con el <code>id</code> correspondiente. Debe contener:</p>
+      <ol>
+        <li>Un <code>&lt;h2&gt;</code> con el título de la sección.</li>
+        <li>Dos párrafos describiendo el evento (mínimo 3 líneas cada uno). En alguno usa <code>&lt;strong&gt;</code>, <code>&lt;em&gt;</code> y <code>&lt;mark&gt;</code>.</li>
+        <li>Una <strong>lista de definición</strong> (<code>&lt;dl&gt;</code>, <code>&lt;dt&gt;</code>, <code>&lt;dd&gt;</code>) con estos datos:
+          <ul>
+            <li><strong>Fecha:</strong> 15–17 de octubre de 2026</li>
+            <li><strong>Lugar:</strong> Palacio de Congresos de Madrid</li>
+            <li><strong>Aforo:</strong> 2.000 asistentes</li>
+            <li><strong>Idiomas:</strong> Español e Inglés (traducción simultánea)</li>
+          </ul>
+        </li>
+        <li>Una imagen representativa:
+          <ul>
+            <li>URL: <code>https://picsum.photos/800/400</code></li>
+            <li>Atributo <code>alt</code> descriptivo.</li>
+            <li>Atributos <code>width="800"</code> y <code>height="400"</code>.</li>
+            <li>Envuelta en <code>&lt;figure&gt;</code> con un <code>&lt;figcaption&gt;</code>.</li>
+          </ul>
+        </li>
+      </ol>
+      <pre><span class="cmt">&lt;!-- Ejemplo de lista de definición --&gt;</span>
+<span class="tag">&lt;dl&gt;</span>
+  <span class="tag">&lt;dt&gt;</span>Fecha<span class="tag">&lt;/dt&gt;</span>
+  <span class="tag">&lt;dd&gt;</span>15–17 de octubre de 2026<span class="tag">&lt;/dd&gt;</span>
+  <span class="cmt">&lt;!-- Resto de términos... --&gt;</span>
+<span class="tag">&lt;/dl&gt;</span></pre>
+    </div>
+
+    <!-- ═══════ PARTE 4 ═══════ -->
+    <div class="parte">
+      <h2>Parte 4 — Ponentes destacados </h2>
+      <p>Crea una sección con <strong>al menos 3 ponentes</strong>. Cada ponente dentro de un <code>&lt;article&gt;</code>:</p>
+      <ol>
+        <li>Una imagen del ponente (usa <code>https://i.pravatar.cc/150?img=N</code>, cambiando N).</li>
+        <li>Nombre en <code>&lt;h3&gt;</code>.</li>
+        <li>Cargo y empresa usando <code>&lt;strong&gt;</code> y <code>&lt;em&gt;</code>.</li>
+        <li>Biografía breve (2–3 frases).</li>
+        <li>Un enlace ficticio a LinkedIn con <code>target="_blank"</code> y <code>rel="noopener noreferrer"</code>.</li>
+      </ol>
+      <div class="tip"><code>target="_blank"</code> abre en pestaña nueva. <code>rel="noopener noreferrer"</code> se usa por seguridad al abrir enlaces externos.</div>
+    </div>
+
+    <!-- ═══════ PARTE 5 ═══════ -->
+    <div class="parte">
+      <h2>Parte 5 — Programa: tabla compleja </h2>
+      <p>Crea una <strong>tabla compleja</strong> con el programa de un día de conferencia:</p>
+      <ol>
+        <li>Un <code>&lt;caption&gt;</code> con: <em>"Programa — Día 1 (15 de octubre)"</em>.</li>
+        <li>Usa <code>&lt;thead&gt;</code>, <code>&lt;tbody&gt;</code> y <code>&lt;tfoot&gt;</code>.</li>
+        <li>Columnas: <strong>Hora</strong> | <strong>Sala A</strong> | <strong>Sala B</strong> | <strong>Sala C</strong>.</li>
+        <li>Al menos <strong>6 filas</strong> de actividades en <code>&lt;tbody&gt;</code>.</li>
+        <li>Al menos <strong>2 celdas</strong> con <code>colspan</code> (ej: inauguración y descanso que ocupan las 3 salas).</li>
+        <li>Al menos <strong>1 celda</strong> con <code>rowspan</code> (ej: un taller de 2 horas que ocupa 2 franjas).</li>
+        <li><code>&lt;tfoot&gt;</code> con <code>colspan="4"</code>: <em>"Todos los horarios en hora peninsular (CET)"</em>.</li>
+        <li><code>&lt;th&gt;</code> con <code>scope="col"</code> en cabeceras de columna y <code>scope="row"</code> en cabeceras de fila (horas).</li>
+      </ol>
+
+      <h3>Ejemplo orientativo</h3>
+      <pre><span class="tag">&lt;table</span> <span class="attr">border</span>=<span class="val">"1"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;caption&gt;</span>Programa — Día 1<span class="tag">&lt;/caption&gt;</span>
+  <span class="tag">&lt;thead&gt;</span>
+    <span class="tag">&lt;tr&gt;</span>
+      <span class="tag">&lt;th</span> <span class="attr">scope</span>=<span class="val">"col"</span><span class="tag">&gt;</span>Hora<span class="tag">&lt;/th&gt;</span>
+      <span class="tag">&lt;th</span> <span class="attr">scope</span>=<span class="val">"col"</span><span class="tag">&gt;</span>Sala A<span class="tag">&lt;/th&gt;</span>
+      <span class="tag">&lt;th</span> <span class="attr">scope</span>=<span class="val">"col"</span><span class="tag">&gt;</span>Sala B<span class="tag">&lt;/th&gt;</span>
+      <span class="tag">&lt;th</span> <span class="attr">scope</span>=<span class="val">"col"</span><span class="tag">&gt;</span>Sala C<span class="tag">&lt;/th&gt;</span>
+    <span class="tag">&lt;/tr&gt;</span>
+  <span class="tag">&lt;/thead&gt;</span>
+  <span class="tag">&lt;tbody&gt;</span>
+    <span class="tag">&lt;tr&gt;</span>
+      <span class="tag">&lt;th</span> <span class="attr">scope</span>=<span class="val">"row"</span><span class="tag">&gt;</span>09:00<span class="tag">&lt;/th&gt;</span>
+      <span class="tag">&lt;td</span> <span class="attr">colspan</span>=<span class="val">"3"</span><span class="tag">&gt;</span>Inauguración<span class="tag">&lt;/td&gt;</span>
+    <span class="tag">&lt;/tr&gt;</span>
+    <span class="tag">&lt;tr&gt;</span>
+      <span class="tag">&lt;th</span> <span class="attr">scope</span>=<span class="val">"row"</span><span class="tag">&gt;</span>09:30<span class="tag">&lt;/th&gt;</span>
+      <span class="tag">&lt;td&gt;</span>Charla IA<span class="tag">&lt;/td&gt;</span>
+      <span class="tag">&lt;td&gt;</span>Cloud<span class="tag">&lt;/td&gt;</span>
+      <span class="tag">&lt;td</span> <span class="attr">rowspan</span>=<span class="val">"2"</span><span class="tag">&gt;</span>Taller Git (2h)<span class="tag">&lt;/td&gt;</span>
+    <span class="tag">&lt;/tr&gt;</span>
+    <span class="cmt">&lt;!-- Más filas... --&gt;</span>
+  <span class="tag">&lt;/tbody&gt;</span>
+<span class="tag">&lt;/table&gt;</span></pre>
+      <div class="aviso">Esta es la parte más exigente. Asegúrate de que los <code>colspan</code> y <code>rowspan</code> cuadran con el número de columnas.</div>
+    </div>
+
+    <!-- ═══════ PARTE 6 ═══════ -->
+    <div class="parte">
+      <h2>Parte 6 — Ubicación y multimedia </h2>
+      <ol>
+        <li>Crea una sección con <code>id</code> correspondiente y <code>&lt;h2&gt;</code>.</li>
+        <li>Dirección completa usando <code>&lt;address&gt;</code>.</li>
+        <li>Incrusta un <strong>mapa de Google Maps</strong> con <code>&lt;iframe&gt;</code>:
+          <ul>
+            <li><code>width="600"</code>, <code>height="400"</code>.</li>
+            <li><code>loading="lazy"</code>.</li>
+            <li><code>title</code> descriptivo (accesibilidad).</li>
+            <li>Para obtener el <code>src</code>: busca el lugar en Google Maps → Compartir → Incorporar mapa → copia la URL.</li>
+          </ul>
+        </li>
+        <li>Incrusta un <strong>vídeo</strong> con <code>&lt;video&gt;</code>:
+          <ul>
+            <li>Atributos <code>controls</code>, <code>width="640"</code>, <code>preload="metadata"</code>.</li>
+            <li>Al menos dos <code>&lt;source&gt;</code> (<code>video/mp4</code> y <code>video/webm</code>). Las URLs pueden ser ficticias.</li>
+            <li>Texto alternativo entre las etiquetas para navegadores incompatibles.</li>
+            <li>Un <code>&lt;track&gt;</code> de subtítulos: <code>kind="subtitles"</code>, <code>srclang="es"</code>, <code>label="Español"</code>.</li>
+          </ul>
+        </li>
+      </ol>
+    </div>
+
+    <!-- ═══════ PARTE 7 ═══════ -->
+    <div class="parte">
+      <h2>Parte 7 — Patrocinadores </h2>
+      <ol>
+        <li>Usa <code>&lt;aside&gt;</code> como contenedor (es contenido complementario).</li>
+        <li>Un <code>&lt;h2&gt;</code>: <em>"Nuestros patrocinadores"</em>.</li>
+        <li>Tres niveles de patrocinio con <code>&lt;h3&gt;</code>:
+          <ul>
+            <li><strong>Platino</strong> (1 patrocinador)</li>
+            <li><strong>Oro</strong> (2 patrocinadores)</li>
+            <li><strong>Plata</strong> (3 patrocinadores)</li>
+          </ul>
+        </li>
+        <li>Cada patrocinador: <strong>imagen dentro de un enlace</strong> (<code>&lt;a&gt;</code> que contiene <code>&lt;img&gt;</code>). El enlace va a la web ficticia de la empresa.</li>
+        <li>Usa <code>https://placehold.co/200x80?text=NombreEmpresa</code> como URL de imagen.</li>
+        <li>Todas las imágenes deben tener <code>alt</code> con el nombre de la empresa.</li>
+      </ol>
+    </div>
+
+    <!-- ═══════ PARTE 8 ═══════ -->
+    <div class="parte">
+      <h2>Parte 8 — Formulario de inscripción </h2>
+      <p>Crea un formulario con <code>&lt;form action="#" method="POST"&gt;</code>. Esta es la parte más extensa del ejercicio.</p>
+
+      <h3>8.1 — Datos personales (primer <code>&lt;fieldset&gt;</code> con <code>&lt;legend&gt;</code>)</h3>
+      <ul>
+        <li><strong>Nombre completo:</strong> <code>input type="text"</code>, <code>required</code>, <code>placeholder</code>, <code>minlength="3"</code>, <code>maxlength="100"</code>.</li>
+        <li><strong>Email:</strong> <code>input type="email"</code>, <code>required</code>, <code>placeholder</code>.</li>
+        <li><strong>Teléfono:</strong> <code>input type="tel"</code>, <code>pattern</code> para 9 dígitos.</li>
+        <li><strong>Fecha nacimiento:</strong> <code>input type="date"</code>, con <code>min</code> y <code>max</code> razonables.</li>
+        <li><strong>Web personal:</strong> <code>input type="url"</code>, opcional.</li>
+      </ul>
+      <div class="aviso">Todos los campos deben tener un <code>&lt;label&gt;</code> asociado mediante <code>for</code> + <code>id</code>.</div>
+
+      <h3>8.2 — Datos profesionales (segundo <code>&lt;fieldset&gt;</code>)</h3>
+      <ul>
+        <li><strong>Empresa:</strong> <code>input type="text"</code>.</li>
+        <li><strong>Cargo:</strong> <code>input</code> con <code>&lt;datalist&gt;</code> que sugiera al menos 5 opciones (Developer, Designer, Manager, CTO, Student).</li>
+        <li><strong>Años experiencia:</strong> <code>input type="number"</code>, <code>min="0"</code>, <code>max="50"</code>.</li>
+        <li><strong>Nivel tecnológico:</strong> <code>input type="range"</code>, <code>min="1"</code>, <code>max="10"</code>, <code>step="1"</code>. Indica los extremos con texto (1 = Principiante, 10 = Experto).</li>
+        <li><strong>Tecnologías:</strong> <code>&lt;select multiple&gt;</code> con al menos 8 opciones agrupadas en 2 <code>&lt;optgroup&gt;</code> (Frontend: HTML, CSS, JavaScript, React / Backend: Java, Python, Node.js, PHP).</li>
+      </ul>
+
+      <h3>8.3 — Preferencias de asistencia (tercer <code>&lt;fieldset&gt;</code>)</h3>
+      <ul>
+        <li><strong>Tipo de entrada</strong> (radio buttons, <code>required</code>): Estándar (50€), Premium (120€), VIP (250€). Mismo <code>name</code>.</li>
+        <li><strong>Talleres</strong> (checkboxes): al menos 4 opciones.</li>
+        <li><strong>Días de asistencia:</strong> <code>&lt;select&gt;</code> con: Solo día 1, Solo día 2, Solo día 3, Los 3 días.</li>
+        <li><strong>¿Cómo nos conociste?:</strong> <code>&lt;select&gt;</code> con: Redes sociales, Búsqueda web, Recomendación, Otro.</li>
+        <li><strong>Comentarios:</strong> <code>&lt;textarea&gt;</code>, <code>rows="5"</code>, <code>cols="50"</code>, con <code>placeholder</code>.</li>
+        <li><strong>Aceptar términos:</strong> <code>input type="checkbox"</code>, <code>required</code>. El <code>&lt;label&gt;</code> incluye un enlace con texto <em>"términos y condiciones"</em>.</li>
+      </ul>
+
+      <h3>8.4 — Subida y envío (cuarto <code>&lt;fieldset&gt;</code>)</h3>
+      <ul>
+        <li><strong>Foto de perfil:</strong> <code>input type="file"</code>, <code>accept="image/*"</code>.</li>
+        <li><strong>Contraseña:</strong> <code>input type="password"</code>, <code>minlength="8"</code>, <code>required</code>.</li>
+        <li><strong>Campo oculto:</strong> <code>input type="hidden"</code>, <code>name="formulario_version"</code>, <code>value="1.0"</code>.</li>
+        <li><strong>Botón envío:</strong> <code>&lt;button type="submit"&gt;Completar inscripción&lt;/button&gt;</code>.</li>
+        <li><strong>Botón reset:</strong> <code>&lt;button type="reset"&gt;Limpiar formulario&lt;/button&gt;</code>.</li>
+      </ul>
+    </div>
+
+    <!-- ═══════ PARTE 9 ═══════ -->
+    <div class="parte">
+      <h2>Parte 9 — Preguntas frecuentes </h2>
+      <ol>
+        <li>Crea una sección FAQ con su <code>id</code> y <code>&lt;h2&gt;</code>.</li>
+        <li>Al menos <strong>5 preguntas</strong> usando <code>&lt;details&gt;</code> y <code>&lt;summary&gt;</code>.</li>
+        <li>La primera pregunta debe estar <strong>abierta por defecto</strong> (atributo <code>open</code>).</li>
+        <li>Las respuestas: al menos un párrafo cada una. Alguna debe incluir una <strong>lista ordenada</strong> dentro.</li>
+        <li>Preguntas sugeridas (puedes inventar otras):
+          <ul>
+            <li>¿Hay aparcamiento disponible?</li>
+            <li>¿Se puede pagar en efectivo?</li>
+            <li>¿Hay código de vestimenta?</li>
+            <li>¿Se graban las ponencias?</li>
+            <li>¿Cómo puedo cancelar mi entrada?</li>
+          </ul>
+        </li>
+      </ol>
+
+      <pre><span class="cmt">&lt;!-- Ejemplo de details/summary --&gt;</span>
+<span class="tag">&lt;details</span> <span class="attr">open</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;summary&gt;</span>¿Pregunta aquí?<span class="tag">&lt;/summary&gt;</span>
+  <span class="tag">&lt;p&gt;</span>Respuesta aquí...<span class="tag">&lt;/p&gt;</span>
+<span class="tag">&lt;/details&gt;</span></pre>
+    </div>
+
+    <!-- ═══════ PARTE 10 ═══════ -->
+    <div class="parte">
+      <h2>Parte 10 — Pie de página </h2>
+      <ol>
+        <li>Crea un <code>&lt;footer&gt;</code> con:</li>
+        <li>Un párrafo con <code>&lt;small&gt;</code> que contenga el símbolo copyright (<code>&amp;copy;</code>) y <em>"2026 TechSummit. Todos los derechos reservados."</em></li>
+        <li>Enlaces a:
+          <ul>
+            <li>Política de privacidad (<code>href="#"</code>)</li>
+            <li>Aviso legal (<code>href="#"</code>)</li>
+            <li>Contacto: enlace <code>mailto:info@techsummit2026.com</code></li>
+            <li>Teléfono: enlace <code>tel:+34912345678</code></li>
+          </ul>
+        </li>
+        <li>Una línea que diga literalmente: <em>"Hecho con &lt;3 desde Madrid"</em> (el <code>&lt;3</code> debe mostrarse usando entidades HTML: <code>&amp;lt;3</code>).</li>
+      </ol>
+    </div>
+
+    <!-- ═══════ RÚBRICA ═══════ -->
+    <div class="rubrica-section">
+      <h2>Rúbrica de evaluación</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Parte</th>
+            <th>Concepto evaluado</th>
+            <th>Puntos</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Estructura base, metas y <code>&lt;head&gt;</code></td>
+            <td>1,0</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Header semántico y navegación con anclas internas</td>
+            <td>1,0</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>Sección con <code>&lt;dl&gt;</code>, <code>&lt;figure&gt;</code>/<code>&lt;figcaption&gt;</code>, <code>&lt;mark&gt;</code></td>
+            <td>1,0</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td><code>&lt;article&gt;</code>, imágenes, enlaces externos seguros</td>
+            <td>1,0</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>Tabla con <code>colspan</code>, <code>rowspan</code>, <code>scope</code>, <code>caption</code></td>
+            <td>1,5</td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td><code>&lt;iframe&gt;</code>, <code>&lt;video&gt;</code>, <code>&lt;source&gt;</code>, <code>&lt;track&gt;</code>, <code>&lt;address&gt;</code></td>
+            <td>1,0</td>
+          </tr>
+          <tr>
+            <td>7</td>
+            <td><code>&lt;aside&gt;</code>, imágenes enlazadas, estructura lógica</td>
+            <td>0,5</td>
+          </tr>
+          <tr>
+            <td>8</td>
+            <td>Formulario: <code>fieldset</code>, <code>label</code>, tipos de input, validación, <code>datalist</code>, <code>select multiple</code>, <code>optgroup</code></td>
+            <td>2,0</td>
+          </tr>
+          <tr>
+            <td>9</td>
+            <td><code>&lt;details&gt;</code>/<code>&lt;summary&gt;</code>, atributo <code>open</code></td>
+            <td>0,5</td>
+          </tr>
+          <tr>
+            <td>10</td>
+            <td>Footer, entidades HTML, <code>mailto:</code>/<code>tel:</code>, <code>&lt;small&gt;</code></td>
+            <td>0,5</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="2">TOTAL</td>
+            <td>10,0</td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <h2>Penalizaciones</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Penalización</th>
+            <th>Motivo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>−0,5</strong></td>
+            <td>El archivo no valida en el W3C (más de 3 errores)</td>
+          </tr>
+          <tr>
+            <td><strong>−0,25</strong></td>
+            <td>Mala indentación o ausencia de comentarios de sección</td>
+          </tr>
+          <tr>
+            <td><strong>−0,25</strong></td>
+            <td>Uso de etiquetas no semánticas donde existía alternativa (ej: <code>&lt;div&gt;</code> en vez de <code>&lt;nav&gt;</code>)</td>
+          </tr>
+          <tr>
+            <td><strong>−1,0</strong></td>
+            <td>Uso de CSS de cualquier tipo</td>
+          </tr>
+          <tr>
+            <td><strong>−0,5</strong></td>
+            <td>Imágenes sin <code>alt</code> o con <code>alt</code> vacío en imágenes informativas</td>
+          </tr>
+          <tr>
+            <td><strong>−0,25</strong></td>
+            <td>Labels no asociados correctamente a sus inputs</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Checklist de etiquetas HTML</h2>
+      <p>Tu archivo debería utilizar, como mínimo, todas estas etiquetas:</p>
+      <div class="checklist">
+        <div class="checklist-item">
+          <strong>Estructura</strong>
+          <span>html, head, body, header, nav, main, section, article, aside, footer</span>
+        </div>
+        <div class="checklist-item">
+          <strong>Texto</strong>
+          <span>h1–h3, p, strong, em, mark, small, code</span>
+        </div>
+        <div class="checklist-item">
+          <strong>Listas</strong>
+          <span>ul, ol, li, dl, dt, dd</span>
+        </div>
+        <div class="checklist-item">
+          <strong>Tablas</strong>
+          <span>table, caption, thead, tbody, tfoot, tr, th, td</span>
+        </div>
+        <div class="checklist-item">
+          <strong>Formularios</strong>
+          <span>form, fieldset, legend, label, input, select, optgroup, option, textarea, datalist, button, output</span>
+        </div>
+        <div class="checklist-item">
+          <strong>Multimedia</strong>
+          <span>img, figure, figcaption, video, source, track, iframe</span>
+        </div>
+        <div class="checklist-item">
+          <strong>Enlaces</strong>
+          <span>a (href, target, rel), mailto:, tel:</span>
+        </div>
+        <div class="checklist-item">
+          <strong>Interactivo</strong>
+          <span>details, summary</span>
+        </div>
+        <div class="checklist-item">
+          <strong>Meta</strong>
+          <span>meta (charset, viewport, description, author, keywords), title, link</span>
+        </div>
+        <div class="checklist-item">
+          <strong>Otros</strong>
+          <span>address, hr, entidades (&amp;copy; &amp;lt; &amp;euro;)</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>Ejercicio diseñado para 1.º DAW — Lenguajes de Marcas y Sistemas de Gestión de Información</p>
+  </footer>
+
+</body>
+</html>
